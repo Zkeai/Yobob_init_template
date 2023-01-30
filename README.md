@@ -1,2 +1,2 @@
 # hupi
-vue3+ts+springboot
+技术栈: vue3+ts+springboot
