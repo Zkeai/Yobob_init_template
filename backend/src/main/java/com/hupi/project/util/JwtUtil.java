@@ -9,8 +9,7 @@ import java.util.Date;
 import java.util.UUID;
 
 public class JwtUtil {
-        //1000*60*60*24
-    private static long time= 1000*60*5;
+    private static long time= 1000*60*60*24;
 
     private  static Key key= Keys.secretKeyFor(SignatureAlgorithm.HS256);
     /**
