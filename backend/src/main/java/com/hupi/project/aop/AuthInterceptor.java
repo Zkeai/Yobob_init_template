@@ -64,7 +64,6 @@ public class AuthInterceptor {
             }
         }
         // 通过权限校验，放行
-            System.out.println("112243214");
         return joinPoint.proceed();
     }
 }

@@ -40,15 +40,49 @@ public class JwtUtil {
     }
 
     /**
-     * 解析token
+     * 检查token是否过期
+     * @param token
+     * @return
+     */
+    public static boolean isTokenExpiration(String token) {
+        Claims claims = getAllClaimsFromToken(token);
+        if (null == claims) {
+            return true;
+        }
+        if (null == claims.getExpiration()) {
+            return true;
+        } else {
+            return claims.getExpiration().before(new Date());
+        }
+
+    }
+
+
+
+    /**
+     * 从token中解析出载荷内容
+     * @param token jwtToken
+     * @param key 参数key
+     */
+    public static String getClaimFromToken(String token,String key) {
+        Claims claims = getAllClaimsFromToken(token);
+        assert claims != null;
+        return (String) claims.get(key);
+    }
+
+
+    /**
+     * 从token中解析出载荷内容
      * @param jwtToken jwtToken
      */
-    public static boolean verifyToken(String jwtToken){
+    public static Claims getAllClaimsFromToken(String jwtToken){
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwtToken).getBody();
-            return true;
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwtToken).getBody();
         } catch (JwtException e) {
-            return false;
+            return null;
         }
     }
+
+
+
 }
