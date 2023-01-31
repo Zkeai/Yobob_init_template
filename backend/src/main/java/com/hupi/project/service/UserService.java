@@ -31,7 +31,7 @@ public interface UserService extends IService<User> {
      * @param request
      * @return 脱敏后的用户信息
      */
-    User userLogin(String userAccount, String userPassword, HttpServletRequest request);
+    String userLogin(String userAccount, String userPassword, HttpServletRequest request);
 
     /**
      * 获取当前登录用户
@@ -56,4 +56,10 @@ public interface UserService extends IService<User> {
      * @return
      */
     boolean userLogout(HttpServletRequest request);
+    /**
+     *用户脱敏
+     * @param originUser 原user对象
+     * @return User
+     */
+    User getSafetyUser(User originUser);
 }

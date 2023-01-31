@@ -9,7 +9,7 @@ const useLoginStore = defineStore(Names.LOGIN, {
   getters: {},
   actions: {
     async loginAction(data: any) {
-      const loginResult = await loginRequest(data)
+      //const loginResult = await loginRequest(data)
     }
   }
 })

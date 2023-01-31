@@ -7,6 +7,7 @@ import com.hupi.project.exception.BusinessException;
 import com.hupi.project.mapper.UserMapper;
 import com.hupi.project.model.entity.User;
 import com.hupi.project.service.UserService;
+import com.hupi.project.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -76,7 +77,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public User userLogin(String userAccount, String userPassword, HttpServletRequest request) {
+    public String userLogin(String userAccount, String userPassword, HttpServletRequest request) {
         // 1. 校验
         if (StringUtils.isAnyBlank(userAccount, userPassword)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
@@ -101,7 +102,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
         // 3. 记录用户的登录态
         request.getSession().setAttribute(USER_LOGIN_STATE, user);
-        return user;
+        //4.jwt生成
+        String role = user.getUserRole();
+        String JwtToken = JwtUtil.createToken(userAccount,role);
+        return JwtToken;
     }
 
     /**
@@ -155,6 +159,32 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         request.getSession().removeAttribute(USER_LOGIN_STATE);
         return true;
     }
+
+    /**
+     * 用户脱敏
+     * @param originUser originUser
+     * @return User
+     */
+    @Override
+    public User getSafetyUser(User originUser){
+        if(originUser == null){
+            return null;
+        }
+
+        User safetyUser =new User();
+        safetyUser.setId(originUser.getId());
+        safetyUser.setUserAccount(originUser.getUserAccount());
+        safetyUser.setUserAvatar(originUser.getUserAvatar());
+        safetyUser.setGender(originUser.getGender());
+        safetyUser.setUserName(originUser.getUserName());
+        safetyUser.setUserRole(originUser.getUserRole());
+        safetyUser.setJwtToken(originUser.getJwtToken());
+        safetyUser.setCreateTime(originUser.getCreateTime());
+        safetyUser.setUpdateTime(originUser.getUpdateTime());
+
+        return safetyUser;
+    }
+
 
 }
 
