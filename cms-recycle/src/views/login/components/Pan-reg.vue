@@ -1,5 +1,5 @@
 <template>
-  <el-form :model="regVal" :rules="rules" status-icon>
+  <el-form ref="formRef" :model="regVal" :rules="rules" status-icon>
     <el-form-item prop="account">
       <el-input
         v-model="regVal.account"
@@ -37,10 +37,11 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { ref, reactive } from 'vue'
 import { User, Lock } from '@element-plus/icons-vue'
-import type { FormRules } from 'element-plus'
+import { type FormRules, type ElForm, ElMessage } from 'element-plus'
 import type { InternalRuleItem } from 'async-validator'
+import useLoginStore from '@/store/login/login'
 /**注册账号/密码/确认密码  绑定初始值*/
 const regVal = reactive({
   account: '',
@@ -61,8 +62,8 @@ const rules: FormRules = {
   account: [
     { required: true, message: '必须输入账号~', trigger: 'blur' },
     {
-      pattern: /^[a-z0-9]{6,12}$/,
-      message: '必须6-12位数字或字母组成~',
+      pattern: /^[a-z0-9]{5,12}$/,
+      message: '必须5-12位数字或字母组成~',
       trigger: 'blur'
     }
   ],
@@ -85,8 +86,19 @@ const rules: FormRules = {
 }
 
 /**注册 method */
+const formRef = ref<InstanceType<typeof ElForm>>()
+const loginStore = useLoginStore()
 const register = () => {
-  console.log(regVal.account)
+  formRef.value?.validate((validate) => {
+    if (validate) {
+      const userAccount = regVal.account
+      const userPassword = regVal.pwd
+      const checkPassword = regVal.repwd
+      loginStore.registerAction({ userAccount, userPassword, checkPassword })
+    } else {
+      ElMessage.error('请输入正确的格式~')
+    }
+  })
 }
 </script>
 <style scoped></style>

@@ -35,7 +35,7 @@ public class Test {
                 System.out.println(jwtToken);
         try {
 
-            Claims body=Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwtToken+"1").getBody();
+            Claims body=Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwtToken).getBody();
             System.out.println( body.get("username"));
             System.out.println( body.get("role"));
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

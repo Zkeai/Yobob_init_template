@@ -36,7 +36,6 @@
 import { User, Lock } from '@element-plus/icons-vue'
 import { ref, reactive } from 'vue'
 import { type FormRules, type ElForm, ElMessage } from 'element-plus'
-import { loginRequest } from '@/service/login/login'
 import useLoginStore from '@/store/login/login'
 const isLogin = ref('login')
 const emit = defineEmits(['changePan'])
@@ -100,7 +99,9 @@ const login = () => {
     if (validate) {
       const userAccount = loginVal.account
       const userPassword = loginVal.password
-      loginStore.loginAction({ userAccount, userPassword })
+      loginStore.loginAction({ userAccount, userPassword }).then((res) => {
+        res != 'success' ? ElMessage.error(res) : null
+      })
     } else {
       ElMessage.error('请输入正确的格式~')
     }
