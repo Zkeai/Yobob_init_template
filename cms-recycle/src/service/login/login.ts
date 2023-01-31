@@ -3,7 +3,10 @@ import type { IAccount, IRegAccount } from '@/types'
 export function loginRequest(account: IAccount) {
   return hyRequest.post({
     url: '/api/user/login',
-    data: account
+    data: account,
+    headers: {
+      token: '3243535'
+    }
   })
 }
 
