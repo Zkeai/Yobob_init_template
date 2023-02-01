@@ -102,7 +102,20 @@ const register = () => {
       const userAccount = regVal.account
       const userPassword = regVal.pwd
       const checkPassword = regVal.repwd
-      loginStore.registerAction({ userAccount, userPassword, checkPassword })
+      loginStore
+        .registerAction({
+          userAccount,
+          userPassword,
+          checkPassword
+        })
+        .then((res) => {
+          if (res === 'success') {
+            ElMessage.success('注册成功')
+            gotoLogin()
+          } else {
+            ElMessage.error(res)
+          }
+        })
     } else {
       ElMessage.error('请输入正确的格式~')
     }

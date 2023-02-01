@@ -25,7 +25,7 @@ public class JwtConfig implements WebMvcConfigurer {
                         ,"/**/webjars/**"
                         ,"/**/swagger-resources"
                         , "/**/v3/**"
-                        ,"/**/user/login"
+                        ,"/**/user/**"
                         , "/**/v3/**");
 
 

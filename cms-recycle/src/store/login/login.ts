@@ -1,3 +1,4 @@
+import router from '@/router'
 import { loginRequest, registerRequest } from '@/service/login/login'
 import type { IAccount, IRegAccount } from '@/types'
 import { defineStore } from 'pinia'
@@ -15,7 +16,7 @@ const useLoginStore = defineStore(Names.LOGIN, {
         //存储jwtToken
         localStorage.setItem('token', loginResult.data)
         // 跳转页面 todo
-
+        router.push('/main')
         return 'success'
       } else {
         return loginResult.message
@@ -24,7 +25,11 @@ const useLoginStore = defineStore(Names.LOGIN, {
 
     async registerAction(data: IRegAccount) {
       const registerResult = await registerRequest(data)
-      console.log(registerResult)
+      if (registerResult.code === 0) {
+        return 'success'
+      } else {
+        return registerResult.message
+      }
     }
   }
 })
