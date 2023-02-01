@@ -40,6 +40,8 @@ import { ref, reactive } from 'vue'
 import { type FormRules, type ElForm, ElMessage } from 'element-plus'
 import useLoginStore from '@/store/login/login'
 const emit = defineEmits(['changePan'])
+
+/**切换注册页面 */
 const changeL = () => {
   document.querySelector('.content')?.classList.add('add-class-content')
   document
@@ -57,6 +59,7 @@ const loginVal = reactive({
   account: '',
   password: ''
 })
+
 /**基础表单验证 */
 const rules: FormRules = {
   account: [
@@ -76,6 +79,7 @@ const rules: FormRules = {
     }
   ]
 }
+
 /**checkbox 绑定初始状态*/
 const isRemPwd = ref(false)
 
