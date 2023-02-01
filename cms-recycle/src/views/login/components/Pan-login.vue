@@ -23,7 +23,9 @@
     <div class="login-forget">
       <el-checkbox class="forget-check" v-model="isRemPwd" label="记住密码" />
 
-      <el-link @click="changeL" type="primary">注册账号</el-link>
+      <el-link :underline="false" @click="changeL" type="primary"
+        >注册账号</el-link
+      >
     </div>
 
     <elButton style="width: 100%" size="large" round @click="login"
@@ -37,33 +39,19 @@ import { User, Lock } from '@element-plus/icons-vue'
 import { ref, reactive } from 'vue'
 import { type FormRules, type ElForm, ElMessage } from 'element-plus'
 import useLoginStore from '@/store/login/login'
-const isLogin = ref('login')
 const emit = defineEmits(['changePan'])
 const changeL = () => {
-  if (isLogin.value === 'register') {
-    document.querySelector('.content')?.classList.remove('add-class-content')
-    document
-      .querySelector('.register-img')
-      ?.classList.remove('add-class-register-img')
-    const wrapper = document.querySelector('.login-wrapper') as HTMLElement
-    const content = document.querySelector('.content') as HTMLElement
-    wrapper.style.height = '70vh'
-    content.style.height = '85vh'
-    isLogin.value = 'login'
-    emit('changePan', 'login')
-  } else {
-    document.querySelector('.content')?.classList.add('add-class-content')
-    document
-      .querySelector('.register-img')
-      ?.classList.add('add-class-register-img')
-    const wrapper = document.querySelector('.login-wrapper') as HTMLElement
-    wrapper.style.height = '80vh'
-    const content = document.querySelector('.content') as HTMLElement
-    content.style.height = '90vh'
-    isLogin.value = 'register'
-    emit('changePan', 'register')
-  }
+  document.querySelector('.content')?.classList.add('add-class-content')
+  document
+    .querySelector('.register-img')
+    ?.classList.add('add-class-register-img')
+  const wrapper = document.querySelector('.login-wrapper') as HTMLElement
+  wrapper.style.height = '80vh'
+  const content = document.querySelector('.content') as HTMLElement
+  content.style.height = '90vh'
+  emit('changePan', 'register')
 }
+
 /**登录账号、密码 绑定值*/
 const loginVal = reactive({
   account: '',

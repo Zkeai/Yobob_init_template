@@ -1,5 +1,9 @@
 <template>
   <el-form ref="formRef" :model="regVal" :rules="rules" status-icon>
+    已有账号?
+    <el-link :underline="false" @click="gotoLogin" type="primary"
+      >去登录</el-link
+    >
     <el-form-item prop="account">
       <el-input
         v-model="regVal.account"
@@ -41,13 +45,17 @@ import { ref, reactive } from 'vue'
 import { User, Lock } from '@element-plus/icons-vue'
 import { type FormRules, type ElForm, ElMessage } from 'element-plus'
 import type { InternalRuleItem } from 'async-validator'
+
 import useLoginStore from '@/store/login/login'
+const emit = defineEmits(['changePan'])
+
 /**注册账号/密码/确认密码  绑定初始值*/
 const regVal = reactive({
   account: '',
   pwd: '',
   repwd: ''
 })
+
 /**基础表单验证 */
 var validatePwd = (rule: InternalRuleItem, value: string, callback: any) => {
   if (value === '') {
@@ -99,6 +107,19 @@ const register = () => {
       ElMessage.error('请输入正确的格式~')
     }
   })
+}
+
+/**切换到登录页面 */
+const gotoLogin = () => {
+  document.querySelector('.content')?.classList.remove('add-class-content')
+  document
+    .querySelector('.register-img')
+    ?.classList.remove('add-class-register-img')
+  const wrapper = document.querySelector('.login-wrapper') as HTMLElement
+  const content = document.querySelector('.content') as HTMLElement
+  wrapper.style.height = '70vh'
+  content.style.height = '85vh'
+  emit('changePan', 'login')
 }
 </script>
 <style scoped></style>

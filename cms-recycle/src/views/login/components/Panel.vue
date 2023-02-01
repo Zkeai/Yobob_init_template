@@ -26,7 +26,7 @@
         class="login-register"
         :style="`${isLogin === 'login' ? `display:none` : `display:block`}`"
       >
-        <PanReg></PanReg>
+        <PanReg @change-pan="getPan"></PanReg>
       </div>
     </div>
   </slot>

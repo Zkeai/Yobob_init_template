@@ -24,12 +24,9 @@ public class JwtConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/**/doc.html"
                         ,"/**/webjars/**"
                         ,"/**/swagger-resources"
-<<<<<<< HEAD
                         , "/**/v3/**"
-                        ,"/**/user/login");
-=======
+                        ,"/**/user/login"
                         , "/**/v3/**");
->>>>>>> 3dea64886e711b48d0959e1fe7f354f01ad245b5
 
 
 
