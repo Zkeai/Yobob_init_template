@@ -48,9 +48,9 @@ public class User implements Serializable {
     private String userPassword;
 
     /**
-     * token
+     * 用户状态
      */
-    private String jwtToken;
+    private Integer status;
 
     /**
      * 创建时间

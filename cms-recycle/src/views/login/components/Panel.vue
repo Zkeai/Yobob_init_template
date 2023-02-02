@@ -35,8 +35,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { LOGIN_IMG, REGISTER_IMG } from '@/global/constant'
-import PanLogin from './Pan-login.vue'
-import PanReg from './Pan-reg.vue'
+import PanLogin from './Pane-login.vue'
+import PanReg from './Pane-reg.vue'
 import { LOGIN_TITLE } from '@/global/constant'
 
 /**控制登录/注册界面隐藏/显示  绑定初始值*/

@@ -11,7 +11,7 @@
             <result property="userAvatar" column="userAvatar" jdbcType="VARCHAR"/>
             <result property="gender" column="gender" jdbcType="TINYINT"/>
             <result property="userPassword" column="userPassword" jdbcType="VARCHAR"/>
-            <result property="jwtToken" column="jwtToken" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
             <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
             <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
@@ -21,7 +21,7 @@
     <sql id="Base_Column_List">
         id,userName,userAccount,
         userAvatar,gender,userPassword,
-        jwtToken,createTime,updateTime,
+        status,createTime,updateTime,
         isDelete,userRole
     </sql>
 </mapper>

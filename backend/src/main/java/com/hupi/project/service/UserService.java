@@ -62,4 +62,11 @@ public interface UserService extends IService<User> {
      * @return User
      */
     User getSafetyUser(User originUser);
+
+    /**
+     *
+     * @param UserId
+     * @return
+     */
+    String getUserAuthorityInfo(Long UserId);
 }

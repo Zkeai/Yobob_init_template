@@ -1,3 +1,5 @@
+import { CACHETOKEN } from '@/global/cache-constants'
+import { localCache } from '@/utils/localCache'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -6,7 +8,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/login'
+      redirect: '/main'
     },
     {
       path: '/login',
@@ -26,8 +28,9 @@ const router = createRouter({
 
 //导航守卫
 router.beforeEach((to) => {
-  // 只有登录成功(token), 才能真正进入到main页面
-  const token = localStorage.getItem('token')
+  // 只有登录成功(token)且有效(todo), 才能真正进入到main页面
+  const token = localCache.getCache(CACHETOKEN)
+
   if (to.path.startsWith('/main') && !token) {
     return '/login'
   }

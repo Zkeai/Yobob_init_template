@@ -3,6 +3,7 @@ package com.hupi.project.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
+import com.hupi.project.annotation.AuthCheck;
 import com.hupi.project.common.BaseResponse;
 import com.hupi.project.common.DeleteRequest;
 import com.hupi.project.common.ErrorCode;
