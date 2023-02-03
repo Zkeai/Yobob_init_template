@@ -23,9 +23,7 @@ import org.springframework.util.DigestUtils;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.hupi.project.constant.UserConstant.ADMIN_ROLE;
@@ -199,25 +197,34 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if(userRoleVO.getUser() ==null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR,"非法操作");
         }
+        User user = userRoleVO.getUser();
         if(userRoleVO.getUser().getId() == null){
             //调用新增方法 把下级信息保存到user数据库
-            User user = userRoleVO.getUser();
             userMapper.insert(user);
-            //维护关系-> 中间表userRoleVO
-            Long[] roleIds = userRoleVO.getRoleIds();
-            if(roleIds !=null && roleIds.length > 0){
-                for (Long roleId : roleIds) {
-                    //往中间表插入数据
-                    SysUserRole sysUserRole = new SysUserRole();
-                    sysUserRole.setUser_id(user.getId());
-                    sysUserRole.setRole_id(roleId);
-                    sysUserRoleMapper.insert(sysUserRole);
-                }
-            }
         }else{
             //编辑方法
+
+            //插入用户
+            userMapper.updateById(user);
+
+            //删除旧关系
+            Map<String,Object> map=new HashMap<>();
+            map.put("user_id",user.getId());
+            sysUserRoleMapper.deleteByMap(map);
         }
-        return null;
+
+        //插入新关系
+        Long[] roleIds = userRoleVO.getRoleIds();
+        if(roleIds !=null && roleIds.length > 0){
+            for (Long roleId : roleIds) {
+                //往中间表插入数据
+                SysUserRole sysUserRole = new SysUserRole();
+                sysUserRole.setUser_id(user.getId());
+                sysUserRole.setRole_id(roleId);
+                sysUserRoleMapper.insert(sysUserRole);
+            }
+        }
+        return "success";
     }
 
     /**

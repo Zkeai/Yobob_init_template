@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserRoleVO {
+
     private User user;
     private Long[] roleIds;
 
