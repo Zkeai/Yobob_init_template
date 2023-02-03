@@ -10,22 +10,14 @@ class Cache {
   }
   setCache(key: string, value: any) {
     if (value) {
-<<<<<<< HEAD
       this.storage.setItem(key, value)
-=======
-      this.storage.setItem(key, JSON.stringify(value))
->>>>>>> 587c8a61070bff41b665e566ce3fbfc8578fe7e5
     }
   }
 
   getCache(key: string) {
     const value = this.storage.getItem(key)
     if (value) {
-<<<<<<< HEAD
       return value
-=======
-      return JSON.parse(value)
->>>>>>> 587c8a61070bff41b665e566ce3fbfc8578fe7e5
     }
   }
 
