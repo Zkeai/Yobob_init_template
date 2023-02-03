@@ -4,53 +4,66 @@ import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import lombok.Data;
 
 /**
- * 用户
- * @TableName user
+ * 部门表
+ * @TableName department
  */
-@TableName(value ="user")
+@TableName(value ="department")
 @Data
-public class User implements Serializable {
+public class Department implements Serializable {
     /**
-     * id
+     *
      */
     @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
-     * 用户昵称
+     *
      */
-    private String userName;
+    private String name;
 
     /**
-     * 账号
+     *
      */
-    private String userAccount;
+    private String sn;
 
     /**
-     * 用户头像
+     * 父级id
      */
-    private String userAvatar;
+    private Long parentId;
 
     /**
-     * 性别
+     * 祖级列表
      */
-    private Integer gender;
-    /**
-     * 用户角色：user / admin
-     */
-    private String userRole;
-    /**
-     * 密码
-     */
-    private String userPassword;
+    private String ancestors;
 
     /**
-     * 用户状态
+     * 状态 0 正常 1 删除
      */
     private Integer status;
+
+    /**
+     * 负责人
+     */
+    private String leader;
+
+    /**
+     * 手机号
+     */
+    private String phone;
+
+    /**
+     * 邮箱
+     */
+    private String email;
+
+    /**
+     * 创建人
+     */
+    private String create_by;
 
     /**
      * 创建时间
@@ -58,17 +71,20 @@ public class User implements Serializable {
     private Date createTime;
 
     /**
+     * 更新人
+     */
+    private String updateBy;
+
+    /**
      * 更新时间
      */
     private Date updateTime;
 
     /**
-     * 是否删除
+     * 0 正常 1 删除
      */
     @TableLogic
     private Integer isDelete;
-
-
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

@@ -1,3 +1,4 @@
 export const enum Names {
-  LOGIN = 'login'
+  LOGIN = 'login',
+  DEPARTMENT = 'department'
 }

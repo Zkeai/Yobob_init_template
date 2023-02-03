@@ -21,7 +21,7 @@
     </el-form-item>
 
     <div class="login-forget">
-      <el-checkbox class="forget-check" v-model="isRemPwd" label="记住密码" />
+      <el-checkbox class="forget-check" v-model="isRemVal" label="记住密码" />
 
       <el-link :underline="false" @click="changeL" type="primary"
         >注册账号</el-link
@@ -36,11 +36,15 @@
 
 <script setup lang="ts">
 import { User, Lock } from '@element-plus/icons-vue'
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import { type FormRules, type ElForm, ElMessage } from 'element-plus'
 import useLoginStore from '@/store/login/login'
+import { localCache } from '@/utils/localCache'
 const emit = defineEmits(['changePan'])
 
+const CACHEUSERACCOUNT: string = 'userAccount'
+const CACHEUSERPASSWORD: string = 'userPassword'
+const ISREMVAL: string = 'isRemVal'
 /**切换注册页面 */
 const changeL = () => {
   document.querySelector('.content')?.classList.add('add-class-content')
@@ -56,8 +60,8 @@ const changeL = () => {
 
 /**登录账号、密码 绑定值*/
 const loginVal = reactive({
-  account: '',
-  password: ''
+  account: localCache.getCache(CACHEUSERACCOUNT) ?? '',
+  password: localCache.getCache(CACHEUSERPASSWORD) ?? ''
 })
 
 /**基础表单验证 */
@@ -80,9 +84,17 @@ const rules: FormRules = {
   ]
 }
 
-/**checkbox 绑定初始状态*/
-const isRemPwd = ref(false)
-
+/**checkbox 记住密码绑定初始状态*/
+const isRemVal = ref<boolean>(
+  localCache.getCache(ISREMVAL) === 'true' ? true : false
+)
+watch(isRemVal, (newVal) => {
+  if (newVal) {
+    localCache.setCache(ISREMVAL, 'true')
+  } else {
+    localCache.setCache(ISREMVAL, 'false')
+  }
+})
 /**登录 method*/
 const formRef = ref<InstanceType<typeof ElForm>>()
 const loginStore = useLoginStore()
@@ -92,7 +104,18 @@ const login = () => {
       const userAccount = loginVal.account
       const userPassword = loginVal.password
       loginStore.loginAction({ userAccount, userPassword }).then((res) => {
-        res != 'success' ? ElMessage.error(res) : null
+        if (res === 'success') {
+          //是否记住密码
+          if (isRemVal.value) {
+            localCache.setCache(CACHEUSERACCOUNT, userAccount)
+            localCache.setCache(CACHEUSERPASSWORD, userPassword)
+          } else {
+            localCache.removeCache(CACHEUSERACCOUNT)
+            localCache.removeCache(CACHEUSERPASSWORD)
+          }
+        } else {
+          ElMessage.error(res)
+        }
       })
     } else {
       ElMessage.error('请输入正确的格式~')

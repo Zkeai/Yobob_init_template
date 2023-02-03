@@ -22,14 +22,18 @@ public class JwtInterceptor implements HandlerInterceptor {
 
         /** 获取token */
         String token = request.getHeader("authorization");
-        Pattern authorizationPattern = Pattern.compile("^Bearer (?<token>[a-zA-Z0-9-:._~+/]+=*)$", Pattern.CASE_INSENSITIVE);
-
+        if (null == token) {
+            log.info("token is null");
+            response.setStatus(403);
+            return false;
+        }
 
         if (!StringUtils.startsWithIgnoreCase(token, "Bearer")) {
             log.info("authorization is null");
             response.setStatus(403);
             return false;
         }
+        Pattern authorizationPattern = Pattern.compile("^Bearer (?<token>[a-zA-Z0-9-:._~+/]+=*)$", Pattern.CASE_INSENSITIVE);
         Matcher matcher = authorizationPattern.matcher(token);
         if (!matcher.matches()) {
             log.info("Bearer token is malformed");
@@ -37,13 +41,8 @@ public class JwtInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        token = request.getHeader("token");
+        token = token.replace("Bearer ", "");
 
-        if (null == token) {
-            log.info("token is null");
-            response.setStatus(403);
-            return false;
-        }
 
         /** 检查token是否过期 */
         boolean isExpiration = JwtUtil.isTokenExpiration(token);

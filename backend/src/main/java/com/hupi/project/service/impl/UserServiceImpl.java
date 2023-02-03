@@ -4,7 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hupi.project.common.ErrorCode;
 import com.hupi.project.exception.BusinessException;
+import com.hupi.project.mapper.SysMenuMapper;
+import com.hupi.project.mapper.SysRoleMapper;
 import com.hupi.project.mapper.UserMapper;
+import com.hupi.project.model.entity.SysMenu;
+import com.hupi.project.model.entity.SysRole;
 import com.hupi.project.model.entity.User;
 import com.hupi.project.service.UserService;
 import com.hupi.project.util.JwtUtil;
@@ -15,6 +19,11 @@ import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.hupi.project.constant.UserConstant.ADMIN_ROLE;
 import static com.hupi.project.constant.UserConstant.USER_LOGIN_STATE;
@@ -33,6 +42,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Resource
     private UserMapper userMapper;
 
+    @Resource
+    private SysRoleMapper sysRoleMapper;
+
+    @Resource
+    private SysMenuMapper sysMenuMapper;
     /**
      * 盐值，混淆密码
      */
@@ -178,11 +192,44 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         safetyUser.setGender(originUser.getGender());
         safetyUser.setUserName(originUser.getUserName());
         safetyUser.setUserRole(originUser.getUserRole());
-        safetyUser.setJwtToken(originUser.getJwtToken());
+        safetyUser.setStatus(originUser.getStatus());
         safetyUser.setCreateTime(originUser.getCreateTime());
         safetyUser.setUpdateTime(originUser.getUpdateTime());
 
         return safetyUser;
+    }
+
+    /**
+     *
+     * @param UserId
+     * @return
+     */
+    @Override
+    public String getUserAuthorityInfo(Long UserId) {
+       StringBuffer authority = new StringBuffer();
+        //根据用户id获取所有的角色信息
+        List<SysRole> roleList  = sysRoleMapper.selectList(new QueryWrapper<SysRole>().inSql("id","SELECT role_id FROM sys_user_role WHERE user_id="+UserId));
+        if(roleList.size()>0){
+          String roleCodeStr =  roleList.stream().map(r->"ROLE_"+r.getCode()).collect(Collectors.joining(","));
+          authority.append(roleCodeStr);
+        }
+        //遍历所有的角色,获取所有的菜单权限 且 不重复
+        Set<String> menuCodeSet = new HashSet<>();
+        for(SysRole sysRole:roleList){
+            List<SysMenu> sysMenuList =  sysMenuMapper.selectList(new QueryWrapper<SysMenu>().inSql("id","SELECT menu_id FROM sys_role_menu WHERE role_id="+sysRole.getId()));
+            for(SysMenu sysMenu:sysMenuList){
+               String perms = sysMenu.getPerms();
+               if(StringUtils.isNotBlank(perms)){
+                   menuCodeSet.add(perms);
+               }
+            }
+        }
+        if(menuCodeSet.size()>0){
+            authority.append(",");
+            String menuCodeStr =  menuCodeSet.stream().collect(Collectors.joining(","));
+            authority.append(menuCodeStr);
+        }
+       return authority.toString();
     }
 
 

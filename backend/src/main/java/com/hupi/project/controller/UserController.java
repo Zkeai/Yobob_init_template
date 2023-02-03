@@ -3,6 +3,7 @@ package com.hupi.project.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
+import com.hupi.project.annotation.AuthCheck;
 import com.hupi.project.common.BaseResponse;
 import com.hupi.project.common.DeleteRequest;
 import com.hupi.project.common.ErrorCode;
@@ -216,7 +217,7 @@ public class UserController {
     @GetMapping("/list/page")
     public BaseResponse<Page<UserVO>> listUserByPage(UserQueryRequest userQueryRequest, HttpServletRequest request) {
         long current = 1;
-        long size = 10;
+        long size = 1;
         User userQuery = new User();
         if (userQueryRequest != null) {
             BeanUtils.copyProperties(userQueryRequest, userQuery);

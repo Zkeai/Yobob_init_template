@@ -1,16 +1,16 @@
 import hyRequest from '..'
 import type { IAccount, IRegAccount } from '@/types'
-export function loginRequest(account: IAccount) {
+export function loginRequest(loginParam: IAccount) {
   return hyRequest.post({
     url: '/api/user/login',
-    data: account
+    data: loginParam
   })
 }
 
-export function registerRequest(account: IRegAccount) {
+export function registerRequest(registerParam: IRegAccount) {
   return hyRequest.post({
     url: '/api/user/register',
-    data: account,
+    data: registerParam,
     headers: {
       Authorization: 'Bearer ' + localStorage.getItem('token')
     }
