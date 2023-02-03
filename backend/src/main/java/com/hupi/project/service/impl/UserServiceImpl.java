@@ -6,10 +6,13 @@ import com.hupi.project.common.ErrorCode;
 import com.hupi.project.exception.BusinessException;
 import com.hupi.project.mapper.SysMenuMapper;
 import com.hupi.project.mapper.SysRoleMapper;
+import com.hupi.project.mapper.SysUserRoleMapper;
 import com.hupi.project.mapper.UserMapper;
 import com.hupi.project.model.entity.SysMenu;
 import com.hupi.project.model.entity.SysRole;
+import com.hupi.project.model.entity.SysUserRole;
 import com.hupi.project.model.entity.User;
+import com.hupi.project.model.vo.UserRoleVO;
 import com.hupi.project.service.UserService;
 import com.hupi.project.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -47,10 +50,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Resource
     private SysMenuMapper sysMenuMapper;
+
+    @Resource
+    private SysUserRoleMapper sysUserRoleMapper;
+
     /**
      * 盐值，混淆密码
      */
-    private static final String SALT = "yupi";
+    private static final String SALT = "%&*%hu-pi%*&%";
 
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
@@ -118,16 +125,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         request.getSession().setAttribute(USER_LOGIN_STATE, user);
         //4.jwt生成
         String role = user.getUserRole();
-        String JwtToken = JwtUtil.createToken(userAccount,role);
-        return JwtToken;
+        return JwtUtil.createToken(userAccount,role);
     }
 
-    /**
-     * 获取当前登录用户
-     *
-     * @param request
-     * @return
-     */
+
     @Override
     public User getLoginUser(HttpServletRequest request) {
         // 先判断是否已登录
@@ -145,12 +146,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return currentUser;
     }
 
-    /**
-     * 是否为管理员
-     *
-     * @param request
-     * @return
-     */
+
     @Override
     public boolean isAdmin(HttpServletRequest request) {
         // 仅管理员可查询
@@ -159,11 +155,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return user != null && ADMIN_ROLE.equals(user.getUserRole());
     }
 
-    /**
-     * 用户注销
-     *
-     * @param request
-     */
+
     @Override
     public boolean userLogout(HttpServletRequest request) {
         if (request.getSession().getAttribute(USER_LOGIN_STATE) == null) {
@@ -199,14 +191,43 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return safetyUser;
     }
 
+    @Override
+    public String saveOrUpdate(UserRoleVO userRoleVO) {
+        if(userRoleVO ==null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"非法操作");
+        }
+        if(userRoleVO.getUser() ==null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"非法操作");
+        }
+        if(userRoleVO.getUser().getId() == null){
+            //调用新增方法 把下级信息保存到user数据库
+            User user = userRoleVO.getUser();
+            userMapper.insert(user);
+            //维护关系-> 中间表userRoleVO
+            Long[] roleIds = userRoleVO.getRoleIds();
+            if(roleIds !=null && roleIds.length > 0){
+                for (Long roleId : roleIds) {
+                    //往中间表插入数据
+                    SysUserRole sysUserRole = new SysUserRole();
+                    sysUserRole.setUser_id(user.getId());
+                    sysUserRole.setRole_id(roleId);
+                    sysUserRoleMapper.insert(sysUserRole);
+                }
+            }
+        }else{
+            //编辑方法
+        }
+        return null;
+    }
+
     /**
-     *
-     * @param UserId
-     * @return
+     *获取用户所有信息
+     * @param UserId UserId
+     * @return String
      */
     @Override
     public String getUserAuthorityInfo(Long UserId) {
-       StringBuffer authority = new StringBuffer();
+       StringBuilder authority = new StringBuilder();
         //根据用户id获取所有的角色信息
         List<SysRole> roleList  = sysRoleMapper.selectList(new QueryWrapper<SysRole>().inSql("id","SELECT role_id FROM sys_user_role WHERE user_id="+UserId));
         if(roleList.size()>0){

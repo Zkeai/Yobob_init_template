@@ -7,22 +7,26 @@
     <resultMap id="BaseResultMap" type="com.hupi.project.model.entity.User">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="userName" column="userName" jdbcType="VARCHAR"/>
+            <result property="deptId" column="deptId" jdbcType="INTEGER"/>
             <result property="userAccount" column="userAccount" jdbcType="VARCHAR"/>
-            <result property="userAvatar" column="userAvatar" jdbcType="VARCHAR"/>
-            <result property="gender" column="gender" jdbcType="TINYINT"/>
             <result property="userPassword" column="userPassword" jdbcType="VARCHAR"/>
+            <result property="userAvatar" column="userAvatar" jdbcType="VARCHAR"/>
+            <result property="email" column="email" jdbcType="VARCHAR"/>
+            <result property="phone" column="phone" jdbcType="VARCHAR"/>
+            <result property="age" column="age" jdbcType="INTEGER"/>
+            <result property="gender" column="gender" jdbcType="TINYINT"/>
             <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="userRole" column="userRole" jdbcType="VARCHAR"/>
             <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
             <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
-            <result property="userRole" column="userRole" jdbcType="VARCHAR"/>
-
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,userName,userAccount,
-        userAvatar,gender,userPassword,
-        status,createTime,updateTime,
-        isDelete,userRole
+        id,userName,deptId,
+        userAccount,userPassword,userAvatar,
+        email,phone,age,
+        gender,status,userRole,
+        createTime,updateTime,isDelete
     </sql>
 </mapper>

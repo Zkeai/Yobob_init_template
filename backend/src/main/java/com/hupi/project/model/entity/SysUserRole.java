@@ -15,12 +15,6 @@ import lombok.Data;
 @Data
 public class SysUserRole implements Serializable {
     /**
-     * 用户角色主键ID
-     */
-    @TableId(type = IdType.AUTO)
-    private Long id;
-
-    /**
      * 用户ID
      */
     private Long user_id;

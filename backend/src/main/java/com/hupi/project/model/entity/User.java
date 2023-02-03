@@ -25,9 +25,19 @@ public class User implements Serializable {
     private String userName;
 
     /**
+     * 部门id
+     */
+    private Integer deptId;
+
+    /**
      * 账号
      */
     private String userAccount;
+
+    /**
+     * 密码
+     */
+    private String userPassword;
 
     /**
      * 用户头像
@@ -35,22 +45,34 @@ public class User implements Serializable {
     private String userAvatar;
 
     /**
+     * 邮箱
+     */
+    private String email;
+
+    /**
+     * 手机号
+     */
+    private String phone;
+
+    /**
+     * 年龄
+     */
+    private Integer age;
+
+    /**
      * 性别
      */
     private Integer gender;
-    /**
-     * 用户角色：user / admin
-     */
-    private String userRole;
-    /**
-     * 密码
-     */
-    private String userPassword;
 
     /**
      * 用户状态
      */
     private Integer status;
+
+    /**
+     * 用户角色：user / admin
+     */
+    private String userRole;
 
     /**
      * 创建时间

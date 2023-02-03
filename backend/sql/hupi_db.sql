@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50738
 File Encoding         : 65001
 
-Date: 2023-02-03 14:23:36
+Date: 2023-02-03 18:25:10
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -149,113 +149,26 @@ INSERT INTO `sys_role` VALUES ('3', '测试角色', 'test', '2022-07-04 14:42:24
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_role_menu`;
 CREATE TABLE `sys_role_menu` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '角色菜单主键ID',
   `role_id` bigint(20) DEFAULT NULL COMMENT '角色ID',
-  `menu_id` bigint(20) DEFAULT NULL COMMENT '菜单ID',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=239 DEFAULT CHARSET=utf8;
+  `menu_id` bigint(20) DEFAULT NULL COMMENT '菜单ID'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sys_role_menu
 -- ----------------------------
-INSERT INTO `sys_role_menu` VALUES ('8', '2', '1');
-INSERT INTO `sys_role_menu` VALUES ('9', '2', '2');
-INSERT INTO `sys_role_menu` VALUES ('10', '2', '3');
-INSERT INTO `sys_role_menu` VALUES ('11', '2', '4');
-INSERT INTO `sys_role_menu` VALUES ('12', '2', '5');
-INSERT INTO `sys_role_menu` VALUES ('13', '2', '6');
-INSERT INTO `sys_role_menu` VALUES ('14', '2', '7');
-INSERT INTO `sys_role_menu` VALUES ('15', '3', '2');
-INSERT INTO `sys_role_menu` VALUES ('16', '3', '6');
-INSERT INTO `sys_role_menu` VALUES ('17', '3', '7');
-INSERT INTO `sys_role_menu` VALUES ('21', '7', '1');
-INSERT INTO `sys_role_menu` VALUES ('22', '7', '2');
-INSERT INTO `sys_role_menu` VALUES ('23', '7', '6');
-INSERT INTO `sys_role_menu` VALUES ('24', '7', '7');
-INSERT INTO `sys_role_menu` VALUES ('25', '6', '1');
-INSERT INTO `sys_role_menu` VALUES ('26', '6', '3');
-INSERT INTO `sys_role_menu` VALUES ('27', '6', '9');
-INSERT INTO `sys_role_menu` VALUES ('28', '6', '10');
-INSERT INTO `sys_role_menu` VALUES ('29', '19', '1');
-INSERT INTO `sys_role_menu` VALUES ('30', '19', '3');
-INSERT INTO `sys_role_menu` VALUES ('31', '19', '2');
-INSERT INTO `sys_role_menu` VALUES ('32', '19', '6');
-INSERT INTO `sys_role_menu` VALUES ('33', '1', '1');
-INSERT INTO `sys_role_menu` VALUES ('34', '1', '3');
-INSERT INTO `sys_role_menu` VALUES ('35', '1', '20');
-INSERT INTO `sys_role_menu` VALUES ('36', '1', '8');
-INSERT INTO `sys_role_menu` VALUES ('37', '1', '9');
-INSERT INTO `sys_role_menu` VALUES ('38', '1', '10');
-INSERT INTO `sys_role_menu` VALUES ('39', '1', '11');
-INSERT INTO `sys_role_menu` VALUES ('40', '1', '12');
-INSERT INTO `sys_role_menu` VALUES ('41', '1', '4');
-INSERT INTO `sys_role_menu` VALUES ('42', '1', '21');
-INSERT INTO `sys_role_menu` VALUES ('43', '1', '13');
-INSERT INTO `sys_role_menu` VALUES ('44', '1', '14');
-INSERT INTO `sys_role_menu` VALUES ('45', '1', '15');
-INSERT INTO `sys_role_menu` VALUES ('46', '1', '16');
-INSERT INTO `sys_role_menu` VALUES ('47', '1', '23');
-INSERT INTO `sys_role_menu` VALUES ('48', '1', '5');
-INSERT INTO `sys_role_menu` VALUES ('49', '1', '22');
-INSERT INTO `sys_role_menu` VALUES ('50', '1', '17');
-INSERT INTO `sys_role_menu` VALUES ('51', '1', '18');
-INSERT INTO `sys_role_menu` VALUES ('52', '1', '19');
-INSERT INTO `sys_role_menu` VALUES ('53', '1', '2');
-INSERT INTO `sys_role_menu` VALUES ('54', '1', '6');
-INSERT INTO `sys_role_menu` VALUES ('55', '1', '7');
-INSERT INTO `sys_role_menu` VALUES ('208', '20', '1');
-INSERT INTO `sys_role_menu` VALUES ('209', '20', '3');
-INSERT INTO `sys_role_menu` VALUES ('210', '20', '20');
-INSERT INTO `sys_role_menu` VALUES ('211', '20', '8');
-INSERT INTO `sys_role_menu` VALUES ('212', '20', '9');
-INSERT INTO `sys_role_menu` VALUES ('213', '20', '33');
-INSERT INTO `sys_role_menu` VALUES ('214', '20', '10');
-INSERT INTO `sys_role_menu` VALUES ('215', '20', '11');
-INSERT INTO `sys_role_menu` VALUES ('216', '20', '4');
-INSERT INTO `sys_role_menu` VALUES ('217', '20', '21');
-INSERT INTO `sys_role_menu` VALUES ('218', '20', '13');
-INSERT INTO `sys_role_menu` VALUES ('219', '20', '5');
-INSERT INTO `sys_role_menu` VALUES ('220', '20', '22');
-INSERT INTO `sys_role_menu` VALUES ('221', '20', '17');
-INSERT INTO `sys_role_menu` VALUES ('222', '20', '18');
-INSERT INTO `sys_role_menu` VALUES ('223', '20', '2');
-INSERT INTO `sys_role_menu` VALUES ('224', '20', '6');
-INSERT INTO `sys_role_menu` VALUES ('225', '20', '7');
-INSERT INTO `sys_role_menu` VALUES ('232', '21', '1');
-INSERT INTO `sys_role_menu` VALUES ('233', '21', '9');
-INSERT INTO `sys_role_menu` VALUES ('234', '21', '4');
-INSERT INTO `sys_role_menu` VALUES ('235', '21', '21');
-INSERT INTO `sys_role_menu` VALUES ('236', '21', '2');
-INSERT INTO `sys_role_menu` VALUES ('237', '21', '6');
-INSERT INTO `sys_role_menu` VALUES ('238', '21', '7');
 
 -- ----------------------------
 -- Table structure for sys_user_role
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_user_role`;
 CREATE TABLE `sys_user_role` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '用户角色主键ID',
   `user_id` bigint(20) DEFAULT NULL COMMENT '用户ID',
-  `role_id` bigint(20) DEFAULT NULL COMMENT '角色ID',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+  `role_id` bigint(20) DEFAULT NULL COMMENT '角色ID'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sys_user_role
 -- ----------------------------
-INSERT INTO `sys_user_role` VALUES ('1', '1', '1');
-INSERT INTO `sys_user_role` VALUES ('2', '2', '2');
-INSERT INTO `sys_user_role` VALUES ('4', '1', '2');
-INSERT INTO `sys_user_role` VALUES ('6', '3', '3');
-INSERT INTO `sys_user_role` VALUES ('7', '3', '2');
-INSERT INTO `sys_user_role` VALUES ('9', '4', '3');
-INSERT INTO `sys_user_role` VALUES ('10', '5', '3');
-INSERT INTO `sys_user_role` VALUES ('11', '15', '3');
-INSERT INTO `sys_user_role` VALUES ('16', '28', '2');
-INSERT INTO `sys_user_role` VALUES ('17', '28', '3');
-INSERT INTO `sys_user_role` VALUES ('20', '29', '20');
-INSERT INTO `sys_user_role` VALUES ('21', '30', '17');
-INSERT INTO `sys_user_role` VALUES ('22', '30', '21');
 
 -- ----------------------------
 -- Table structure for user
@@ -264,21 +177,24 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
   `userName` varchar(256) DEFAULT NULL COMMENT '用户昵称',
+  `deptId` int(11) DEFAULT NULL COMMENT '部门id',
   `userAccount` varchar(256) NOT NULL COMMENT '账号',
-  `userAvatar` varchar(1024) DEFAULT NULL COMMENT '用户头像',
-  `gender` tinyint(4) DEFAULT NULL COMMENT '性别',
   `userPassword` varchar(512) NOT NULL COMMENT '密码',
+  `userAvatar` varchar(1024) DEFAULT NULL COMMENT '用户头像',
+  `email` varchar(255) DEFAULT NULL COMMENT '邮箱',
+  `phone` varchar(255) DEFAULT NULL COMMENT '手机号',
+  `age` int(11) DEFAULT NULL COMMENT '年龄',
+  `gender` tinyint(4) DEFAULT NULL COMMENT '性别',
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '用户状态',
+  `userRole` varchar(256) NOT NULL DEFAULT 'user' COMMENT '用户角色：user / admin',
   `createTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `isDelete` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否删除',
-  `userRole` varchar(256) NOT NULL DEFAULT 'user' COMMENT '用户角色：user / admin',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uni_userAccount` (`userAccount`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 COMMENT='用户';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1 COMMENT='用户';
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', null, 'lemon', null, null, 'aafe263987057e235d9a4174d593e431', '0', '2023-02-02 16:19:13', '2023-02-02 18:16:05', '0', 'user');
-INSERT INTO `user` VALUES ('3', null, 'zkeai', null, null, 'aafe263987057e235d9a4174d593e431', '0', '2023-02-03 00:00:30', '2023-02-03 00:00:30', '0', 'user');
+INSERT INTO `user` VALUES ('1', null, null, 'zkeai', 'fe655af804bd109499fdcf6d0a53cbbe', null, null, null, null, null, '0', 'user', '2023-02-03 16:20:15', '2023-02-03 16:20:15', '0');

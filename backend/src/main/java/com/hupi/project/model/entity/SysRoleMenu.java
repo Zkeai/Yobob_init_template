@@ -14,11 +14,6 @@ import lombok.Data;
 @TableName(value ="sys_role_menu")
 @Data
 public class SysRoleMenu implements Serializable {
-    /**
-     * 角色菜单主键ID
-     */
-    @TableId(type = IdType.AUTO)
-    private Long id;
 
     /**
      * 角色ID

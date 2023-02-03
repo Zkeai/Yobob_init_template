@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
 * @author saoren
@@ -68,6 +69,31 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
         }
         return "success";
     }
+
+    @Override
+    public String deleteDep(Long id) {
+        if(id == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        int count = departmentMapper.deleteById(id);
+        if(count == 0){
+            throw new BusinessException(ErrorCode.OPERATION_ERROR);
+        }
+        return "success";
+    }
+
+    @Override
+    public Department getInfo(Long id) {
+        if(id == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+            Department department = departmentMapper.selectById(id);
+        if(department == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"非法操作");
+        }
+        return department;
+    }
+
 }
 
 

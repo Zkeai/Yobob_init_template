@@ -10,11 +10,14 @@ import com.hupi.project.common.ErrorCode;
 import com.hupi.project.common.ResultUtils;
 import com.hupi.project.exception.BusinessException;
 import com.hupi.project.model.dto.user.*;
+import com.hupi.project.model.entity.Department;
 import com.hupi.project.model.entity.User;
+import com.hupi.project.model.vo.UserRoleVO;
 import com.hupi.project.model.vo.UserVO;
 import com.hupi.project.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -34,13 +37,14 @@ public class UserController {
     @Resource
     private UserService userService;
 
+    private static final String SALT = "%&*%hu-pi%*&%";
     // region 登录相关
 
     /**
      * 用户注册
      *
-     * @param userRegisterRequest
-     * @return
+     * @param userRegisterRequest  userRegisterRequest
+     * @return id
      */
     @PostMapping("/register")
     public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
@@ -60,9 +64,9 @@ public class UserController {
     /**
      * 用户登录
      *
-     * @param userLoginRequest
-     * @param request
-     * @return
+     * @param userLoginRequest  userLoginRequest
+     * @param request request
+     * @return String
      */
     @PostMapping("/login")
     public BaseResponse<String> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
@@ -81,8 +85,8 @@ public class UserController {
     /**
      * 用户注销
      *
-     * @param request
-     * @return
+     * @param request request
+     * @return Boolean
      */
     @PostMapping("/logout")
     public BaseResponse<Boolean> userLogout(HttpServletRequest request) {
@@ -95,9 +99,8 @@ public class UserController {
 
     /**
      * 获取当前登录用户
-     *
-     * @param request
-     * @return
+     * @param request request
+     * @return  UserVO
      */
     @GetMapping("/get/login")
     public BaseResponse<UserVO> getLoginUser(HttpServletRequest request) {
@@ -114,9 +117,9 @@ public class UserController {
     /**
      * 创建用户
      *
-     * @param userAddRequest
-     * @param request
-     * @return
+     * @param userAddRequest userAddRequest
+     * @param request  request
+     * @return Long
      */
     @PostMapping("/add")
     public BaseResponse<Long> addUser(@RequestBody UserAddRequest userAddRequest, HttpServletRequest request) {
@@ -151,9 +154,9 @@ public class UserController {
     /**
      * 更新用户
      *
-     * @param userUpdateRequest
-     * @param request
-     * @return
+     * @param userUpdateRequest userUpdateRequest
+     * @param request request
+     * @return  Boolean
      */
     @PostMapping("/update")
     public BaseResponse<Boolean> updateUser(@RequestBody UserUpdateRequest userUpdateRequest, HttpServletRequest request) {
@@ -162,6 +165,9 @@ public class UserController {
         }
         User user = new User();
         BeanUtils.copyProperties(userUpdateRequest, user);
+        String userPassword = userUpdateRequest.getUserPassword();
+        String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
+        user.setUserPassword(encryptPassword);
         boolean result = userService.updateById(user);
         return ResultUtils.success(result);
     }
@@ -169,9 +175,9 @@ public class UserController {
     /**
      * 根据 id 获取用户
      *
-     * @param id
-     * @param request
-     * @return
+     * @param id id
+     * @param request request
+     * @return UserVO
      */
     @GetMapping("/get")
     public BaseResponse<UserVO> getUserById(int id, HttpServletRequest request) {
@@ -187,9 +193,9 @@ public class UserController {
     /**
      * 获取用户列表
      *
-     * @param userQueryRequest
-     * @param request
-     * @return
+     * @param userQueryRequest userQueryRequest
+     * @param request request
+     * @return List<UserVO>
      */
     @GetMapping("/list")
     public BaseResponse<List<UserVO>> listUser(UserQueryRequest userQueryRequest, HttpServletRequest request) {
@@ -210,9 +216,9 @@ public class UserController {
     /**
      * 分页获取用户列表
      *
-     * @param userQueryRequest
-     * @param request
-     * @return
+     * @param userQueryRequest userQueryRequest
+     * @param request  request
+     * @return Page<UserVO>
      */
     @GetMapping("/list/page")
     public BaseResponse<Page<UserVO>> listUserByPage(UserQueryRequest userQueryRequest, HttpServletRequest request) {
@@ -236,5 +242,13 @@ public class UserController {
         return ResultUtils.success(userVOPage);
     }
 
+    // endregion
+
+    //region 下级相关
+    @PostMapping("/saveOrUpdate")
+    public BaseResponse<String> saveOrUpdate(@RequestBody UserRoleVO userRoleVO){
+        String result = userService.saveOrUpdate(userRoleVO);
+        return ResultUtils.success(result);
+    }
     // endregion
 }

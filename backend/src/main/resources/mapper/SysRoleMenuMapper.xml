@@ -5,12 +5,11 @@
 <mapper namespace="com.hupi.project.mapper.SysRoleMenuMapper">
 
     <resultMap id="BaseResultMap" type="com.hupi.project.model.entity.SysRoleMenu">
-            <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="role_id" column="role_id" jdbcType="BIGINT"/>
             <result property="menu_id" column="menu_id" jdbcType="BIGINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,role_id,menu_id
+        role_id,menu_id
     </sql>
 </mapper>
