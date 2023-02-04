@@ -1,6 +1,7 @@
 package com.hupi.project.controller;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hupi.project.annotation.RequiredPermission;
 import com.hupi.project.common.BaseResponse;
 import com.hupi.project.common.ResultUtils;
 import com.hupi.project.model.entity.Department;
@@ -28,6 +29,7 @@ public class DepartmentController {
      * @return pageInfo
      */
     @GetMapping("/list/page")
+    @RequiredPermission(name = "部门列表",expression = "department:list")
     public BaseResponse<Object> listUserByPage(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum,pageSize);
         List<Department> list = departmentService.list();
@@ -42,6 +44,7 @@ public class DepartmentController {
      * @return success/error
      */
     @DeleteMapping("/delete/{id}")
+    @RequiredPermission(name = "部门删除",expression = "department:delete")
     public BaseResponse<String> delete(@PathVariable Long id) {
 
         String result = departmentService.deleteDep(id);
@@ -55,6 +58,7 @@ public class DepartmentController {
      * @return success/error
      */
     @PostMapping("/saveOrUpdate")
+    @RequiredPermission(name = "部门新增或编辑",expression = "department:saveOrUpdate")
     public BaseResponse<String> saveOrUpdate(@RequestBody Department department){
        String result = departmentService.saveOrUpdateDep(department);
         return ResultUtils.success(result);
@@ -66,6 +70,7 @@ public class DepartmentController {
      * @return Department
      */
     @GetMapping("/info/{id}")
+    @RequiredPermission(name = "部门单个信息",expression = "department:info")
     public BaseResponse<Department> getInfo (@PathVariable Long id){
         Department result = departmentService.getInfo(id);
         return ResultUtils.success(result);
@@ -76,6 +81,7 @@ public class DepartmentController {
      * @return List<Department>
      */
     @GetMapping("/listAll")
+    @RequiredPermission(name = "所有部门信息",expression = "department:listAll")
     public BaseResponse<List<Department>> getListAll(){
         List<Department> departments = departmentService.list();
         return ResultUtils.success(departments);

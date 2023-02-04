@@ -12,6 +12,7 @@ import com.hupi.project.model.entity.SysMenu;
 import com.hupi.project.model.entity.SysRole;
 import com.hupi.project.model.entity.SysUserRole;
 import com.hupi.project.model.entity.User;
+import com.hupi.project.model.vo.AdminVO;
 import com.hupi.project.model.vo.UserRoleVO;
 import com.hupi.project.service.UserService;
 import com.hupi.project.util.JwtUtil;
@@ -42,6 +43,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Resource
     private UserMapper userMapper;
+    @Resource
+    private UserService userService;
 
     @Resource
     private SysRoleMapper sysRoleMapper;
@@ -204,7 +207,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }else{
             //编辑方法
 
-            //插入用户
+            //插入用户 密码加密
+            user.setUserPassword(DigestUtils.md5DigestAsHex((SALT + user.getUserPassword()).getBytes()));
             userMapper.updateById(user);
 
             //删除旧关系
@@ -216,14 +220,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         //插入新关系
         Long[] roleIds = userRoleVO.getRoleIds();
         if(roleIds !=null && roleIds.length > 0){
-            for (Long roleId : roleIds) {
-                //往中间表插入数据
-                SysUserRole sysUserRole = new SysUserRole();
-                sysUserRole.setUser_id(user.getId());
-                sysUserRole.setRole_id(roleId);
-                sysUserRoleMapper.insert(sysUserRole);
-            }
+            //批量插入
+            userMapper.insertBatchRelation(user.getId(),roleIds);
         }
+        return "success";
+    }
+
+    @Override
+    public String deleteEmp(Long id) {
+        if(id == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        //删除员工信息
+        int count = userMapper.deleteById(id);
+        if(count == 0){
+            throw new BusinessException(ErrorCode.OPERATION_ERROR);
+        }
+        //删除关系表数据
+        Map<String,Object> map=new HashMap<>();
+        map.put("user_id",id);
+        sysUserRoleMapper.deleteByMap(map);
+
         return "success";
     }
 
@@ -258,6 +275,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             authority.append(menuCodeStr);
         }
        return authority.toString();
+    }
+
+    @Override
+    public String updateState(AdminVO adminVO) {
+        if(adminVO == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"非法操作");
+        }
+
+        int count = userMapper.updateStates(adminVO.getId(),adminVO.getStatus());
+        if(count == 0){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"更新失败");
+        }
+        return "success";
     }
 
 

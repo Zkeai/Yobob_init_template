@@ -17,4 +17,17 @@
         id,name,code,
         create_time,update_time,remark
     </sql>
+    <insert id="insertBatchRelation">
+        insert into sys_role_permission (role_id,permission_id) values
+        <foreach collection="permissionIds" separator="," item="permissionId">
+            (#{roleId},#{permissionId})
+        </foreach>
+    </insert>
+    <delete id="deleteRelation">
+        delete from sys_role_permission where role_id =#{id}
+    </delete>
+    <select id="queryById" resultType="com.hupi.project.model.entity.SysRole">
+        select r.* from sys_role r left join sys_user_role er on (r.id = er.role_id) where er.user_id = #{id}
+    </select>
+
 </mapper>

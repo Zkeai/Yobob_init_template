@@ -4,6 +4,7 @@ package com.hupi.project.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hupi.project.model.entity.Department;
 import com.hupi.project.model.entity.User;
+import com.hupi.project.model.vo.AdminVO;
 import com.hupi.project.model.vo.UserRoleVO;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,5 +36,11 @@ public interface UserService extends IService<User> {
 
     String saveOrUpdate(UserRoleVO userRoleVO);
 
+    String deleteEmp(Long id);
+
     String getUserAuthorityInfo(Long UserId);
+
+
+    String updateState(AdminVO adminVO);
+
 }

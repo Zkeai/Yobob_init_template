@@ -3,15 +3,15 @@ package com.hupi.project.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
-import com.hupi.project.annotation.AuthCheck;
+import com.hupi.project.annotation.RequiredPermission;
 import com.hupi.project.common.BaseResponse;
 import com.hupi.project.common.DeleteRequest;
 import com.hupi.project.common.ErrorCode;
 import com.hupi.project.common.ResultUtils;
 import com.hupi.project.exception.BusinessException;
 import com.hupi.project.model.dto.user.*;
-import com.hupi.project.model.entity.Department;
 import com.hupi.project.model.entity.User;
+import com.hupi.project.model.vo.AdminVO;
 import com.hupi.project.model.vo.UserRoleVO;
 import com.hupi.project.model.vo.UserVO;
 import com.hupi.project.service.UserService;
@@ -112,7 +112,7 @@ public class UserController {
 
     // endregion
 
-    // region 增删改查
+    // region 系统用户增删改查
 
     /**
      * 创建用户
@@ -138,9 +138,9 @@ public class UserController {
     /**
      * 删除用户
      *
-     * @param deleteRequest
-     * @param request
-     * @return
+     * @param deleteRequest deleteRequest
+     * @param request request
+     * @return BaseResponse<Boolean>
      */
     @PostMapping("/delete")
     public BaseResponse<Boolean> deleteUser(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
@@ -245,9 +245,37 @@ public class UserController {
     // endregion
 
     //region 下级相关
-    @PostMapping("/saveOrUpdate")
+
+    /**
+     * 新增或更新下级用户 以及对应关系表
+     * @param userRoleVO userRoleVO
+     * @return BaseResponse<String>
+     */
+    @PostMapping("/emp/saveOrUpdate")
+    @RequiredPermission(name = "下级新增或编辑",expression = "employee:saveOrUpdate")
     public BaseResponse<String> saveOrUpdate(@RequestBody UserRoleVO userRoleVO){
         String result = userService.saveOrUpdate(userRoleVO);
+        return ResultUtils.success(result);
+    }
+
+    /**
+     * 删除下级以及关系表数据
+     * @param id userid
+     * @return BaseResponse<String>
+     */
+    @DeleteMapping("/emp/delete/{id}")
+    @RequiredPermission(name = "下级删除",expression = "employee:delete")
+    public BaseResponse<String> delete(@PathVariable Long id) {
+
+        String result = userService.deleteEmp(id);
+
+        return ResultUtils.success(result);
+    }
+
+    @PostMapping("/emp/updateState")
+    @RequiredPermission(name = "更改下级管理员状态",expression = "employee:updateState")
+    public BaseResponse<String> updateState(@RequestBody AdminVO adminVO){
+        String result = userService.updateState(adminVO);
         return ResultUtils.success(result);
     }
     // endregion

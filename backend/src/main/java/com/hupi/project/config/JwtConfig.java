@@ -26,7 +26,11 @@ public class JwtConfig implements WebMvcConfigurer {
                         ,"/**/swagger-resources"
                         , "/**/v3/**"
                         ,"/**/user/**"
-                        , "/**/v3/**");
+                        , "/**/v3/**"
+                        //可删除
+                        ,"/**/role/**"
+                        ,"/**/permission/**"
+                );
 
 
 

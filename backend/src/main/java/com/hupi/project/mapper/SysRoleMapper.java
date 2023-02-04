@@ -2,6 +2,9 @@ package com.hupi.project.mapper;
 
 import com.hupi.project.model.entity.SysRole;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author saoren
@@ -10,6 +13,13 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.hupi.project.model.entity.generator.domain.SysRole
 */
 public interface SysRoleMapper extends BaseMapper<SysRole> {
+
+    void deleteRelation(@Param("id") Long id);
+
+
+    List<SysRole> queryById(@Param("id") Long id);
+
+    void insertBatchRelation(@Param("roleId") Long roleId,@Param("permissionIds") Long[] permissionIds);
 
 }
 

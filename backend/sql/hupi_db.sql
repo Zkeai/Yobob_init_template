@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50738
 File Encoding         : 65001
 
-Date: 2023-02-03 18:25:10
+Date: 2023-02-04 18:45:55
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -46,6 +46,21 @@ INSERT INTO `department` VALUES ('3', '运营部门', 'yy', null, null, '0', nul
 INSERT INTO `department` VALUES ('4', '总裁办', 'zcb', null, null, '0', null, null, null, null, '2023-02-03 13:29:07', null, '2023-02-03 13:29:08', '0');
 INSERT INTO `department` VALUES ('6', '安保部门', 'ab', '0', '', '0', '', '15257222873', '', '', '2023-02-03 13:38:09', '', '2023-02-03 14:20:47', '0');
 INSERT INTO `department` VALUES ('12', '监理部门', 'jl', '0', '', '0', '', '15257222875', '', '', '2023-02-03 14:22:17', '', '2023-02-03 14:22:32', '0');
+
+-- ----------------------------
+-- Table structure for permission
+-- ----------------------------
+DROP TABLE IF EXISTS `permission`;
+CREATE TABLE `permission` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) DEFAULT NULL,
+  `expression` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of permission
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for post
@@ -135,7 +150,7 @@ CREATE TABLE `sys_role` (
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sys_role
@@ -143,6 +158,24 @@ CREATE TABLE `sys_role` (
 INSERT INTO `sys_role` VALUES ('1', '超级管理员', 'admin', '2022-07-04 14:40:44', '2022-07-04 14:40:47', '拥有系统最高权限');
 INSERT INTO `sys_role` VALUES ('2', '普通角色', 'common', '2022-07-04 14:41:56', '2022-07-04 14:41:58', '普通角色');
 INSERT INTO `sys_role` VALUES ('3', '测试角色', 'test', '2022-07-04 14:42:24', '2022-07-04 14:42:27', '测试角色');
+INSERT INTO `sys_role` VALUES ('23', '测试员', 'ceshi', null, null, '测试');
+
+-- ----------------------------
+-- Table structure for sys_role_dept
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_role_dept`;
+CREATE TABLE `sys_role_dept` (
+  `role_id` bigint(20) NOT NULL COMMENT '角色ID',
+  `dept_id` bigint(20) NOT NULL COMMENT '部门ID',
+  PRIMARY KEY (`role_id`,`dept_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色和部门关联表';
+
+-- ----------------------------
+-- Records of sys_role_dept
+-- ----------------------------
+INSERT INTO `sys_role_dept` VALUES ('2', '100');
+INSERT INTO `sys_role_dept` VALUES ('2', '101');
+INSERT INTO `sys_role_dept` VALUES ('2', '105');
 
 -- ----------------------------
 -- Table structure for sys_role_menu
@@ -158,6 +191,23 @@ CREATE TABLE `sys_role_menu` (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for sys_role_permission
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_role_permission`;
+CREATE TABLE `sys_role_permission` (
+  `role_id` bigint(20) DEFAULT NULL,
+  `permission_id` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sys_role_permission
+-- ----------------------------
+INSERT INTO `sys_role_permission` VALUES ('1', '123');
+INSERT INTO `sys_role_permission` VALUES ('1', '124');
+INSERT INTO `sys_role_permission` VALUES ('1', '125');
+INSERT INTO `sys_role_permission` VALUES ('23', '1234');
+
+-- ----------------------------
 -- Table structure for sys_user_role
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_user_role`;
@@ -169,6 +219,8 @@ CREATE TABLE `sys_user_role` (
 -- ----------------------------
 -- Records of sys_user_role
 -- ----------------------------
+INSERT INTO `sys_user_role` VALUES ('1', '2');
+INSERT INTO `sys_user_role` VALUES ('1', '1');
 
 -- ----------------------------
 -- Table structure for user
@@ -192,9 +244,10 @@ CREATE TABLE `user` (
   `isDelete` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否删除',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uni_userAccount` (`userAccount`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1 COMMENT='用户';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1 COMMENT='用户';
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', null, null, 'zkeai', 'fe655af804bd109499fdcf6d0a53cbbe', null, null, null, null, null, '0', 'user', '2023-02-03 16:20:15', '2023-02-03 16:20:15', '0');
+INSERT INTO `user` VALUES ('1', null, null, 'zkeai', 'fe655af804bd109499fdcf6d0a53cbbe', null, null, null, null, '0', '0', 'user', '2023-02-03 16:20:15', '2023-02-04 12:33:08', '0');
+INSERT INTO `user` VALUES ('6', 'saoren', '0', 'saoren', 'df7de888952875c52b6f1b320a1c358a', '', '35873886@qq.com', '17336281859', '0', '1', '0', 'super', '2023-02-04 14:31:48', '2023-02-04 14:35:26', '0');
