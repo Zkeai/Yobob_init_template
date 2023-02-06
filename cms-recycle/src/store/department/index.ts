@@ -8,7 +8,7 @@ const useLoginStore = defineStore(Names.DEPARTMENT, {
   actions: {
     async getDeparmentPageAction(data: IPageParam) {
       const deparmentPageResult = await getDepartmentPageRequest(data)
-      if (deparmentPageResult.code === 0) {
+      if (deparmentPageResult.code === 200) {
         return deparmentPageResult
       } else {
         return deparmentPageResult.message

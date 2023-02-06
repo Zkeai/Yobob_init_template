@@ -2,18 +2,19 @@ package com.hupi.project.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.hupi.project.model.entity.Department;
 import com.hupi.project.model.entity.User;
 import com.hupi.project.model.vo.AdminVO;
 import com.hupi.project.model.vo.UserRoleVO;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 
 /**
  * 用户服务
  *
- * @author yupi
+ * @author hupi
  */
+@Component
 public interface UserService extends IService<User> {
 
 
@@ -43,4 +44,5 @@ public interface UserService extends IService<User> {
 
     String updateState(AdminVO adminVO);
 
+    User getByAccount(String account);
 }

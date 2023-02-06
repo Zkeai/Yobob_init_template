@@ -1,17 +1,17 @@
 <template>
   <el-form ref="formRef" :model="loginVal" :rules="rules" status-icon>
-    <el-form-item prop="account">
+    <el-form-item prop="userAccount">
       <el-input
         class="login-input"
-        v-model="loginVal.account"
+        v-model="loginVal.userAccount"
         placeholder="账号"
         :prefix-icon="User"
       />
     </el-form-item>
 
-    <el-form-item prop="password">
+    <el-form-item prop="userPassword">
       <el-input
-        v-model="loginVal.password"
+        v-model="loginVal.userPassword"
         type="password"
         show-password
         class="login-input"
@@ -60,13 +60,13 @@ const changeL = () => {
 
 /**登录账号、密码 绑定值*/
 const loginVal = reactive({
-  account: localCache.getCache(CACHEUSERACCOUNT) ?? '',
-  password: localCache.getCache(CACHEUSERPASSWORD) ?? ''
+  userAccount: localCache.getCache(CACHEUSERACCOUNT) ?? '',
+  userPassword: localCache.getCache(CACHEUSERPASSWORD) ?? ''
 })
 
 /**基础表单验证 */
 const rules: FormRules = {
-  account: [
+  userAccount: [
     { required: true, message: '必须输入账号~', trigger: 'blur' },
     {
       pattern: /^[a-z0-9]{5,12}$/,
@@ -74,7 +74,7 @@ const rules: FormRules = {
       trigger: 'blur'
     }
   ],
-  password: [
+  userPassword: [
     { required: true, message: '必须输入密码~', trigger: 'blur' },
     {
       pattern: /^[a-z0-9]{6,12}$/,
@@ -101,14 +101,12 @@ const loginStore = useLoginStore()
 const login = () => {
   formRef.value?.validate((validate) => {
     if (validate) {
-      const userAccount = loginVal.account
-      const userPassword = loginVal.password
-      loginStore.loginAction({ userAccount, userPassword }).then((res) => {
+      loginStore.loginAction(loginVal).then((res) => {
         if (res === 'success') {
           //是否记住密码
           if (isRemVal.value) {
-            localCache.setCache(CACHEUSERACCOUNT, userAccount)
-            localCache.setCache(CACHEUSERPASSWORD, userPassword)
+            localCache.setCache(CACHEUSERACCOUNT, loginVal.userAccount)
+            localCache.setCache(CACHEUSERPASSWORD, loginVal.userPassword)
           } else {
             localCache.removeCache(CACHEUSERACCOUNT)
             localCache.removeCache(CACHEUSERPASSWORD)

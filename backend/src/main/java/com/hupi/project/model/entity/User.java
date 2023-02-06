@@ -70,6 +70,11 @@ public class User implements Serializable {
     private Integer status;
 
     /**
+     * 0 正常 1封禁
+     */
+    private Integer isBan;
+
+    /**
      * 用户角色：user / admin
      */
     private String userRole;

@@ -14,9 +14,9 @@ const useLoginStore = defineStore(Names.LOGIN, {
   actions: {
     async loginAction(data: IAccount) {
       const loginResult = await loginRequest(data)
-      if (loginResult.code === 0) {
+      if (loginResult.code === 200) {
         //存储jwtToken
-        localCache.setCache(CACHETOKEN, loginResult.data)
+        localCache.setCache(CACHETOKEN, loginResult.data?.token)
         // 跳转页面 todo
         router.push('/main')
 
@@ -28,7 +28,7 @@ const useLoginStore = defineStore(Names.LOGIN, {
 
     async registerAction(data: IRegAccount) {
       const registerResult = await registerRequest(data)
-      if (registerResult.code === 0) {
+      if (registerResult.code === 200) {
         return 'success'
       } else {
         return registerResult.message

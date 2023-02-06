@@ -3,7 +3,6 @@ package com.hupi.project.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
-import com.hupi.project.annotation.RequiredPermission;
 import com.hupi.project.common.BaseResponse;
 import com.hupi.project.common.DeleteRequest;
 import com.hupi.project.common.ErrorCode;
@@ -17,8 +16,8 @@ import com.hupi.project.model.vo.UserVO;
 import com.hupi.project.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +36,9 @@ public class UserController {
     @Resource
     private UserService userService;
 
-    private static final String SALT = "%&*%hu-pi%*&%";
+    private static final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
+
     // region 登录相关
 
     /**
@@ -166,7 +167,7 @@ public class UserController {
         User user = new User();
         BeanUtils.copyProperties(userUpdateRequest, user);
         String userPassword = userUpdateRequest.getUserPassword();
-        String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
+        String encryptPassword = bCryptPasswordEncoder.encode(userPassword);
         user.setUserPassword(encryptPassword);
         boolean result = userService.updateById(user);
         return ResultUtils.success(result);
@@ -252,7 +253,6 @@ public class UserController {
      * @return BaseResponse<String>
      */
     @PostMapping("/emp/saveOrUpdate")
-    @RequiredPermission(name = "下级新增或编辑",expression = "employee:saveOrUpdate")
     public BaseResponse<String> saveOrUpdate(@RequestBody UserRoleVO userRoleVO){
         String result = userService.saveOrUpdate(userRoleVO);
         return ResultUtils.success(result);
@@ -264,7 +264,6 @@ public class UserController {
      * @return BaseResponse<String>
      */
     @DeleteMapping("/emp/delete/{id}")
-    @RequiredPermission(name = "下级删除",expression = "employee:delete")
     public BaseResponse<String> delete(@PathVariable Long id) {
 
         String result = userService.deleteEmp(id);
@@ -273,7 +272,6 @@ public class UserController {
     }
 
     @PostMapping("/emp/updateState")
-    @RequiredPermission(name = "更改下级管理员状态",expression = "employee:updateState")
     public BaseResponse<String> updateState(@RequestBody AdminVO adminVO){
         String result = userService.updateState(adminVO);
         return ResultUtils.success(result);

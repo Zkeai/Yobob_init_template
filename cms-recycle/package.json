@@ -15,12 +15,14 @@
     "element-plus": "^2.2.28",
     "normalize.css": "^8.0.1",
     "pinia": "^2.0.29",
+    "qs": "^6.11.0",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",
     "@types/node": "^18.11.12",
+    "@types/qs": "^6.9.7",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vue/eslint-config-prettier": "^7.0.0",
     "@vue/eslint-config-typescript": "^11.0.0",

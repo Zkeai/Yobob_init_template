@@ -2,7 +2,6 @@ package com.hupi.project.controller;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hupi.project.annotation.RequiredPermission;
 import com.hupi.project.common.BaseResponse;
 import com.hupi.project.common.ResultUtils;
 import com.hupi.project.model.entity.SysRole;
@@ -33,7 +32,6 @@ public class RoleController {
      * @return pageInfo
      */
     @GetMapping("/list/page")
-    @RequiredPermission(name = "角色分页列表",expression = "role:list")
     public BaseResponse<Object> listRoleByPage(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum,pageSize);
         List<SysRole> list = sysRoleService.list();
@@ -48,7 +46,6 @@ public class RoleController {
      * @return success/error
      */
     @DeleteMapping("/delete/{id}")
-    @RequiredPermission(name = "角色删除",expression = "role:delete")
     public BaseResponse<String> delete(@PathVariable Long id) {
 
         String result = sysRoleService.deleteDep(id);
@@ -62,7 +59,6 @@ public class RoleController {
      * @return success/error
      */
     @PostMapping("/saveOrUpdate")
-    @RequiredPermission(name = "角色新增或修改",expression = "role:saveOrUpdate")
     public BaseResponse<String> saveOrUpdate(@RequestBody RolePermissionVO rolePermissionVO){
        String result = sysRoleService.saveOrUpdatePer(rolePermissionVO);
         return ResultUtils.success(result);
@@ -74,7 +70,6 @@ public class RoleController {
      * @return SysRole
      */
     @GetMapping("/info/{id}")
-    @RequiredPermission(name = "角色单个信息",expression = "role:info")
     public BaseResponse<SysRole> getInfo (@PathVariable Long id){
         SysRole result = sysRoleService.getInfo(id);
         return ResultUtils.success(result);
@@ -85,7 +80,6 @@ public class RoleController {
      * @return List<SysRole>
      */
     @GetMapping("/listAll")
-    @RequiredPermission(name = "所有角色信息",expression = "role:listAll")
     public BaseResponse<List<SysRole>> getListAll(){
         List<SysRole> SysRoles = sysRoleService.list();
         return ResultUtils.success(SysRoles);
@@ -97,7 +91,6 @@ public class RoleController {
      * @return BaseResponse<List<SysRole>>
      */
     @GetMapping("/query/{id}")
-    @RequiredPermission(name = "查询拥有的角色",expression = "role:query")
     public BaseResponse<List<SysRole>> query(@PathVariable Long id){
         List<SysRole> rs = sysRoleService.queryByUid(id);
         return ResultUtils.success(rs);

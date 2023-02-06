@@ -28,11 +28,12 @@ import { ref } from 'vue'
 const ress = ref()
 const exitHandle = () => {
   localCache.removeCache(CACHETOKEN)
+
   router.push('/login')
 }
 const getDepartment = () => {
   getDepartmentPageRequest({ pageNum: 1, pageSize: 3 }).then((res) => {
-    if (res.code === 0) {
+    if (res.code === 200) {
       ress.value = res.data
     }
   })

@@ -3,6 +3,7 @@ package com.hupi.project.common;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 /**
  * 通用返回类
@@ -32,4 +33,6 @@ public class BaseResponse<T> implements Serializable {
     public BaseResponse(ErrorCode errorCode) {
         this(errorCode.getCode(), null, errorCode.getMessage());
     }
+
+
 }

@@ -10,7 +10,6 @@ import com.hupi.project.mapper.SysUserRoleMapper;
 import com.hupi.project.mapper.UserMapper;
 import com.hupi.project.model.entity.SysMenu;
 import com.hupi.project.model.entity.SysRole;
-import com.hupi.project.model.entity.SysUserRole;
 import com.hupi.project.model.entity.User;
 import com.hupi.project.model.vo.AdminVO;
 import com.hupi.project.model.vo.UserRoleVO;
@@ -18,6 +17,7 @@ import com.hupi.project.service.UserService;
 import com.hupi.project.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
@@ -43,8 +43,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Resource
     private UserMapper userMapper;
-    @Resource
-    private UserService userService;
 
     @Resource
     private SysRoleMapper sysRoleMapper;
@@ -55,11 +53,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Resource
     private SysUserRoleMapper sysUserRoleMapper;
 
-    /**
-     * 盐值，混淆密码
-     */
-    private static final String SALT = "%&*%hu-pi%*&%";
 
+    private static final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
         // 1. 校验
@@ -85,7 +80,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                 throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号重复");
             }
             // 2. 加密
-            String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
+            String encryptPassword = bCryptPasswordEncoder.encode(userPassword);
+
             // 3. 插入数据
             User user = new User();
             user.setUserAccount(userAccount);
@@ -111,7 +107,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码错误");
         }
         // 2. 加密
-        String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
+        String encryptPassword = bCryptPasswordEncoder.encode(userPassword);
         // 查询用户是否存在
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("userAccount", userAccount);
@@ -125,8 +121,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         // 3. 记录用户的登录态
         request.getSession().setAttribute(USER_LOGIN_STATE, user);
         //4.jwt生成
-        String role = user.getUserRole();
-        return JwtUtil.createToken(userAccount,role);
+        return JwtUtil.createToken(userAccount);
     }
 
 
@@ -208,7 +203,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             //编辑方法
 
             //插入用户 密码加密
-            user.setUserPassword(DigestUtils.md5DigestAsHex((SALT + user.getUserPassword()).getBytes()));
+            user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
+
             userMapper.updateById(user);
 
             //删除旧关系
@@ -288,6 +284,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             throw new BusinessException(ErrorCode.PARAMS_ERROR,"更新失败");
         }
         return "success";
+    }
+
+    @Override
+    public User getByAccount(String userAccount) {
+
+        return getOne(new QueryWrapper<User>().eq("userAccount",userAccount));
     }
 
 
