@@ -3,7 +3,7 @@ package com.hupi.project.common;
 /**
  * 错误码
  *
- * @author yupi
+ * @author zkeai
  */
 public enum ErrorCode {
 

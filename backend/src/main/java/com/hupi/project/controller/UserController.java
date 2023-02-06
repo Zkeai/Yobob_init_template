@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 /**
  * 用户接口
  *
- * @author yupi
+ * @author zkeai
  */
 @RestController
 @RequestMapping("/user")

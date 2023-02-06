@@ -9,7 +9,7 @@ import java.util.HashMap;
  * 通用返回类
  *
  * @param <T>
- * @author yupi
+ * @author zkeai
  */
 @Data
 public class BaseResponse<T> implements Serializable {

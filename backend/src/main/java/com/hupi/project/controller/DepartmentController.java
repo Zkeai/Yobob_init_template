@@ -30,7 +30,7 @@ public class DepartmentController {
      */
     @GetMapping("/list/page")
     //@PreAuthorize("hasRole('ROLE_admin')")
-    @PreAuthorize("hasAnyAuthority('system:menu:add1')")
+    //@PreAuthorize("hasAnyAuthority('system:menu:add1')")
     public BaseResponse<Object> listUserByPage(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum,pageSize);
         List<Department> list = departmentService.list();

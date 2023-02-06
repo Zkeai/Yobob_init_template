@@ -20,7 +20,6 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 
-import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -44,7 +43,6 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         UserService userService  = ctx.getBean(UserService.class);
         MyUserDetailServiceImpl myUserDetailService = ctx.getBean(MyUserDetailServiceImpl.class);
 
-        System.out.println("请求url："+request.getRequestURI());
         /** 获取token */
         String token = request.getHeader("authorization").replace("Bearer ", "");
 

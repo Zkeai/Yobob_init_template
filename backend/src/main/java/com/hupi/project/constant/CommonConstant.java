@@ -3,7 +3,7 @@ package com.hupi.project.constant;
 /**
  * 通用常量
  *
- * @author yupi
+ * @author zkeai
  */
 public interface CommonConstant {
 
