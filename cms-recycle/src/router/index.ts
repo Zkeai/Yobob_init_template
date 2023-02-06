@@ -11,14 +11,14 @@ const router = createRouter({
       redirect: '/main'
     },
     {
+      path: '/main',
+      component: () => import('../layout/index.vue')
+    },
+    {
       path: '/login',
       component: () => import('../views/login/index.vue')
     },
-    {
-      path: '/main',
-      name: 'main',
-      component: () => import('../views/main/Main.vue')
-    },
+
     {
       path: '/:pathMatch(.*)',
       component: () => import('../views/not-found/NotFound.vue')
