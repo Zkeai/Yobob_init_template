@@ -5,25 +5,25 @@
       <h2 class="aside-title">hupi管理系统</h2>
     </div>
     <div class="aside-menu">
-      <el-menu>
-        <el-sub-menu>
-          <template #title>
-            <el-icon><Monitor /></el-icon>
-            <span>系统总览</span>
-          </template>
-          <el-menu-item>核心技术</el-menu-item>
-          <el-menu-item>商品统计</el-menu-item>
-        </el-sub-menu>
+      <el-menu :default-active="'/index'">
+        <el-menu-item index="/index">
+          <el-icon><home-filled /></el-icon>
+          <span>首页</span>
+        </el-menu-item>
 
-        <el-sub-menu>
+        <el-sub-menu
+          :key="menu.path"
+          :index="menu.path"
+          v-for="menu in menuList"
+        >
           <template #title>
-            <el-icon><Setting /></el-icon>
-            <span>系统管理</span>
+            <el-icon><component :is="menu.icon" /></el-icon>
+            <span>{{ menu.name }}</span>
           </template>
-          <el-menu-item>用户管理</el-menu-item>
-          <el-menu-item>部门管理</el-menu-item>
-          <el-menu-item>菜单管理</el-menu-item>
-          <el-menu-item>角色管理</el-menu-item>
+          <el-menu-item :key="item.path" v-for="item in menu.children">
+            <svg-icon :icon="item.icon" />
+            <span>{{ item.name }}</span>
+          </el-menu-item>
         </el-sub-menu>
       </el-menu>
     </div>
@@ -31,7 +31,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import useLoginStore from '@/store/login/login'
+
+const loginStore = useLoginStore()
+const menuList = loginStore.GET_MENULIST
 </script>
 <style scoped lang="less">
 .menu {

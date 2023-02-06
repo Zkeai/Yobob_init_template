@@ -175,12 +175,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
         User safetyUser =new User();
         safetyUser.setId(originUser.getId());
+        safetyUser.setUserName(originUser.getUserName());
+        safetyUser.setDeptId(originUser.getDeptId());
+        safetyUser.setStatus(originUser.getStatus());
+        safetyUser.setIsBan(originUser.getIsBan());
         safetyUser.setUserAccount(originUser.getUserAccount());
         safetyUser.setUserAvatar(originUser.getUserAvatar());
         safetyUser.setGender(originUser.getGender());
-        safetyUser.setUserName(originUser.getUserName());
+        safetyUser.setEmail(originUser.getEmail());
+        safetyUser.setPhone(originUser.getPhone());
+        safetyUser.setAge(originUser.getAge());
         safetyUser.setUserRole(originUser.getUserRole());
-        safetyUser.setStatus(originUser.getStatus());
         safetyUser.setCreateTime(originUser.getCreateTime());
         safetyUser.setUpdateTime(originUser.getUpdateTime());
 
@@ -196,15 +201,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             throw new BusinessException(ErrorCode.PARAMS_ERROR,"非法操作");
         }
         User user = userRoleVO.getUser();
+        //密码加密
+        user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
         if(userRoleVO.getUser().getId() == null){
-            //调用新增方法 把下级信息保存到user数据库
+            //新增用户
             userMapper.insert(user);
         }else{
-            //编辑方法
-
-            //插入用户 密码加密
-            user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
-
+            //更新用户
             userMapper.updateById(user);
 
             //删除旧关系

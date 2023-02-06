@@ -31,4 +31,13 @@
         userRole,createTime,updateTime,
         isDelete
     </sql>
+    <insert id="insertBatchRelation">
+        insert into sys_user_role (user_id,role_id) values
+        <foreach collection="roleIds" separator="," item="roleId">
+            (#{userId},#{roleId})
+        </foreach>
+    </insert>
+    <update id="updateStates">
+        update user set status = #{status} where id = #{id}
+    </update>
 </mapper>

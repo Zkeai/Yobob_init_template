@@ -26,10 +26,25 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
+    // 请求白名单
+    private static final String URL_WHITELIST[]={
+            //swagger
+            "/swagger-ui.html"
+            ,"/swagger-resources/**"
+            ,"/webjars/**"
+            ,"/*/api-docs"
+            ,"/druid/**"
+            ,"/doc.html"
+            ,"/**/*.html"
+            ,"/**/*.css"
+            ,"/**/*.js"
 
+    };
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
@@ -46,7 +61,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         /** 获取token */
         String token = request.getHeader("authorization").replace("Bearer ", "");
 
-        if(token.equals("null")|| token.equals("")){
+        if(token.equals("null")|| token.equals("") || new ArrayList<String>(Arrays.asList(URL_WHITELIST)).contains(request.getRequestURI())){
             chain.doFilter(request,response);
             return;
         }

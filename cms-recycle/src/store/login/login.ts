@@ -1,8 +1,8 @@
-import { CACHETOKEN } from '@/global/cache-constants'
+import { CACHETOKEN, MENULIST } from '@/global/cache-constants'
 import router from '@/router'
 import { loginRequest, registerRequest } from '@/service/login/login'
 import type { IAccount, IRegAccount } from '@/types'
-import { localCache } from '@/utils/localCache'
+import { localCache, sessionCache } from '@/utils/localCache'
 import { defineStore } from 'pinia'
 import { Names } from '../store-name'
 const useLoginStore = defineStore(Names.LOGIN, {
@@ -10,16 +10,23 @@ const useLoginStore = defineStore(Names.LOGIN, {
     token: localCache.getCache(CACHETOKEN) ?? '',
     account: ''
   }),
-  getters: {},
+  getters: {
+    GET_MENULIST: () => {
+      return JSON.parse(sessionCache.getCache(MENULIST) as string)
+    }
+  },
   actions: {
     async loginAction(data: IAccount) {
       const loginResult = await loginRequest(data)
       if (loginResult.code === 200) {
-        //存储jwtToken
+        //存储jwtToken menu
         localCache.setCache(CACHETOKEN, loginResult.data?.token)
+        sessionCache.setCache(
+          MENULIST,
+          JSON.stringify(loginResult.data?.menuList)
+        )
         // 跳转页面 todo
         router.push('/main')
-
         return 'success'
       } else {
         return loginResult.message
