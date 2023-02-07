@@ -12,6 +12,7 @@ const router = createRouter({
     },
     {
       path: '/main',
+      name: 'main',
       component: () => import('../layout/index.vue')
     },
     {
@@ -25,6 +26,8 @@ const router = createRouter({
     }
   ]
 })
+
+//动态路由
 
 //导航守卫
 router.beforeEach((to) => {

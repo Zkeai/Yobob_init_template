@@ -1,10 +1,12 @@
 <template>
   <div class="layout">
     <el-container>
-      <el-aside width="200px"><Aside /></el-aside>
+      <el-aside :width="isOpen ? '55px' : '200px'"
+        ><Aside :is-fold="isOpen"
+      /></el-aside>
       <el-container>
-        <el-header><Header /></el-header>
-        <el-main><Tabs /></el-main>
+        <el-header><Header @fold-change="handleFoldChange" /></el-header>
+        <el-main><Main /></el-main>
       </el-container>
     </el-container>
   </div>
@@ -12,7 +14,12 @@
 <script setup lang="ts">
 import Header from '@/components/layout/header/index.vue'
 import Aside from '@/components/layout/aside/index.vue'
-import Tabs from '@/components/layout/tabs/index.vue'
+import Main from '@/views/main/Main.vue'
+import { ref } from 'vue'
+const isOpen = ref(false)
+const handleFoldChange = (isFold: boolean) => {
+  isOpen.value = isFold
+}
 </script>
 <style scoped lang="less">
 .layout {

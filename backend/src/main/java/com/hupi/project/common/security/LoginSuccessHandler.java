@@ -55,7 +55,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         //根据用户id获取所有的角色信息
         List<SysRole> roleList  = sysRoleService.list(new QueryWrapper<SysRole>().inSql("id","SELECT role_id FROM sys_user_role WHERE user_id="+currentUser.getId()));
 
-        //遍历所有的角色,获取所有的菜单权限 且 不重复
+        //遍历所有的角色,获取所有的菜单权限且不重复
         Set<SysMenu> menuSet = new HashSet<>();
         for(SysRole sysRole:roleList){
             List<SysMenu> sysMenuList =  sysMenuService.list(new QueryWrapper<SysMenu>().inSql("id","SELECT menu_id FROM sys_role_menu WHERE role_id="+sysRole.getId()));

@@ -5,8 +5,8 @@
       <h2 class="aside-title">hupi管理系统</h2>
     </div>
     <div class="aside-menu">
-      <el-menu :default-active="'/index'">
-        <el-menu-item index="/index">
+      <el-menu :collapse="isFold" :default-active="'/index'">
+        <el-menu-item index="/index" @click="handleIndexClick">
           <el-icon><home-filled /></el-icon>
           <span>首页</span>
         </el-menu-item>
@@ -20,7 +20,12 @@
             <el-icon><component :is="menu.icon" /></el-icon>
             <span>{{ menu.name }}</span>
           </template>
-          <el-menu-item :key="item.path" v-for="item in menu.children">
+          <el-menu-item
+            :index="item.path"
+            :key="item.path"
+            v-for="item in menu.children"
+            @click="handleItemClick(item.path)"
+          >
             <svg-icon :icon="item.icon" />
             <span>{{ item.name }}</span>
           </el-menu-item>
@@ -32,9 +37,23 @@
 
 <script setup lang="ts">
 import useLoginStore from '@/store/login/login'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+defineProps({
+  isFold: {
+    type: Boolean,
+    default: false
+  }
+})
 
 const loginStore = useLoginStore()
 const menuList = loginStore.GET_MENULIST
+const handleIndexClick = () => {
+  router.push('/main/index')
+}
+const handleItemClick = (item: string) => {
+  router.push(item)
+}
 </script>
 <style scoped lang="less">
 .menu {
@@ -43,14 +62,14 @@ const menuList = loginStore.GET_MENULIST
 }
 .aside-logo {
   display: flex;
-  height: 28px;
-  padding: 12px 10px 8px 10px;
+  height: 19px;
+  padding: 10px 10px 8px 23px;
   flex-direction: row;
   justify-content: flex-start;
   overflow: hidden;
-  .aside-img {
+  .aside-image {
     height: 100%;
-    margin: 0 10px;
+    margin: 5px 0 0 0;
   }
   .aside-title {
     padding: 4px 4px 4px 16px;
