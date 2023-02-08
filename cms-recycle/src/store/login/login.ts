@@ -10,13 +10,9 @@ const useLoginStore = defineStore(Names.LOGIN, {
   state: () => ({
     token: '',
     userInfo: '',
-    menuList: ''
+    menuList: <any>[]
   }),
-  getters: {
-    GET_MENULIST: () => {
-      return JSON.parse(localCache.getCache(MENULIST) as string)
-    }
-  },
+  getters: {},
   actions: {
     //登录方法
     async loginAction(data: IAccount) {
@@ -26,6 +22,7 @@ const useLoginStore = defineStore(Names.LOGIN, {
       const userInfo = loginResult.data?.currentUser
       if (loginResult.code === 200) {
         //存储jwtToken menuList userInfo
+
         localCache.setCache(CACHETOKEN, token)
         localCache.setCache(MENULIST, JSON.stringify(menuList))
         localCache.setCache(USERINFO, JSON.stringify(userInfo))

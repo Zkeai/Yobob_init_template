@@ -5,7 +5,9 @@
         ><Aside :is-fold="isOpen"
       /></el-aside>
       <el-container>
-        <el-header><Header @fold-change="handleFoldChange" /></el-header>
+        <el-header height="50px"
+          ><Header @fold-change="handleFoldChange"
+        /></el-header>
         <el-main><Main /></el-main>
       </el-container>
     </el-container>

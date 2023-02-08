@@ -33,11 +33,15 @@ const router = createRouter({
 router.beforeEach((to) => {
   // 只有登录成功(token)且有效(todo), 才能真正进入到main页面
   const token = localCache.getCache(CACHETOKEN)
-
+  //  需要加一个token校验 todo
   if (to.path.startsWith('/main') && !token) {
     return '/login'
   }
 
   // 如果是进入到main
+  if (to.path === '/main') {
+    //如果没有首页 就 firstMenu.url
+    return '/main/index'
+  }
 })
 export default router

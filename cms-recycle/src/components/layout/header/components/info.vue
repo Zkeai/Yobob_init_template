@@ -9,7 +9,7 @@
       ></span>
       <span>
         <span class="dot"></span>
-        <el-icon><ChatDotRound /></el-icon
+        <el-icon><Postcard /></el-icon
       ></span>
     </div>
     <div class="info-s">
@@ -18,11 +18,8 @@
           class="user-info"
           style="display: flex; align-items: center; cursor: pointer"
         >
-          <el-avatar
-            :size="30"
-            src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-          />
-          <span class="name" style="margin-left: 5px">lemon</span>
+          <el-avatar :size="30" :src="avator" />
+          <span class="name" style="margin-left: 5px">{{ username }}</span>
         </span>
         <template #dropdown>
           <el-dropdown-menu>
@@ -45,7 +42,26 @@
 import { CACHETOKEN, MENULIST, USERINFO } from '@/global/cache-constants'
 import { localCache } from '@/utils/localCache'
 import { useRouter } from 'vue-router'
+
+interface IuserInfo {
+  createTime: bigint
+  age: number
+  deptId: number
+  email: string
+  gender: number
+  id: number
+  isBan: number
+  phone: string
+  status: number
+  updateTime: bigint
+  userAccount: string
+  userAvatar: string
+  userName: string
+  userRole: string
+}
+
 const router = useRouter()
+//退出
 const handleExit = () => {
   localCache.removeCache(CACHETOKEN)
   localCache.removeCache(MENULIST)
@@ -53,6 +69,12 @@ const handleExit = () => {
 
   router.push('/login')
 }
+//获取userInfo
+const userInfo: IuserInfo = JSON.parse(localCache.getCache(USERINFO) ?? '')
+const username = userInfo.userName ?? userInfo.userAccount
+const avator =
+  userInfo.userAvatar ??
+  'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
 </script>
 <style scoped lang="less">
 .header-info {
@@ -62,7 +84,7 @@ const handleExit = () => {
   .operation {
     display: inline-flex;
     margin-right: 20px;
-
+    cursor: pointer;
     span {
       position: relative;
       display: flex;
@@ -81,11 +103,11 @@ const handleExit = () => {
 
       .dot {
         position: absolute;
-        top: 3px;
-        right: 3px;
+        top: 6px;
+        right: 10px;
         z-index: 10;
-        width: 6px;
-        height: 6px;
+        width: 4px;
+        height: 4px;
         background: red;
         border-radius: 100%;
       }

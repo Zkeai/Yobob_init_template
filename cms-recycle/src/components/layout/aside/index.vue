@@ -5,7 +5,7 @@
       <h2 class="aside-title">hupi管理系统</h2>
     </div>
     <div class="aside-menu">
-      <el-menu :collapse="isFold" :default-active="'/index'">
+      <el-menu :collapse="isFold" :default-active="defaultActive">
         <el-menu-item index="/index" @click="handleIndexClick">
           <el-icon><home-filled /></el-icon>
           <span>首页</span>
@@ -26,7 +26,6 @@
             v-for="item in menu.children"
             @click="handleItemClick(item.path)"
           >
-            <svg-icon :icon="item.icon" />
             <span>{{ item.name }}</span>
           </el-menu-item>
         </el-sub-menu>
@@ -36,24 +35,37 @@
 </template>
 
 <script setup lang="ts">
-import useLoginStore from '@/store/login/login'
-import { useRouter } from 'vue-router'
-const router = useRouter()
+import { useRoute, useRouter } from 'vue-router'
+import { mapPathToMenu } from '@/utils/map-menus'
+import { computed } from 'vue'
+import { localCache } from '@/utils/localCache'
+import { MENULIST } from '@/global/cache-constants'
 defineProps({
   isFold: {
     type: Boolean,
     default: false
   }
 })
+//获取动态菜单
+const menuList = JSON.parse(localCache.getCache(MENULIST) ?? '')
 
-const loginStore = useLoginStore()
-const menuList = loginStore.GET_MENULIST
+//监听item点击
 const handleIndexClick = () => {
   router.push('/main/index')
 }
+const router = useRouter()
 const handleItemClick = (item: string) => {
   router.push(item)
 }
+//ElMenu 默认菜单
+//不用首页
+const route = useRoute()
+
+const defaultActive = computed(() => {
+  const pathMenu = mapPathToMenu(route.path, menuList)
+  return pathMenu.path
+})
+//用首页
 </script>
 <style scoped lang="less">
 .menu {

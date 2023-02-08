@@ -40,12 +40,9 @@ import { ref, reactive, watch } from 'vue'
 import { type FormRules, type ElForm, ElMessage } from 'element-plus'
 import useLoginStore from '@/store/login/login'
 import { localCache } from '@/utils/localCache'
-const emit = defineEmits(['changePan'])
 
-const CACHEUSERACCOUNT: string = 'userAccount'
-const CACHEUSERPASSWORD: string = 'userPassword'
-const ISREMVAL: string = 'isRemVal'
 /**切换注册页面 */
+const emit = defineEmits(['changePan'])
 const changeL = () => {
   document.querySelector('.content')?.classList.add('add-class-content')
   document
@@ -59,6 +56,8 @@ const changeL = () => {
 }
 
 /**登录账号、密码 绑定值*/
+const CACHEUSERACCOUNT: string = 'userAccount'
+const CACHEUSERPASSWORD: string = 'userPassword'
 const loginVal = reactive({
   userAccount: localCache.getCache(CACHEUSERACCOUNT) ?? '',
   userPassword: localCache.getCache(CACHEUSERPASSWORD) ?? ''
@@ -85,6 +84,7 @@ const rules: FormRules = {
 }
 
 /**checkbox 记住密码绑定初始状态*/
+const ISREMVAL: string = 'isRemVal'
 const isRemVal = ref<boolean>(
   localCache.getCache(ISREMVAL) === 'true' ? true : false
 )
@@ -95,6 +95,7 @@ watch(isRemVal, (newVal) => {
     localCache.setCache(ISREMVAL, 'false')
   }
 })
+
 /**登录 method*/
 const formRef = ref<InstanceType<typeof ElForm>>()
 const loginStore = useLoginStore()
