@@ -24,7 +24,7 @@ import javax.servlet.Filter;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true,securedEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     @Resource
@@ -54,20 +54,22 @@ public class SecurityConfig {
 
 
     private static final String[] URL_WHITELIST = {
-            //登录  注册 验证码
-            "/login", "/register", "/captchaImage",
+//            //登录  注册 验证码
+            "/login", "/**/user/register",
             //静态资源
             "/**/*.html"
             ,"/**/*.css"
             ,"/**/*.js"
             ,"/profile/**"
             //swagger
+            ,"/**/doc.html/**"
             ,"/swagger-ui.html"
             ,"/swagger-resources/**"
             ,"/webjars/**"
             ,"/*/api-docs"
             ,"/druid/**"
-            ,"doc.html"
+            ,"/**/*.ico"
+
     };
 
 
@@ -107,7 +109,7 @@ public class SecurityConfig {
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(jwtAccessDeniedHandler)
-        //自定义处理配置
+//        //自定义处理配置
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager));
 

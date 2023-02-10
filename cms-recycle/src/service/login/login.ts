@@ -14,9 +14,6 @@ export function loginRequest(loginParam: IAccount) {
 export function registerRequest(registerParam: IRegAccount) {
   return hyRequest.post({
     url: '/api/user/register',
-    data: registerParam,
-    headers: {
-      Authorization: 'Bearer ' + localStorage.getItem('token')
-    }
+    data: registerParam
   })
 }

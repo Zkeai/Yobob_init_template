@@ -5,6 +5,7 @@ import com.hupi.project.constant.JwtConstant;
 
 import com.hupi.project.model.entity.CheckResult;
 
+import com.hupi.project.model.entity.SysMenu;
 import com.hupi.project.model.entity.User;
 import com.hupi.project.service.UserService;
 import io.jsonwebtoken.Claims;
@@ -32,18 +33,10 @@ import java.util.Arrays;
 
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     // 请求白名单
-    private static final String URL_WHITELIST[]={
-            //swagger
-            "/swagger-ui.html"
-            ,"/swagger-resources/**"
-            ,"/webjars/**"
-            ,"/*/api-docs"
-            ,"/druid/**"
-            ,"/doc.html"
-            ,"/**/*.html"
-            ,"/**/*.css"
-            ,"/**/*.js"
-
+    private static final String[] URL_WHITELIST ={
+            "/login"
+            ,"/api/user/register"
+            ,"/api/doc.html"
     };
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
@@ -55,13 +48,20 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         //拦截器调用服务层
         ServletContext context = request.getServletContext();
         ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(context);
+
+        if(new ArrayList<String>(Arrays.asList(URL_WHITELIST)).contains(request.getRequestURI())){
+            chain.doFilter(request,response);
+
+            return;
+        }
+
         UserService userService  = ctx.getBean(UserService.class);
         MyUserDetailServiceImpl myUserDetailService = ctx.getBean(MyUserDetailServiceImpl.class);
 
         /** 获取token */
         String token = request.getHeader("authorization").replace("Bearer ", "");
 
-        if(token.equals("null")|| token.equals("") || new ArrayList<String>(Arrays.asList(URL_WHITELIST)).contains(request.getRequestURI())){
+        if(token.equals("null")|| token.equals("")){
             chain.doFilter(request,response);
             return;
         }

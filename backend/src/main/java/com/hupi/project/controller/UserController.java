@@ -16,12 +16,17 @@ import com.hupi.project.model.vo.UserVO;
 import com.hupi.project.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -62,41 +67,6 @@ public class UserController {
         return ResultUtils.success(result);
     }
 
-    /**
-     * 用户登录
-     *
-     * @param userLoginRequest  userLoginRequest
-     * @param request request
-     * @return String
-     */
-    @PostMapping("/login")
-    public BaseResponse<String> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
-        if (userLoginRequest == null) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        String userAccount = userLoginRequest.getUserAccount();
-        String userPassword = userLoginRequest.getUserPassword();
-        if (StringUtils.isAnyBlank(userAccount, userPassword)) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        String jwtToken = userService.userLogin(userAccount, userPassword, request);
-        return ResultUtils.success(jwtToken);
-    }
-
-    /**
-     * 用户注销
-     *
-     * @param request request
-     * @return Boolean
-     */
-    @PostMapping("/logout")
-    public BaseResponse<Boolean> userLogout(HttpServletRequest request) {
-        if (request == null) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        boolean result = userService.userLogout(request);
-        return ResultUtils.success(result);
-    }
 
     /**
      * 获取当前登录用户
@@ -115,26 +85,6 @@ public class UserController {
 
     // region 系统用户增删改查
 
-    /**
-     * 创建用户
-     *
-     * @param userAddRequest userAddRequest
-     * @param request  request
-     * @return Long
-     */
-    @PostMapping("/add")
-    public BaseResponse<Long> addUser(@RequestBody UserAddRequest userAddRequest, HttpServletRequest request) {
-        if (userAddRequest == null) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        User user = new User();
-        BeanUtils.copyProperties(userAddRequest, user);
-        boolean result = userService.save(user);
-        if (!result) {
-            throw new BusinessException(ErrorCode.OPERATION_ERROR);
-        }
-        return ResultUtils.success(user.getId());
-    }
 
     /**
      * 删除用户
@@ -152,26 +102,6 @@ public class UserController {
         return ResultUtils.success(b);
     }
 
-    /**
-     * 更新用户
-     *
-     * @param userUpdateRequest userUpdateRequest
-     * @param request request
-     * @return  Boolean
-     */
-    @PostMapping("/update")
-    public BaseResponse<Boolean> updateUser(@RequestBody UserUpdateRequest userUpdateRequest, HttpServletRequest request) {
-        if (userUpdateRequest == null || userUpdateRequest.getId() == null) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        User user = new User();
-        BeanUtils.copyProperties(userUpdateRequest, user);
-        String userPassword = userUpdateRequest.getUserPassword();
-        String encryptPassword = bCryptPasswordEncoder.encode(userPassword);
-        user.setUserPassword(encryptPassword);
-        boolean result = userService.updateById(user);
-        return ResultUtils.success(result);
-    }
 
     /**
      * 根据 id 获取用户
@@ -205,6 +135,23 @@ public class UserController {
             BeanUtils.copyProperties(userQueryRequest, userQuery);
         }
         QueryWrapper<User> queryWrapper = new QueryWrapper<>(userQuery);
+
+        assert userQueryRequest != null;
+        if(userQueryRequest.getCreateTime() != null){
+            String time= userQueryRequest.getCreateTime();
+            String a = time.split("`")[0];
+            String b = time.split("`")[1];
+            queryWrapper.ge("createTime",transferString2Date(a));
+            queryWrapper.le("createTime",transferString2Date(b));
+        }
+        if(userQueryRequest.getUpdateTime() != null){
+            String time= userQueryRequest.getUpdateTime();
+            String a = time.split("`")[0];
+            String b = time.split("`")[1];
+            queryWrapper.ge("createTime",transferString2Date(a));
+            queryWrapper.le("createTime",transferString2Date(b));
+        }
+
         List<User> userList = userService.list(queryWrapper);
         List<UserVO> userVOList = userList.stream().map(user -> {
             UserVO userVO = new UserVO();
@@ -221,17 +168,56 @@ public class UserController {
      * @param request  request
      * @return Page<UserVO>
      */
-    @GetMapping("/list/page")
-    public BaseResponse<Page<UserVO>> listUserByPage(UserQueryRequest userQueryRequest, HttpServletRequest request) {
+    @PostMapping("/list/page")
+    public BaseResponse<Page<UserVO>> listUserByPage(@RequestBody UserQueryRequest userQueryRequest, HttpServletRequest request) {
         long current = 1;
         long size = 1;
         User userQuery = new User();
+
         if (userQueryRequest != null) {
-            BeanUtils.copyProperties(userQueryRequest, userQuery);
+            //BeanUtils.copyProperties(userQueryRequest, userQuery);
+            if(!Objects.equals(userQueryRequest.getUserName(), "")) {
+                userQuery.setUserName(userQueryRequest.getUserName());
+            }
+            if(!Objects.equals(userQueryRequest.getPhone(), "")) {
+                userQuery.setPhone(userQueryRequest.getPhone());
+            }
+            if(!Objects.equals(userQueryRequest.getEmail(), "")) {
+                userQuery.setEmail(userQueryRequest.getEmail());
+            }
+            if(!Objects.equals(userQueryRequest.getUserRole(), "all")) {
+                userQuery.setUserRole(userQueryRequest.getUserRole());
+            }
+
+            if(userQueryRequest.getIsBan() != 1000){
+                userQuery.setIsBan(userQueryRequest.getIsBan());
+            }
+
+            if(userQueryRequest.getGender() != 1000){
+                userQuery.setGender(userQueryRequest.getGender());
+            }
+
+
             current = userQueryRequest.getCurrent();
             size = userQueryRequest.getPageSize();
         }
         QueryWrapper<User> queryWrapper = new QueryWrapper<>(userQuery);
+
+        if(!Objects.equals(userQueryRequest.getCreateTime(), "")){
+            String time= userQueryRequest.getCreateTime();
+            String a = time.split("`")[0];
+            String b = time.split("`")[1];
+            queryWrapper.ge("createTime",transferString2Date(a));
+            queryWrapper.le("createTime",transferString2Date(b));
+        }
+        if(!Objects.equals(userQueryRequest.getUpdateTime(), "")){
+            String time= userQueryRequest.getUpdateTime();
+            String a = time.split("`")[0];
+            String b = time.split("`")[1];
+            queryWrapper.ge("createTime",transferString2Date(a));
+            queryWrapper.le("createTime",transferString2Date(b));
+        }
+
         Page<User> userPage = userService.page(new Page<>(current, size), queryWrapper);
         Page<UserVO> userVOPage = new PageDTO<>(userPage.getCurrent(), userPage.getSize(), userPage.getTotal());
         List<UserVO> userVOList = userPage.getRecords().stream().map(user -> {
@@ -276,5 +262,18 @@ public class UserController {
         String result = userService.updateState(adminVO);
         return ResultUtils.success(result);
     }
+
     // endregion
+
+
+    public static Date transferString2Date(String s) {
+        Date date = new Date();
+        try {
+            date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(s);
+        } catch (ParseException e) {
+            //LOGGER.error("时间转换错误, string = {}", s, e);
+        }
+        return date;
+    }
 }
+
