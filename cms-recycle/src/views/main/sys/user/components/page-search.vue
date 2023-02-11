@@ -98,12 +98,12 @@ import { getTime } from '@/utils/time-format'
 const userStoreF = UserStore()
 const searchForm = reactive({
   userName: '',
-  gender: 0,
+  gender: 1000,
   email: '',
   phone: '',
   status: 0,
-  isBan: 0,
-  userRole: '',
+  isBan: 1000,
+  userRole: 'all',
   createTime: '',
   updateTime: '',
   pageSize: 5,
@@ -115,6 +115,7 @@ const formRef = ref<InstanceType<typeof ElForm>>()
 function handleResetClick() {
   formRef.value?.resetFields()
 }
+
 //查询
 function searchHandelClick() {
   if (searchForm.createTime !== '')
@@ -124,7 +125,6 @@ function searchHandelClick() {
   userStoreF.getUserlistBypageAction(searchForm).then((res) => {
     console.log(res)
   })
-  //
 }
 </script>
 <style scoped lang="less">

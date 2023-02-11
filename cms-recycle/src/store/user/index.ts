@@ -1,13 +1,21 @@
-import { userListByPageRequest } from '@/service/main/user'
+import { userListByPageRequest, userListRequest } from '@/service/main/user'
 import type { IUser } from '@/types/user'
 import { defineStore } from 'pinia'
 import { Names } from '../store-name'
 
+interface IUserState {
+  usersList: any[]
+  userTotalPages: number
+}
+
 const UserStore = defineStore(Names.USER, {
-  state: () => ({}),
+  state: (): IUserState => ({
+    usersList: [],
+    userTotalPages: 0
+  }),
   getters: {},
   actions: {
-    //登录方法
+    //分页获取列表
     async getUserlistBypageAction(data: IUser) {
       const loginResult = await userListByPageRequest(data)
       console.log(loginResult)
@@ -16,6 +24,13 @@ const UserStore = defineStore(Names.USER, {
       } else {
         return loginResult.message
       }
+    },
+    //分页获取首次加载数据
+    async getUserlistAction() {
+      const loginResult = await userListRequest()
+      const { totalPages, list } = loginResult.data
+      this.userTotalPages = totalPages
+      this.usersList = list
     }
   }
 })

@@ -45,6 +45,7 @@ public class JsonPage<T> implements Serializable {
         result.setPageSize(pageInfo.getPageSize());
         result.setLastPage(pageInfo.isIsLastPage());
         result.setNextPage(pageInfo.getNextPage());
+
         //  赋值分页数据
         result.setList(pageInfo.getList());
         // 别忘了返回

@@ -3,12 +3,15 @@ package com.hupi.project.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.hupi.project.common.BaseResponse;
 import com.hupi.project.common.DeleteRequest;
 import com.hupi.project.common.ErrorCode;
 import com.hupi.project.common.ResultUtils;
 import com.hupi.project.exception.BusinessException;
 import com.hupi.project.model.dto.user.*;
+import com.hupi.project.model.entity.SysRole;
 import com.hupi.project.model.entity.User;
 import com.hupi.project.model.vo.AdminVO;
 import com.hupi.project.model.vo.UserRoleVO;
@@ -24,10 +27,13 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static com.hupi.project.util.JsonPage.restPage;
 
 /**
  * 用户接口
@@ -124,41 +130,26 @@ public class UserController {
     /**
      * 获取用户列表
      *
-     * @param userQueryRequest userQueryRequest
-     * @param request request
      * @return List<UserVO>
      */
     @GetMapping("/list")
-    public BaseResponse<List<UserVO>> listUser(UserQueryRequest userQueryRequest, HttpServletRequest request) {
-        User userQuery = new User();
-        if (userQueryRequest != null) {
-            BeanUtils.copyProperties(userQueryRequest, userQuery);
-        }
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>(userQuery);
+    public BaseResponse<Object> listUser() {
+        PageHelper.startPage(1,10);
+        List<User> userList = userService.list();
+        PageInfo pageResult = new PageInfo<>(userList);
 
-        assert userQueryRequest != null;
-        if(userQueryRequest.getCreateTime() != null){
-            String time= userQueryRequest.getCreateTime();
-            String a = time.split("`")[0];
-            String b = time.split("`")[1];
-            queryWrapper.ge("createTime",transferString2Date(a));
-            queryWrapper.le("createTime",transferString2Date(b));
-        }
-        if(userQueryRequest.getUpdateTime() != null){
-            String time= userQueryRequest.getUpdateTime();
-            String a = time.split("`")[0];
-            String b = time.split("`")[1];
-            queryWrapper.ge("createTime",transferString2Date(a));
-            queryWrapper.le("createTime",transferString2Date(b));
+        List<UserVO> voList = new ArrayList<>();
+        for (User item:userList){
+            UserVO userVO =assembleUserListVo(item);
+            voList.add(userVO);
         }
 
-        List<User> userList = userService.list(queryWrapper);
-        List<UserVO> userVOList = userList.stream().map(user -> {
-            UserVO userVO = new UserVO();
-            BeanUtils.copyProperties(user, userVO);
-            return userVO;
-        }).collect(Collectors.toList());
-        return ResultUtils.success(userVOList);
+        pageResult.setList(voList);
+
+        PageInfo<User> page = new PageInfo<User>(userList);
+
+
+        return ResultUtils.success(restPage(pageResult));
     }
 
     /**
@@ -264,7 +255,27 @@ public class UserController {
     }
 
     // endregion
+public static UserVO assembleUserListVo(User user){
 
+    UserVO userVO = new UserVO();
+    userVO.setUserRole(user.getUserRole());
+    userVO.setUserName(user.getUserName());
+    userVO.setGender(user.getGender());
+    userVO.setEmail(user.getEmail());
+    userVO.setPhone(user.getPhone());
+    userVO.setUserAvatar(user.getUserAvatar());
+    userVO.setUserAccount(user.getUserAccount());
+    userVO.setAge(user.getAge());
+    userVO.setDeptId(user.getDeptId());
+    userVO.setStatus(user.getStatus());
+    SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    String createTime_ = sdf3.format(user.getCreateTime());
+    String updateTime_ = sdf3.format(user.getUpdateTime());
+    userVO.setCreateTime(createTime_);
+    userVO.setUpdateTime(updateTime_);
+    userVO.setIsBan(user.getIsBan());
+    return userVO;
+}
 
     public static Date transferString2Date(String s) {
         Date date = new Date();

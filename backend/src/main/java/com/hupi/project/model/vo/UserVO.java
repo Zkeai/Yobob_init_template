@@ -58,9 +58,13 @@ public class UserVO implements Serializable {
 
 
     /**
-     * 用户状态
+     * 是不是超级管理员
      */
     private Integer status;
+    private Integer isBan;
 
+    private String createTime;
+
+    private String updateTime;
     private static final long serialVersionUID = 1L;
 }

@@ -12,3 +12,12 @@ export function userListByPageRequest(userParam: IUser) {
     }
   })
 }
+
+export function userListRequest() {
+  return hyRequest.get({
+    url: '/api/user/list',
+    headers: {
+      authorization: 'Bearer ' + localCache.getCache(CACHETOKEN)
+    }
+  })
+}
