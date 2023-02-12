@@ -5,7 +5,7 @@
       <el-button type="primary">新建用户</el-button>
     </div>
     <div class="table">
-      <el-table :data="userList" border style="width: 100%">
+      <el-table size="small" :data="usersList" border style="width: 100%">
         <el-table-column
           align="center"
           prop="userName"
@@ -21,7 +21,7 @@
           <template v-slot="scope">
             <el-image
               align="center"
-              style="width: 50px; height: 50px"
+              style="width: 40px; height: 40px"
               :src="scope.row.userAvatar ?? 'http://dummyimage.com/100x100'"
               fit="cover"
             />
@@ -106,16 +106,50 @@
         </el-table-column>
       </el-table>
     </div>
-    <div class="pagination">分页</div>
+    <div class="pagination">
+      <el-pagination
+        v-model:current-page="currentPage"
+        v-model:page-size="currentPageSize"
+        :page-sizes="[10, 20, 30, 50, 100]"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="userTotalCount"
+        small
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import UserStore from '@/store/user/index'
 import { Delete, Edit } from '@element-plus/icons-vue'
-const userStoreF = UserStore()
-userStoreF.getUserlistAction()
-const userList = userStoreF.usersList
+import { storeToRefs } from 'pinia'
+import { ref } from 'vue'
+const currentPage = ref(1)
+const currentPageSize = ref(10)
+
+const userStore = UserStore()
+const { usersList, userTotalCount } = storeToRefs(userStore)
+
+//页码相关
+fetchUserListAction()
+const handleSizeChange = () => {
+  fetchUserListAction()
+}
+const handleCurrentChange = () => {
+  fetchUserListAction()
+}
+//发动网络请求函数
+function fetchUserListAction(formData: any = {}) {
+  const pageSize = currentPageSize.value
+  const pageNum = currentPage.value
+  const info = { pageNum, pageSize }
+
+  const pageInfo = { ...info, ...formData }
+  userStore.getUserlistAction(pageInfo)
+}
+defineExpose({ fetchUserListAction })
 </script>
 <style scoped lang="less">
 .content {
@@ -131,5 +165,10 @@ const userList = userStoreF.usersList
       font-size: 22px;
     }
   }
+}
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
 }
 </style>

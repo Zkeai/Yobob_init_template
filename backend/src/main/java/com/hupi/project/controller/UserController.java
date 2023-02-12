@@ -11,7 +11,6 @@ import com.hupi.project.common.ErrorCode;
 import com.hupi.project.common.ResultUtils;
 import com.hupi.project.exception.BusinessException;
 import com.hupi.project.model.dto.user.*;
-import com.hupi.project.model.entity.SysRole;
 import com.hupi.project.model.entity.User;
 import com.hupi.project.model.vo.AdminVO;
 import com.hupi.project.model.vo.UserRoleVO;
@@ -19,7 +18,6 @@ import com.hupi.project.model.vo.UserVO;
 import com.hupi.project.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -132,10 +130,59 @@ public class UserController {
      *
      * @return List<UserVO>
      */
-    @GetMapping("/list")
-    public BaseResponse<Object> listUser() {
-        PageHelper.startPage(1,10);
-        List<User> userList = userService.list();
+    @PostMapping("/list")
+    public BaseResponse<Object> listUser(@RequestBody UserQueryRequest userQueryRequest) {
+        System.out.println(userQueryRequest.getPageNum());
+        System.out.println(userQueryRequest.getPageSize());
+
+        PageHelper.startPage(userQueryRequest.getPageNum(),userQueryRequest.getPageSize());
+
+        User userQuery = new User();
+        if (userQueryRequest.getUserName() !=null && !Objects.equals(userQueryRequest.getUserName(), "")) {
+            userQuery.setUserName(userQueryRequest.getUserName());
+        }
+        if(!Objects.equals(userQueryRequest.getPhone(), "") && userQueryRequest.getPhone() !=null) {
+            userQuery.setPhone(userQueryRequest.getPhone());
+        }
+        if(!Objects.equals(userQueryRequest.getEmail(), "") && userQueryRequest.getEmail() !=null) {
+            userQuery.setEmail(userQueryRequest.getEmail());
+        }
+        if(!Objects.equals(userQueryRequest.getUserRole(), "all") && userQueryRequest.getUserRole() !=null) {
+            userQuery.setUserRole(userQueryRequest.getUserRole());
+        }
+
+        if(userQueryRequest.getIsBan() !=null){
+            if(userQueryRequest.getIsBan() != 1000){
+                userQuery.setIsBan(userQueryRequest.getIsBan());
+            }
+
+        }
+
+        if( userQueryRequest.getGender() !=null){
+            if(userQueryRequest.getGender() != 1000){
+                userQuery.setGender(userQueryRequest.getGender());
+            }
+
+        }
+
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>(userQuery);
+
+        if(!Objects.equals(userQueryRequest.getCreateTime(), "") && userQueryRequest.getCreateTime() !=null){
+            String time= userQueryRequest.getCreateTime();
+            String a = time.split("`")[0];
+            String b = time.split("`")[1];
+            queryWrapper.ge("createTime",transferString2Date(a));
+            queryWrapper.le("createTime",transferString2Date(b));
+        }
+        if(!Objects.equals(userQueryRequest.getUpdateTime(), "") && userQueryRequest.getUpdateTime() !=null){
+            String time= userQueryRequest.getUpdateTime();
+            String a = time.split("`")[0];
+            String b = time.split("`")[1];
+            queryWrapper.ge("createTime",transferString2Date(a));
+            queryWrapper.le("createTime",transferString2Date(b));
+        }
+
+        List<User> userList = userService.list(queryWrapper);
         PageInfo pageResult = new PageInfo<>(userList);
 
         List<UserVO> voList = new ArrayList<>();
@@ -150,74 +197,6 @@ public class UserController {
 
 
         return ResultUtils.success(restPage(pageResult));
-    }
-
-    /**
-     * 分页获取用户列表
-     *
-     * @param userQueryRequest userQueryRequest
-     * @param request  request
-     * @return Page<UserVO>
-     */
-    @PostMapping("/list/page")
-    public BaseResponse<Page<UserVO>> listUserByPage(@RequestBody UserQueryRequest userQueryRequest, HttpServletRequest request) {
-        long current = 1;
-        long size = 1;
-        User userQuery = new User();
-
-        if (userQueryRequest != null) {
-            //BeanUtils.copyProperties(userQueryRequest, userQuery);
-            if(!Objects.equals(userQueryRequest.getUserName(), "")) {
-                userQuery.setUserName(userQueryRequest.getUserName());
-            }
-            if(!Objects.equals(userQueryRequest.getPhone(), "")) {
-                userQuery.setPhone(userQueryRequest.getPhone());
-            }
-            if(!Objects.equals(userQueryRequest.getEmail(), "")) {
-                userQuery.setEmail(userQueryRequest.getEmail());
-            }
-            if(!Objects.equals(userQueryRequest.getUserRole(), "all")) {
-                userQuery.setUserRole(userQueryRequest.getUserRole());
-            }
-
-            if(userQueryRequest.getIsBan() != 1000){
-                userQuery.setIsBan(userQueryRequest.getIsBan());
-            }
-
-            if(userQueryRequest.getGender() != 1000){
-                userQuery.setGender(userQueryRequest.getGender());
-            }
-
-
-            current = userQueryRequest.getCurrent();
-            size = userQueryRequest.getPageSize();
-        }
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>(userQuery);
-
-        if(!Objects.equals(userQueryRequest.getCreateTime(), "")){
-            String time= userQueryRequest.getCreateTime();
-            String a = time.split("`")[0];
-            String b = time.split("`")[1];
-            queryWrapper.ge("createTime",transferString2Date(a));
-            queryWrapper.le("createTime",transferString2Date(b));
-        }
-        if(!Objects.equals(userQueryRequest.getUpdateTime(), "")){
-            String time= userQueryRequest.getUpdateTime();
-            String a = time.split("`")[0];
-            String b = time.split("`")[1];
-            queryWrapper.ge("createTime",transferString2Date(a));
-            queryWrapper.le("createTime",transferString2Date(b));
-        }
-
-        Page<User> userPage = userService.page(new Page<>(current, size), queryWrapper);
-        Page<UserVO> userVOPage = new PageDTO<>(userPage.getCurrent(), userPage.getSize(), userPage.getTotal());
-        List<UserVO> userVOList = userPage.getRecords().stream().map(user -> {
-            UserVO userVO = new UserVO();
-            BeanUtils.copyProperties(user, userVO);
-            return userVO;
-        }).collect(Collectors.toList());
-        userVOPage.setRecords(userVOList);
-        return ResultUtils.success(userVOPage);
     }
 
     // endregion

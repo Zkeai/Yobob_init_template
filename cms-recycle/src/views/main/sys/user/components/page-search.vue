@@ -36,9 +36,9 @@
         ></el-col>
 
         <el-col :span="5">
-          <el-form-item label="状态" prop="status">
+          <el-form-item label="状态" prop="isBan">
             <el-select
-              v-model="searchForm.status"
+              v-model="searchForm.isBan"
               placeholder="请选择状态"
               style="width: 100%"
             >
@@ -90,41 +90,46 @@
 </template>
 
 <script setup lang="ts">
+import { getTime } from '@/utils/time-format'
 import type ElForm from 'element-plus/es/components/form'
-import UserStore from '@/store/user/index'
 
 import { reactive, ref } from 'vue'
-import { getTime } from '@/utils/time-format'
-const userStoreF = UserStore()
+
 const searchForm = reactive({
   userName: '',
   gender: 1000,
   email: '',
   phone: '',
-  status: 0,
+  status: 1000,
   isBan: 1000,
   userRole: 'all',
   createTime: '',
   updateTime: '',
-  pageSize: 5,
+  pageSize: 10,
   current: 1
 })
-
+//自定义事件
+const emit = defineEmits(['queryClick', 'resetClick'])
 //重置表单 通过ref
 const formRef = ref<InstanceType<typeof ElForm>>()
 function handleResetClick() {
   formRef.value?.resetFields()
+
+  //重新发送网络请求
+  emit('resetClick')
 }
 
 //查询
 function searchHandelClick() {
-  if (searchForm.createTime !== '')
-    searchForm.createTime = getTime(searchForm.createTime)
-  if (searchForm.updateTime !== '')
-    searchForm.updateTime = getTime(searchForm.updateTime)
-  userStoreF.getUserlistBypageAction(searchForm).then((res) => {
-    console.log(res)
-  })
+  if (searchForm.createTime !== null && searchForm.createTime !== '') {
+    let createTime = getTime(searchForm.createTime)
+    searchForm.createTime = createTime
+  }
+  if (searchForm.updateTime !== null && searchForm.updateTime !== '') {
+    let updateTime = getTime(searchForm.updateTime)
+    searchForm.updateTime = updateTime
+  }
+  emit('queryClick', searchForm)
 }
 </script>
 <style scoped lang="less">

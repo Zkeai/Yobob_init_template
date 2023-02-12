@@ -12,9 +12,8 @@ import java.util.Date;
  *
  * @author zkeai
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class UserQueryRequest extends PageRequest implements Serializable {
+public class UserQueryRequest implements Serializable {
 
     /**
      * 用户昵称
@@ -34,16 +33,16 @@ public class UserQueryRequest extends PageRequest implements Serializable {
     /**
      * 页数
      */
-    private long current;
+    private int pageNum;
 
     /**
      * 每一页数量
      */
-    private long pageSize;
+    private int pageSize;
     /**
      * 封禁
      */
-    private int isBan;
+    private Integer isBan;
     /**
      * 手机号
      */
