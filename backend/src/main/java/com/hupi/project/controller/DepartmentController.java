@@ -5,10 +5,10 @@ import com.hupi.project.common.BaseResponse;
 import com.hupi.project.common.ResultUtils;
 import com.hupi.project.model.entity.Department;
 import com.hupi.project.service.DepartmentService;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
+
 import static com.hupi.project.util.JsonPage.restPage;
 
 /**
@@ -80,7 +80,9 @@ public class DepartmentController {
      */
     @GetMapping("/listAll")
     public BaseResponse<List<Department>> getListAll(){
-        List<Department> departments = departmentService.list();
-        return ResultUtils.success(departments);
+        List<Department> depts = departmentService.list();
+
+        return ResultUtils.success(depts);
     }
+
 }

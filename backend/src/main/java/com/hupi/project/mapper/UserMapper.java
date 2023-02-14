@@ -12,6 +12,8 @@ public interface UserMapper extends BaseMapper<User> {
     int updateStates(@Param("id") Long id,@Param("status") int status);
     //用户和角色关系表批量插入
     void insertBatchRelation(@Param("userId") Long userId,@Param("roleIds") Long[] roleIds);
+    //用户和岗位关系批量插入
+    void insertBatchPosts(@Param("userId") Long userId,@Param("postIds") Long[] postIds);
 }
 
 

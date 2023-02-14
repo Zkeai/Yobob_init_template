@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hupi.project.common.ErrorCode;
 import com.hupi.project.exception.BusinessException;
-import com.hupi.project.mapper.SysMenuMapper;
-import com.hupi.project.mapper.SysRoleMapper;
-import com.hupi.project.mapper.SysUserRoleMapper;
-import com.hupi.project.mapper.UserMapper;
+import com.hupi.project.mapper.*;
 import com.hupi.project.model.entity.SysMenu;
 import com.hupi.project.model.entity.SysRole;
 import com.hupi.project.model.entity.User;
@@ -43,7 +40,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Resource
     private UserMapper userMapper;
-
+    @Resource
+    private UserService userService;
     @Resource
     private SysRoleMapper sysRoleMapper;
 
@@ -53,7 +51,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Resource
     private SysUserRoleMapper sysUserRoleMapper;
 
-
+    @Resource
+    private SysUserPostMapper sysUserPostMapper;
     private static final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
@@ -143,24 +142,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
 
-    @Override
-    public boolean isAdmin(HttpServletRequest request) {
-        // 仅管理员可查询
-        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
-        User user = (User) userObj;
-        return user != null && ADMIN_ROLE.equals(user.getUserRole());
-    }
 
 
-    @Override
-    public boolean userLogout(HttpServletRequest request) {
-        if (request.getSession().getAttribute(USER_LOGIN_STATE) == null) {
-            throw new BusinessException(ErrorCode.OPERATION_ERROR, "未登录");
-        }
-        // 移除登录态
-        request.getSession().removeAttribute(USER_LOGIN_STATE);
-        return true;
-    }
+
+
 
     /**
      * 用户脱敏
@@ -185,7 +170,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         safetyUser.setEmail(originUser.getEmail());
         safetyUser.setPhone(originUser.getPhone());
         safetyUser.setAge(originUser.getAge());
-        safetyUser.setUserRole(originUser.getUserRole());
         safetyUser.setCreateTime(originUser.getCreateTime());
         safetyUser.setUpdateTime(originUser.getUpdateTime());
 
@@ -200,6 +184,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if(userRoleVO.getUser() ==null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR,"非法操作");
         }
+
         User user = userRoleVO.getUser();
         //密码加密
         user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
@@ -210,17 +195,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             //更新用户
             userMapper.updateById(user);
 
-            //删除旧关系
+            //删除旧关系 用户-角色
             Map<String,Object> map=new HashMap<>();
             map.put("user_id",user.getId());
             sysUserRoleMapper.deleteByMap(map);
+            //删除旧关系 用户-岗位
+            Map<String,Object> map_=new HashMap<>();
+            sysUserPostMapper.deleteByMap(map);
         }
 
         //插入新关系
         Long[] roleIds = userRoleVO.getRoleIds();
-        if(roleIds !=null && roleIds.length > 0){
-            //批量插入
+        Long[] postIds = userRoleVO.getPostIds();
+        if(roleIds !=null && roleIds.length > 0 && postIds.length > 0){
+            //批量插入用户-角色
             userMapper.insertBatchRelation(user.getId(),roleIds);
+            //批量插入用户-岗位
+            userMapper.insertBatchPosts(user.getId(),postIds);
         }
         return "success";
     }
@@ -231,8 +222,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         //删除员工信息
-        int count = userMapper.deleteById(id);
-        if(count == 0){
+        boolean count = userService.removeById(id);
+        if(!count){
             throw new BusinessException(ErrorCode.OPERATION_ERROR);
         }
         //删除关系表数据

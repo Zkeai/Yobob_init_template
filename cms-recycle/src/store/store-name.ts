@@ -1,5 +1,6 @@
 export const enum Names {
   LOGIN = 'login',
   DEPARTMENT = 'department',
-  USER = 'user'
+  USER = 'user',
+  OTHER = 'other'
 }

@@ -43,3 +43,19 @@ export interface IPageInfo {
   isBan?: number
   gender?: number
 }
+
+export interface IAddOrUpdateInfo {
+  user: {
+    id?: number | ''
+    userName?: string
+    userAccount?: string
+    userPassword?: string
+    phone?: string
+    email?: string
+    gender?: number | ''
+    isBan?: number | ''
+    deptId?: number | ''
+  }
+  roleIds?: number[] | ''
+  postIds?: number[] | ''
+}

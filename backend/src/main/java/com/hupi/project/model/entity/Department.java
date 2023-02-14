@@ -3,7 +3,9 @@ package com.hupi.project.model.entity;
 import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import lombok.Data;
 
@@ -79,6 +81,8 @@ public class Department implements Serializable {
      * 更新时间
      */
     private Date updateTime;
+
+
 
     /**
      * 0 正常 1 删除

@@ -18,4 +18,6 @@ public interface DepartmentService extends IService<Department> {
 
     Department getInfo(Long id);
 
+
+
 }

@@ -1,4 +1,5 @@
 import { CACHETOKEN } from '@/global/cache-constants'
+import { authenticationRequest } from '@/service/other'
 import { localCache } from '@/utils/localCache'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -30,11 +31,14 @@ const router = createRouter({
 //动态路由
 
 //导航守卫
-router.beforeEach((to) => {
+router.beforeEach(async (to) => {
   // 只有登录成功(token)且有效(todo), 才能真正进入到main页面
   const token = localCache.getCache(CACHETOKEN)
-  //  需要加一个token校验 todo
-  if (to.path.startsWith('/main') && !token) {
+  //token校验
+  const res = await authenticationRequest().then((res) => {
+    return res.success
+  })
+  if (to.path.startsWith('/main') && (!token || res !== true)) {
     return '/login'
   }
 

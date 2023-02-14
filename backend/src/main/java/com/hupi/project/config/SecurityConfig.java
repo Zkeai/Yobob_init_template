@@ -55,7 +55,7 @@ public class SecurityConfig {
 
     private static final String[] URL_WHITELIST = {
 //            //登录  注册 验证码
-            "/login", "/**/user/register",
+            "/login", "/**/user/register","/**/token/authentication",
             //静态资源
             "/**/*.html"
             ,"/**/*.css"

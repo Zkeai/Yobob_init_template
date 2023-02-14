@@ -2,10 +2,11 @@
   <div class="content">
     <div class="header">
       <h3 class="title">用户列表</h3>
-      <el-button type="primary">新建用户</el-button>
+      <el-button type="primary" @click="handelAddClick">新建用户</el-button>
     </div>
     <div class="table">
       <el-table size="small" :data="usersList" border style="width: 100%">
+        <el-table-column align="center" prop="id" label="id" v-if="false" />
         <el-table-column
           align="center"
           prop="userName"
@@ -67,7 +68,7 @@
               class="mx-1"
               effect="light"
             >
-              {{ scope.row.gender === 1 ? '男' : '女' }}
+              {{ scope.row.gender === 1 ? '女' : '男' }}
             </el-tag>
           </template>
         </el-table-column>
@@ -97,12 +98,24 @@
           width="180px"
         />
         <el-table-column align="center" label="操作" width="161x">
-          <el-button size="small" :icon="Edit" type="primary" text
-            >编辑</el-button
-          >
-          <el-button size="small" :icon="Delete" type="danger" text
-            >删除</el-button
-          >
+          <template #default="scope">
+            <el-button size="small" :icon="Edit" type="primary" text
+              >编辑</el-button
+            >
+            <el-popconfirm
+              confirm-button-text="确定"
+              cancel-button-text="取消"
+              icon-color="#626AEF"
+              title="你确定要删除么?"
+              @confirm="handelDeleteClick(scope.row.id)"
+            >
+              <template #reference>
+                <el-button size="small" :icon="Delete" type="danger" text
+                  >删除</el-button
+                >
+              </template>
+            </el-popconfirm>
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -122,10 +135,16 @@
 </template>
 
 <script setup lang="ts">
+import { deleteUserRequest } from '@/service/main/user'
+import { ElMessage } from 'element-plus'
 import UserStore from '@/store/user/index'
 import { Delete, Edit } from '@element-plus/icons-vue'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
+
+//自定事件
+const emit = defineEmits(['newClick'])
+
 const currentPage = ref(1)
 const currentPageSize = ref(10)
 
@@ -148,6 +167,21 @@ function fetchUserListAction(formData: any = {}) {
 
   const pageInfo = { ...info, ...formData }
   userStore.getUserlistAction(pageInfo)
+}
+//删除
+function handelDeleteClick(id: number) {
+  deleteUserRequest(id).then((res) => {
+    if (res.code === 200) {
+      fetchUserListAction()
+      ElMessage.success('删除成功')
+    } else {
+      ElMessage.error('删除失败')
+    }
+  })
+}
+//增加
+function handelAddClick() {
+  emit('newClick')
 }
 defineExpose({ fetchUserListAction })
 </script>

@@ -11,4 +11,6 @@ public class UserRoleVO {
     private User user;
     private Long[] roleIds;
 
+    private Long[] postIds;
+
 }

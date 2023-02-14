@@ -1,8 +1,6 @@
 package com.hupi.project.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hupi.project.common.BaseResponse;
@@ -29,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static com.hupi.project.util.JsonPage.restPage;
 
@@ -132,9 +129,6 @@ public class UserController {
      */
     @PostMapping("/list")
     public BaseResponse<Object> listUser(@RequestBody UserQueryRequest userQueryRequest) {
-        System.out.println(userQueryRequest.getPageNum());
-        System.out.println(userQueryRequest.getPageSize());
-
         PageHelper.startPage(userQueryRequest.getPageNum(),userQueryRequest.getPageSize());
 
         User userQuery = new User();
@@ -146,9 +140,6 @@ public class UserController {
         }
         if(!Objects.equals(userQueryRequest.getEmail(), "") && userQueryRequest.getEmail() !=null) {
             userQuery.setEmail(userQueryRequest.getEmail());
-        }
-        if(!Objects.equals(userQueryRequest.getUserRole(), "all") && userQueryRequest.getUserRole() !=null) {
-            userQuery.setUserRole(userQueryRequest.getUserRole());
         }
 
         if(userQueryRequest.getIsBan() !=null){
@@ -183,6 +174,7 @@ public class UserController {
         }
 
         List<User> userList = userService.list(queryWrapper);
+
         PageInfo pageResult = new PageInfo<>(userList);
 
         List<UserVO> voList = new ArrayList<>();
@@ -227,6 +219,11 @@ public class UserController {
         return ResultUtils.success(result);
     }
 
+    /**
+     * 修改用户超级管理员权限
+     * @param adminVO adminVO
+     * @return String
+     */
     @PostMapping("/emp/updateState")
     public BaseResponse<String> updateState(@RequestBody AdminVO adminVO){
         String result = userService.updateState(adminVO);
@@ -237,7 +234,7 @@ public class UserController {
 public static UserVO assembleUserListVo(User user){
 
     UserVO userVO = new UserVO();
-    userVO.setUserRole(user.getUserRole());
+    userVO.setId(user.getId());
     userVO.setUserName(user.getUserName());
     userVO.setGender(user.getGender());
     userVO.setEmail(user.getEmail());

@@ -46,17 +46,6 @@
               <el-option label="正常" :value="0" />
               <el-option label="封禁" :value="1" /> </el-select></el-form-item
         ></el-col>
-        <el-col :span="5">
-          <el-form-item label="角色" prop="userRole">
-            <el-select
-              placeholder="请选择状态"
-              style="width: 100%"
-              v-model="searchForm.userRole"
-            >
-              <el-option label="全部" value="all" />
-              <el-option label="管理员" value="admin" />
-              <el-option label="普通" value="user" /> </el-select></el-form-item
-        ></el-col>
         <el-col :span="7">
           <el-form-item label="创建时间" prop="createTime">
             <el-date-picker
@@ -77,15 +66,15 @@
               end-placeholder="结束时间"
             /> </el-form-item
         ></el-col>
+        <el-col :span="5" class="btn">
+          <!-- 重置 搜索的按钮 -->
+          <el-button icon="Refresh" @click="handleResetClick">重置</el-button>
+          <el-button type="primary" icon="Search" @click="searchHandelClick"
+            >查询</el-button
+          >
+        </el-col>
       </el-row>
     </el-form>
-    <!-- 重置 搜索的按钮 -->
-    <div class="btns">
-      <el-button icon="Refresh" @click="handleResetClick">重置</el-button>
-      <el-button type="primary" icon="Search" @click="searchHandelClick"
-        >查询</el-button
-      >
-    </div>
   </div>
 </template>
 
@@ -140,10 +129,10 @@ function searchHandelClick() {
     padding: 20px 16px;
     margin-bottom: 0;
   }
-
-  .btns {
-    text-align: right;
-    padding: 0 15px 0 0;
+  .btn {
+    display: flex;
+    margin-top: 20px;
+    flex-direction: row;
   }
 }
 </style>

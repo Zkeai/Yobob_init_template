@@ -37,6 +37,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
             "/login"
             ,"/api/user/register"
             ,"/api/doc.html"
+            ,"/api/token/authentication"
     };
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {

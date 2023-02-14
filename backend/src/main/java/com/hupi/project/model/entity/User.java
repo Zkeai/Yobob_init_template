@@ -74,10 +74,7 @@ public class User implements Serializable {
      */
     private Integer isBan;
 
-    /**
-     * 用户角色：user / admin
-     */
-    private String userRole;
+
 
     /**
      * 创建时间

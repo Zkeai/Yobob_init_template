@@ -5,6 +5,7 @@ import type { IAccount, IRegAccount } from '@/types'
 import { localCache } from '@/utils/localCache'
 import { mapMenuToRoutes } from '@/utils/map-menus'
 import { defineStore } from 'pinia'
+import useOtherStore from '../other'
 import { Names } from '../store-name'
 const useLoginStore = defineStore(Names.LOGIN, {
   state: () => ({
@@ -26,9 +27,13 @@ const useLoginStore = defineStore(Names.LOGIN, {
         localCache.setCache(CACHETOKEN, token)
         localCache.setCache(MENULIST, JSON.stringify(menuList))
         localCache.setCache(USERINFO, JSON.stringify(userInfo))
+        //获取所有departments/roles数据
+        const otherStore = useOtherStore()
+        otherStore.fetchDataAction()
         //动态理由
         const routes = mapMenuToRoutes(menuList)
         routes.forEach((route) => router.addRoute('main', route))
+
         // 跳转页面 todo
         router.push('/main')
         return 'success'
@@ -45,7 +50,7 @@ const useLoginStore = defineStore(Names.LOGIN, {
         return registerResult.message
       }
     },
-    //获取本地缓存
+    //用户进行刷新时 获取本地缓存
     loadLocalCatcheAction() {
       const token = localCache.getCache(CACHETOKEN)
       let menuList = localCache.getCache(MENULIST)
@@ -58,6 +63,10 @@ const useLoginStore = defineStore(Names.LOGIN, {
         this.token = token
         this.userInfo = userInfo
         this.menuList = menuList
+
+        //获取最新的所有roles/departments数据
+        const otherStore = useOtherStore()
+        otherStore.fetchDataAction()
 
         //动态添加路由
         const routes = mapMenuToRoutes(menuList as any)

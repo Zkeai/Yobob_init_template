@@ -17,7 +17,6 @@
             <result property="gender" column="gender" jdbcType="TINYINT"/>
             <result property="status" column="status" jdbcType="TINYINT"/>
             <result property="isBan" column="isBan" jdbcType="TINYINT"/>
-            <result property="userRole" column="userRole" jdbcType="VARCHAR"/>
             <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
             <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
@@ -28,7 +27,7 @@
         userAccount,userPassword,userAvatar,
         email,phone,age,
         gender,status,isBan,
-        userRole,createTime,updateTime,
+        createTime,updateTime,
         isDelete
     </sql>
     <insert id="insertBatchRelation">
@@ -36,6 +35,13 @@
         <foreach collection="roleIds" separator="," item="roleId">
             (#{userId},#{roleId})
         </foreach>
+    </insert>
+    <insert id="insertBatchPosts">
+        insert into sys_user_post (user_id,post_id) values
+        <foreach collection="postIds" separator="," item="postId">
+            (#{userId},#{postId})
+        </foreach>
+
     </insert>
     <update id="updateStates">
         update user set status = #{status} where id = #{id}

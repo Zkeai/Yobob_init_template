@@ -17,6 +17,7 @@ public class UserVO implements Serializable {
      */
     private String userName;
 
+    private Long id;
     /**
      * 部门id
      */
@@ -50,12 +51,6 @@ public class UserVO implements Serializable {
      * 性别
      */
     private Integer gender;
-
-    /**
-     * 用户角色: user, admin
-     */
-    private String userRole;
-
 
     /**
      * 是不是超级管理员
