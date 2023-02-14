@@ -31,7 +31,7 @@ public class RoleController {
      * @param pageSize 页面数量
      * @return pageInfo
      */
-    @GetMapping("/list/page")
+    @GetMapping("/list")
     public BaseResponse<Object> listRoleByPage(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum,pageSize);
         List<SysRole> list = sysRoleService.list();

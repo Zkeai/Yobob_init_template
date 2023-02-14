@@ -14,6 +14,9 @@ public interface UserMapper extends BaseMapper<User> {
     void insertBatchRelation(@Param("userId") Long userId,@Param("roleIds") Long[] roleIds);
     //用户和岗位关系批量插入
     void insertBatchPosts(@Param("userId") Long userId,@Param("postIds") Long[] postIds);
+
+    String getPwdById(Long id);
+
 }
 
 

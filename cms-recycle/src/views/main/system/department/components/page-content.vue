@@ -1,57 +1,34 @@
 <template>
   <div class="content">
     <div class="header">
-      <h3 class="title">用户列表</h3>
-      <el-button type="primary" @click="handelAddClick">新建用户</el-button>
+      <h3 class="title">部门列表</h3>
+      <el-button type="primary" @click="handelAddClick">新建部门</el-button>
     </div>
     <div class="table">
-      <el-table size="small" :data="usersList" border style="width: 100%">
-        <el-table-column align="center" prop="id" label="id" v-if="false" />
+      <el-table size="small" :data="pageList" border style="width: 100%">
+        <!-- 不显示 -->
+        <el-table-column prop="id" label="id" v-if="false" />
+        <!-- 显示 -->
         <el-table-column
           align="center"
-          prop="userName"
-          label="用户名"
+          prop="name"
+          label="部门昵称"
           width="120px"
         />
         <el-table-column
           align="center"
-          prop="userAvatar"
-          label="头像"
-          width="80px"
-        >
-          <template v-slot="scope">
-            <el-image
-              align="center"
-              style="width: 40px; height: 40px"
-              :src="scope.row.userAvatar ?? 'http://dummyimage.com/100x100'"
-              fit="cover"
-            />
-          </template> </el-table-column
-        >>
-        <el-table-column
-          align="center"
-          prop="userAccount"
-          label="账号"
+          prop="parentId"
+          label="上级部门"
           width="150px"
         />
         <el-table-column
           align="center"
-          prop="userRole"
-          label="角色"
+          prop="leader"
+          label="部门领导"
           width="100px"
         >
-          <template v-slot="scope">
-            <el-tag
-              :type="scope.row.userRole === 'admin' ? '' : 'warning'"
-              class="mx-1"
-              effect="dark"
-            >
-              {{ scope.row.userRole === 'admin' ? '管理员' : '普通用户' }}
-            </el-tag>
-          </template>
         </el-table-column>
 
-        <el-table-column align="center" prop="deptId" label="部门" />
         <el-table-column
           align="center"
           prop="email"
@@ -60,22 +37,11 @@
         />
 
         <el-table-column align="center" prop="phone" label="手机" />
-        <el-table-column align="center" prop="age" label="年龄" width="55" />
-        <el-table-column align="center" prop="gender" label="性别" width="80">
-          <template v-slot="scope">
-            <el-tag
-              :type="scope.row.gender === 1 ? '' : 'warning'"
-              class="mx-1"
-              effect="light"
-            >
-              {{ scope.row.gender === 1 ? '女' : '男' }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" prop="isBan" label="状态" width="80">
+
+        <el-table-column align="center" prop="status" label="状态" width="80">
           <template v-slot="scope">
             <el-switch
-              :model-value="scope.row.isBan"
+              :model-value="scope.row.status"
               active-color="#5352ed"
               inactive-color="#2ed573"
               inline-prompt
@@ -99,7 +65,12 @@
         />
         <el-table-column align="center" label="操作" width="161x">
           <template #default="scope">
-            <el-button size="small" :icon="Edit" type="primary" text
+            <el-button
+              size="small"
+              :icon="Edit"
+              type="primary"
+              text
+              @click="handleEditClick(scope.row)"
               >编辑</el-button
             >
             <el-popconfirm
@@ -125,7 +96,7 @@
         v-model:page-size="currentPageSize"
         :page-sizes="[10, 20, 30, 50, 100]"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="userTotalCount"
+        :total="pageTotalCount"
         small
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -135,55 +106,59 @@
 </template>
 
 <script setup lang="ts">
-import { deleteUserRequest } from '@/service/main/user'
 import { ElMessage } from 'element-plus'
-import UserStore from '@/store/user/index'
+import useSystemStore from '@/store/system/index'
 import { Delete, Edit } from '@element-plus/icons-vue'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 
 //自定事件
-const emit = defineEmits(['newClick'])
+const emit = defineEmits(['newClick', 'editClick'])
 
 const currentPage = ref(1)
 const currentPageSize = ref(10)
 
-const userStore = UserStore()
-const { usersList, userTotalCount } = storeToRefs(userStore)
+const systemStore = useSystemStore()
+const { pageList, pageTotalCount } = storeToRefs(systemStore)
 
 //页码相关
-fetchUserListAction()
+fetchPageListAction()
 const handleSizeChange = () => {
-  fetchUserListAction()
+  fetchPageListAction()
 }
 const handleCurrentChange = () => {
-  fetchUserListAction()
+  fetchPageListAction()
 }
 //发动网络请求函数
-function fetchUserListAction(formData: any = {}) {
+function fetchPageListAction(formData: any = {}) {
   const pageSize = currentPageSize.value
   const pageNum = currentPage.value
   const info = { pageNum, pageSize }
 
   const pageInfo = { ...info, ...formData }
-  userStore.getUserlistAction(pageInfo)
+  systemStore.postPageListAction('department', pageInfo)
 }
-//删除
+//删除 增加 编辑
 function handelDeleteClick(id: number) {
-  deleteUserRequest(id).then((res) => {
+  systemStore.deletePageAction('department', id).then((res: any) => {
     if (res.code === 200) {
-      fetchUserListAction()
+      fetchPageListAction()
       ElMessage.success('删除成功')
     } else {
       ElMessage.error('删除失败')
     }
   })
 }
-//增加
+
 function handelAddClick() {
   emit('newClick')
 }
-defineExpose({ fetchUserListAction })
+
+function handleEditClick(itemData: any) {
+  emit('editClick', itemData)
+}
+//暴露方法 属性
+defineExpose({ fetchPageListAction })
 </script>
 <style scoped lang="less">
 .content {

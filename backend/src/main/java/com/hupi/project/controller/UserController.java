@@ -4,10 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hupi.project.common.BaseResponse;
-import com.hupi.project.common.DeleteRequest;
 import com.hupi.project.common.ErrorCode;
 import com.hupi.project.common.ResultUtils;
 import com.hupi.project.exception.BusinessException;
+import com.hupi.project.mapper.SysUserRoleMapper;
 import com.hupi.project.model.dto.user.*;
 import com.hupi.project.model.entity.User;
 import com.hupi.project.model.vo.AdminVO;
@@ -21,15 +21,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static com.hupi.project.util.JsonPage.restPage;
-
+import static com.hupi.project.util.StringUtils.transferString2Date;
 /**
  * 用户接口
  *
@@ -41,11 +37,10 @@ public class UserController {
 
     @Resource
     private UserService userService;
-
+    @Resource
+    private SysUserRoleMapper sysUserRoleMapper;
     private static final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
-
-    // region 登录相关
 
     /**
      * 用户注册
@@ -66,41 +61,6 @@ public class UserController {
         }
         long result = userService.userRegister(userAccount, userPassword, checkPassword);
         return ResultUtils.success(result);
-    }
-
-
-    /**
-     * 获取当前登录用户
-     * @param request request
-     * @return  UserVO
-     */
-    @GetMapping("/get/login")
-    public BaseResponse<UserVO> getLoginUser(HttpServletRequest request) {
-        User user = userService.getLoginUser(request);
-        UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(user, userVO);
-        return ResultUtils.success(userVO);
-    }
-
-    // endregion
-
-    // region 系统用户增删改查
-
-
-    /**
-     * 删除用户
-     *
-     * @param deleteRequest deleteRequest
-     * @param request request
-     * @return BaseResponse<Boolean>
-     */
-    @PostMapping("/delete")
-    public BaseResponse<Boolean> deleteUser(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
-        if (deleteRequest == null || deleteRequest.getId() <= 0) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
-        }
-        boolean b = userService.removeById(deleteRequest.getId());
-        return ResultUtils.success(b);
     }
 
 
@@ -178,29 +138,28 @@ public class UserController {
         PageInfo pageResult = new PageInfo<>(userList);
 
         List<UserVO> voList = new ArrayList<>();
+
         for (User item:userList){
             UserVO userVO =assembleUserListVo(item);
             voList.add(userVO);
+
+
         }
 
         pageResult.setList(voList);
 
         PageInfo<User> page = new PageInfo<User>(userList);
 
-
         return ResultUtils.success(restPage(pageResult));
     }
 
-    // endregion
-
-    //region 下级相关
 
     /**
      * 新增或更新下级用户 以及对应关系表
      * @param userRoleVO userRoleVO
      * @return BaseResponse<String>
      */
-    @PostMapping("/emp/saveOrUpdate")
+    @PostMapping("/saveOrUpdate")
     public BaseResponse<String> saveOrUpdate(@RequestBody UserRoleVO userRoleVO){
         String result = userService.saveOrUpdate(userRoleVO);
         return ResultUtils.success(result);
@@ -211,7 +170,7 @@ public class UserController {
      * @param id userid
      * @return BaseResponse<String>
      */
-    @DeleteMapping("/emp/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public BaseResponse<String> delete(@PathVariable Long id) {
 
         String result = userService.deleteEmp(id);
@@ -224,7 +183,7 @@ public class UserController {
      * @param adminVO adminVO
      * @return String
      */
-    @PostMapping("/emp/updateState")
+    @PostMapping("/updateState")
     public BaseResponse<String> updateState(@RequestBody AdminVO adminVO){
         String result = userService.updateState(adminVO);
         return ResultUtils.success(result);
@@ -253,14 +212,6 @@ public static UserVO assembleUserListVo(User user){
     return userVO;
 }
 
-    public static Date transferString2Date(String s) {
-        Date date = new Date();
-        try {
-            date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(s);
-        } catch (ParseException e) {
-            //LOGGER.error("时间转换错误, string = {}", s, e);
-        }
-        return date;
-    }
+
 }
 

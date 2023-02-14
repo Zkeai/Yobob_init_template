@@ -186,22 +186,32 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
 
         User user = userRoleVO.getUser();
-        //密码加密
-        user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
+
         if(userRoleVO.getUser().getId() == null){
+            user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
             //新增用户
             userMapper.insert(user);
         }else{
+            //判断密码是否为空
+            if(Objects.equals(user.getUserPassword(), "") || user.getUserPassword()== null){
+               String pwd = userMapper.getPwdById(user.getId());
+               user.setUserPassword(pwd);
+            }
             //更新用户
             userMapper.updateById(user);
 
-            //删除旧关系 用户-角色
+
             Map<String,Object> map=new HashMap<>();
             map.put("user_id",user.getId());
-            sysUserRoleMapper.deleteByMap(map);
-            //删除旧关系 用户-岗位
-            Map<String,Object> map_=new HashMap<>();
-            sysUserPostMapper.deleteByMap(map);
+            if(userRoleVO.getRoleIds().length > 0){
+                //删除旧关系 用户-角色
+                sysUserRoleMapper.deleteByMap(map);
+            }
+            if(userRoleVO.getPostIds().length > 0){
+                //删除旧关系 用户-岗位
+                sysUserPostMapper.deleteByMap(map);
+            }
+
         }
 
         //插入新关系
@@ -226,11 +236,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if(!count){
             throw new BusinessException(ErrorCode.OPERATION_ERROR);
         }
-        //删除关系表数据
+        //删除关系表数据 用户-角色 用户-岗位
         Map<String,Object> map=new HashMap<>();
         map.put("user_id",id);
         sysUserRoleMapper.deleteByMap(map);
-
+        sysUserPostMapper.deleteByMap(map);
         return "success";
     }
 

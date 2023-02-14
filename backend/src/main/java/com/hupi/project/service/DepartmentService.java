@@ -2,6 +2,7 @@ package com.hupi.project.service;
 
 import com.hupi.project.model.entity.Department;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.hupi.project.model.vo.DepartmentVO;
 
 import java.util.List;
 

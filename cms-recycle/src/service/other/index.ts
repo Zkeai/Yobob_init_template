@@ -31,7 +31,7 @@ export function getDeparmentsRequest() {
 
 export function getPostsRequest() {
   return hyRequest.get({
-    url: '/api/post/getAll',
+    url: '/api/post/listAll',
     headers: {
       authorization: 'Bearer ' + localCache.getCache(CACHETOKEN)
     }

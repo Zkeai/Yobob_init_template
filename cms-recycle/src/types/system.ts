@@ -32,9 +32,12 @@ export interface IqueryPage {
   pageSize: number
 }
 
-export interface IUserState {
+export interface ISystemState {
   usersList: IResUser[]
   userTotalCount: number
+
+  pageList: any[]
+  pageTotalCount: number
 }
 
 export interface IPageInfo {

@@ -25,10 +25,6 @@ public class UserQueryRequest implements Serializable {
      */
     private Integer gender;
 
-    /**
-     * 用户角色: user, admin
-     */
-    private String userRole;
 
     /**
      * 页数

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hupi.project.common.ErrorCode;
 import com.hupi.project.exception.BusinessException;
 import com.hupi.project.model.entity.Department;
+import com.hupi.project.model.vo.DepartmentVO;
 import com.hupi.project.service.DepartmentService;
 import com.hupi.project.mapper.DepartmentMapper;
 import org.springframework.stereotype.Service;
@@ -35,25 +36,26 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "非法操作");
         }
 
-        String name =departments.getName();
-        String sn = departments.getSn();
-        Long parentId =departments.getParentId();
-        String ancestors =departments.getAncestors();
-        Integer status = departments.getStatus();
-        String leader = departments.getLeader();
-        String phone =departments.getPhone();
-        String email=departments.getEmail();
-        String updateBy =departments.getUpdateBy();
 
-        QueryWrapper<Department> queryWrapper1 = new QueryWrapper<>();
-        queryWrapper1.eq("name", name);
-        Department department1= departmentMapper.selectOne(queryWrapper1);
-        if(department1 == null){
+
+        if(departments.getId() == null){
+            Timestamp time2 = new Timestamp(new Date().getTime());
+            departments.setCreateTime(time2);
             this.save(departments);
         }else{
-            Long id = department1.getId();
+            String name =departments.getName();
+            String sn = departments.getSn();
+            Long parentId =departments.getParentId();
+            String ancestors =departments.getAncestors();
+            Integer status = departments.getStatus();
+            String leader = departments.getLeader();
+            String phone =departments.getPhone();
+            String email=departments.getEmail();
+            String updateBy =departments.getUpdateBy();
+
             Timestamp time2 = new Timestamp(new Date().getTime());
             Department newDepartment =new Department();
+            newDepartment.setId(departments.getId());
             newDepartment.setUpdateTime(time2);
             newDepartment.setAncestors(ancestors);
             newDepartment.setStatus(status);
@@ -64,13 +66,14 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
             newDepartment.setSn(sn);
             newDepartment.setPhone(phone);
             newDepartment.setUpdateBy(updateBy);
-            newDepartment.setId(id);
             departmentMapper.updateById(newDepartment);
 
 
         }
         return "success";
     }
+
+
 
     @Override
     public String deleteDep(Long id) {

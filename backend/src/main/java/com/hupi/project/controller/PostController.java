@@ -22,7 +22,7 @@ public class PostController{
     @Resource
     private PostService postService;
 
-    @GetMapping("/getAll")
+    @GetMapping("/listAll")
     public BaseResponse<List<Post>> getAll() {
         List<Post> postList = postService.list();
 
