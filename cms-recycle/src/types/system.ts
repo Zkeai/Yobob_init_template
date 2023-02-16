@@ -1,16 +1,4 @@
-export interface IUser {
-  userNmae?: string
-  gender?: number
-  phone?: string
-  email?: string
-  isBan?: number
-  userRole?: string
-  createTime?: string
-  updateTime?: string
-  pageNum: number
-  pageSize: number
-}
-
+//注册时的类型
 export interface IResUser {
   userNmae?: string
   gender?: number
@@ -27,24 +15,12 @@ export interface IResUser {
   status?: number
 }
 
-export interface IqueryPage {
-  pageNum: number
-  pageSize: number
-}
-
 export interface ISystemState {
   usersList: IResUser[]
   userTotalCount: number
 
   pageList: any[]
   pageTotalCount: number
-}
-
-export interface IPageInfo {
-  pageNum: number
-  pageSize: number
-  isBan?: number
-  gender?: number
 }
 
 export interface IAddOrUpdateInfo {
@@ -61,4 +37,18 @@ export interface IAddOrUpdateInfo {
   }
   roleIds?: number[] | ''
   postIds?: number[] | ''
+}
+
+//modal prop接口类型
+export interface IModalProps {
+  modalConfig: IModalConfig
+}
+//modal Config文档接口类型
+export interface IModalConfig {
+  pageName: string
+  header?: {
+    newTitle: string
+    editTitle: string
+  }
+  formItems: any[]
 }

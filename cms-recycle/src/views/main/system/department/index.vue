@@ -1,42 +1,68 @@
 <template>
   <div class="department">
     <pageSearch
+      :search-config="searchConfig"
       @query-click="handleQueryClick"
-      @reset-click="handelResetClick"
+      @reset-click="handleResetClick"
     />
     <pageContent
       ref="contentRef"
+      :content-config="contentConfig"
       @new-click="handleNewClick"
       @edit-click="handleEditClick"
+    >
+      <template #status="scope">
+        <el-switch
+          :model-value="scope.row.status"
+          active-color="#5352ed"
+          inactive-color="#2ed573"
+          inline-prompt
+          active-text="封禁"
+          inactive-text="正常"
+          :active-value="1"
+          :inactive-value="0"
+        />
+      </template>
+    </pageContent>
+    <pageModal
+      ref="modalRef"
+      @referMethod="referMethod"
+      :modal-config="modalConfigRef"
     />
-    <pageModel ref="modalRef" @referMethod="referMethod" />
   </div>
 </template>
 
 <script setup lang="ts">
-import pageSearch from './components/page-search.vue'
-import pageContent from './components/page-content.vue'
-import pageModel from './components/page-model.vue'
-import { ref } from 'vue'
-
-//点击search
-const contentRef = ref<InstanceType<typeof pageContent>>()
-function handleQueryClick(queryInfo: any) {
-  contentRef.value?.fetchPageListAction(queryInfo)
-}
-//点击重置
-function handelResetClick() {
-  contentRef.value?.fetchPageListAction()
-}
+import pageSearch from '@/components/page/page-search/page-search.vue'
+import pageContent from '@/components/page/page-content/page-content.vue'
+import pageModal from '@/components/page/page-modal/page-modal.vue'
+import searchConfig from './config/search.config'
+import contentConfig from './config/content.config'
+import modalConfig from './config/modal.config'
+import { computed } from 'vue'
+import useOtherStore from '@/store/other'
+import usePageContent from '@/hooks/usePageContent'
+import usePageModal from '@/hooks/usePageModal'
+//对modalConfig 进行操作
+const modalConfigRef = computed(() => {
+  const otherStore = useOtherStore()
+  //添加上级部门
+  const departments = otherStore.Departments.map((item) => {
+    return { label: item.name, value: item.id }
+  })
+  modalConfig.formItems.forEach((item) => {
+    if (item.prop === 'parentId') {
+      item.selectValue.push(...departments)
+    }
+  })
+  return modalConfig
+})
+//点击 搜索 重置 hooks
+const { contentRef, handleQueryClick, handleResetClick } = usePageContent()
 
 //modal组件的操作 新增 修改
-const modalRef = ref<InstanceType<typeof pageModel>>()
-function handleNewClick() {
-  modalRef.value?.setModalVisibel()
-}
-function handleEditClick(itemDate: any) {
-  modalRef.value?.setModalVisibel(false, itemDate)
-}
+const { modalRef, handleNewClick, handleEditClick } = usePageModal()
+
 //需要传给model的方法
 function referMethod() {
   return contentRef.value?.fetchPageListAction()

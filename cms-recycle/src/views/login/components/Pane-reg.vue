@@ -109,7 +109,6 @@ const register = () => {
           checkPassword
         })
         .then((res) => {
-          console.log(res)
           if (res === 'success') {
             ElMessage.success('注册成功')
             gotoLogin()

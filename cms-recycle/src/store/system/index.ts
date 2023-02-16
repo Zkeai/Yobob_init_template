@@ -21,16 +21,8 @@ const SystemStore = defineStore(Names.USER, {
     async postPageListAction(pageName: string, queryInfo: any) {
       const pageListResult = await postPageListRequest(pageName, queryInfo)
       const { totalCount, list } = pageListResult.data
-      switch (pageName) {
-        case 'user':
-          this.userTotalCount = totalCount
-          this.usersList = list
-          break
-        case 'department':
-          this.pageTotalCount = totalCount
-          this.pageList = list
-          break
-      }
+      this.pageTotalCount = totalCount
+      this.pageList = list
     },
     //通用删除
     async deletePageAction(pageName: string, id: number) {
