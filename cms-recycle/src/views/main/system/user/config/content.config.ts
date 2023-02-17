@@ -10,7 +10,7 @@ const contentConfig = {
       label: '序号',
       prop: 'id',
       width: '80px',
-      vIf: false
+      vIf: true
     },
     {
       type: 'normal',
@@ -93,13 +93,13 @@ const contentConfig = {
     },
 
     {
-      type: 'normal',
+      type: 'time',
       label: '创建时间',
       prop: 'createTime',
       vIf: true
     },
     {
-      type: 'normal',
+      type: 'time',
       label: '更新时间',
       prop: 'updateTime',
       vIf: true

@@ -58,4 +58,6 @@ public class UserQueryRequest implements Serializable {
      */
     private String updateTime;
     private static final long serialVersionUID = 1L;
+
+
 }

@@ -51,4 +51,9 @@ export interface IModalConfig {
     editTitle: string
   }
   formItems: any[]
+  childrenTree?: {
+    rowKey: string
+    treeProps: Object
+    defaultExpandAll: boolean
+  }
 }

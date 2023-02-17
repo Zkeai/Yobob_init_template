@@ -2,6 +2,8 @@ package com.hupi.project.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.pagehelper.PageInfo;
+import com.hupi.project.model.dto.user.UserQueryRequest;
 import com.hupi.project.model.entity.User;
 import com.hupi.project.model.vo.AdminVO;
 import com.hupi.project.model.vo.UserRoleVO;
@@ -35,4 +37,7 @@ public interface UserService extends IService<User> {
     String updateState(AdminVO adminVO);
 
     User getByAccount(String account);
+
+    PageInfo getList(UserQueryRequest userQueryRequest);
+
 }

@@ -69,6 +69,8 @@ public class SecurityConfig {
             ,"/*/api-docs"
             ,"/druid/**"
             ,"/**/*.ico"
+            //初始化获取
+            ,"/**/**/listAll"
 
     };
 

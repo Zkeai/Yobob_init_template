@@ -49,4 +49,10 @@
     <select id="getPwdById" resultType="java.lang.String">
         SELECT userPassword from user WHERE id=#{id}
     </select>
+    <select id="getRoleIds" resultType="java.lang.Integer">
+        SELECT role_id FROM sys_user_role WHERE user_id in
+        <foreach collection="list" separator="," item="id">
+            #{id}
+        </foreach>
+    </select>
 </mapper>

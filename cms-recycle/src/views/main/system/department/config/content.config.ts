@@ -25,7 +25,7 @@ const contentConfig = {
       label: '上级部门',
       prop: 'parentId',
       width: '120px',
-      vIf: true
+      vIf: false
     },
     {
       type: 'normal',
@@ -56,13 +56,13 @@ const contentConfig = {
       vIf: true
     },
     {
-      type: 'normal',
+      type: 'time',
       label: '创建时间',
       prop: 'createTime',
       vIf: true
     },
     {
-      type: 'normal',
+      type: 'time',
       label: '更新时间',
       prop: 'updateTime',
       vIf: true
@@ -73,7 +73,12 @@ const contentConfig = {
       width: '185px',
       vIf: true
     }
-  ]
+  ],
+  childrenTree: {
+    rowKey: 'id',
+    treeProps: { children: 'children', hasChildren: 'hasChildren' },
+    defaultExpandAll: true
+  }
 }
 
 export default contentConfig

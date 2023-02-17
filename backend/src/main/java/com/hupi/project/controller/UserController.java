@@ -1,7 +1,5 @@
 package com.hupi.project.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hupi.project.common.BaseResponse;
 import com.hupi.project.common.ErrorCode;
@@ -21,11 +19,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 import static com.hupi.project.util.JsonPage.restPage;
-import static com.hupi.project.util.StringUtils.transferString2Date;
+
 /**
  * 用户接口
  *
@@ -89,68 +85,10 @@ public class UserController {
      */
     @PostMapping("/list")
     public BaseResponse<Object> listUser(@RequestBody UserQueryRequest userQueryRequest) {
-        PageHelper.startPage(userQueryRequest.getPageNum(),userQueryRequest.getPageSize());
 
-        User userQuery = new User();
-        if (userQueryRequest.getUserName() !=null && !Objects.equals(userQueryRequest.getUserName(), "")) {
-            userQuery.setUserName(userQueryRequest.getUserName());
-        }
-        if(!Objects.equals(userQueryRequest.getPhone(), "") && userQueryRequest.getPhone() !=null) {
-            userQuery.setPhone(userQueryRequest.getPhone());
-        }
-        if(!Objects.equals(userQueryRequest.getEmail(), "") && userQueryRequest.getEmail() !=null) {
-            userQuery.setEmail(userQueryRequest.getEmail());
-        }
+        PageInfo list= userService.getList( userQueryRequest);
 
-        if(userQueryRequest.getIsBan() !=null){
-            if(userQueryRequest.getIsBan() != 1000){
-                userQuery.setIsBan(userQueryRequest.getIsBan());
-            }
-
-        }
-
-        if( userQueryRequest.getGender() !=null){
-            if(userQueryRequest.getGender() != 1000){
-                userQuery.setGender(userQueryRequest.getGender());
-            }
-
-        }
-
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>(userQuery);
-
-        if(!Objects.equals(userQueryRequest.getCreateTime(), "") && userQueryRequest.getCreateTime() !=null){
-            String time= userQueryRequest.getCreateTime();
-            String a = time.split("`")[0];
-            String b = time.split("`")[1];
-            queryWrapper.ge("createTime",transferString2Date(a));
-            queryWrapper.le("createTime",transferString2Date(b));
-        }
-        if(!Objects.equals(userQueryRequest.getUpdateTime(), "") && userQueryRequest.getUpdateTime() !=null){
-            String time= userQueryRequest.getUpdateTime();
-            String a = time.split("`")[0];
-            String b = time.split("`")[1];
-            queryWrapper.ge("createTime",transferString2Date(a));
-            queryWrapper.le("createTime",transferString2Date(b));
-        }
-
-        List<User> userList = userService.list(queryWrapper);
-
-        PageInfo pageResult = new PageInfo<>(userList);
-
-        List<UserVO> voList = new ArrayList<>();
-
-        for (User item:userList){
-            UserVO userVO =assembleUserListVo(item);
-            voList.add(userVO);
-
-
-        }
-
-        pageResult.setList(voList);
-
-        PageInfo<User> page = new PageInfo<User>(userList);
-
-        return ResultUtils.success(restPage(pageResult));
+        return ResultUtils.success(restPage(list));
     }
 
 
@@ -190,25 +128,24 @@ public class UserController {
     }
 
     // endregion
-public static UserVO assembleUserListVo(User user){
+public static UserVO assembleUserListVo(UserRoleVO user){
 
     UserVO userVO = new UserVO();
-    userVO.setId(user.getId());
-    userVO.setUserName(user.getUserName());
-    userVO.setGender(user.getGender());
-    userVO.setEmail(user.getEmail());
-    userVO.setPhone(user.getPhone());
-    userVO.setUserAvatar(user.getUserAvatar());
-    userVO.setUserAccount(user.getUserAccount());
-    userVO.setAge(user.getAge());
-    userVO.setDeptId(user.getDeptId());
-    userVO.setStatus(user.getStatus());
-    SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    String createTime_ = sdf3.format(user.getCreateTime());
-    String updateTime_ = sdf3.format(user.getUpdateTime());
-    userVO.setCreateTime(createTime_);
-    userVO.setUpdateTime(updateTime_);
-    userVO.setIsBan(user.getIsBan());
+    userVO.setId(user.getUser().getId());
+    userVO.setUserName(user.getUser().getUserName());
+    userVO.setGender(user.getUser().getGender());
+    userVO.setEmail(user.getUser().getEmail());
+    userVO.setPhone(user.getUser().getPhone());
+    userVO.setUserAvatar(user.getUser().getUserAvatar());
+    userVO.setUserAccount(user.getUser().getUserAccount());
+    userVO.setAge(user.getUser().getAge());
+    userVO.setDeptId(user.getUser().getDeptId());
+    userVO.setStatus(user.getUser().getStatus());
+    userVO.setCreateTime(user.getUser().getCreateTime());
+    userVO.setUpdateTime(user.getUser().getUpdateTime());
+    userVO.setIsBan(user.getUser().getIsBan());
+    userVO.setRoleIds(user.getRoleIds());
+    userVO.setPostIds(user.getPostIds());
     return userVO;
 }
 

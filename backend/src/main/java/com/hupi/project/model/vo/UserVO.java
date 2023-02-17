@@ -1,5 +1,6 @@
 package com.hupi.project.model.vo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -58,8 +59,17 @@ public class UserVO implements Serializable {
     private Integer status;
     private Integer isBan;
 
-    private String createTime;
+    private Date createTime;
 
-    private String updateTime;
+    private Date updateTime;
+
+
+    @TableField(exist = false)
+    private Long[] postIds;
+
+    @TableField(exist = false)
+    private Long[] roleIds;
+
+    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

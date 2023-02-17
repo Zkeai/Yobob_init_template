@@ -2,30 +2,30 @@ package com.hupi.project.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.hupi.project.common.ErrorCode;
 import com.hupi.project.exception.BusinessException;
 import com.hupi.project.mapper.*;
-import com.hupi.project.model.entity.SysMenu;
-import com.hupi.project.model.entity.SysRole;
-import com.hupi.project.model.entity.User;
+import com.hupi.project.model.dto.user.UserQueryRequest;
+import com.hupi.project.model.entity.*;
 import com.hupi.project.model.vo.AdminVO;
 import com.hupi.project.model.vo.UserRoleVO;
+import com.hupi.project.model.vo.UserVO;
 import com.hupi.project.service.UserService;
-import com.hupi.project.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
+
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.hupi.project.constant.UserConstant.ADMIN_ROLE;
-import static com.hupi.project.constant.UserConstant.USER_LOGIN_STATE;
+import static com.hupi.project.controller.UserController.assembleUserListVo;
+import static com.hupi.project.util.StringUtils.transferString2Date;
 
 
 /**
@@ -92,10 +92,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             return user.getId();
         }
     }
-
-
-
-
 
 
     /**
@@ -167,10 +163,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
         //插入新关系
         Long[] roleIds = userRoleVO.getRoleIds();
+
         Long[] postIds = userRoleVO.getPostIds();
-        if(roleIds !=null && roleIds.length > 0 && postIds.length > 0){
+        if( roleIds.length > 0 ){
             //批量插入用户-角色
             userMapper.insertBatchRelation(user.getId(),roleIds);
+        }
+        if( postIds.length > 0){
             //批量插入用户-岗位
             userMapper.insertBatchPosts(user.getId(),postIds);
         }
@@ -247,7 +246,106 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return getOne(new QueryWrapper<User>().eq("userAccount",userAccount));
     }
 
+    @Override
+    public PageInfo getList(UserQueryRequest userQueryRequest) {
+        PageHelper.startPage(userQueryRequest.getPageNum(),userQueryRequest.getPageSize());
 
+        User userQuery = new User();
+        if (userQueryRequest.getUserName() !=null && !Objects.equals(userQueryRequest.getUserName(), "")) {
+            userQuery.setUserName(userQueryRequest.getUserName());
+        }
+        if(!Objects.equals(userQueryRequest.getPhone(), "") && userQueryRequest.getPhone() !=null) {
+            userQuery.setPhone(userQueryRequest.getPhone());
+        }
+        if(!Objects.equals(userQueryRequest.getEmail(), "") && userQueryRequest.getEmail() !=null) {
+            userQuery.setEmail(userQueryRequest.getEmail());
+        }
+
+        if(userQueryRequest.getIsBan() !=null){
+            if(userQueryRequest.getIsBan() != 1000){
+                userQuery.setIsBan(userQueryRequest.getIsBan());
+            }
+
+        }
+
+        if( userQueryRequest.getGender() !=null){
+            if(userQueryRequest.getGender() != 1000){
+                userQuery.setGender(userQueryRequest.getGender());
+            }
+
+        }
+
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>(userQuery);
+
+        if(!Objects.equals(userQueryRequest.getCreateTime(), "") && userQueryRequest.getCreateTime() !=null){
+            String time= userQueryRequest.getCreateTime();
+            Date a = transferString2Date(time.split("`")[0]);
+            Date b = transferString2Date(time.split("`")[1]);
+            queryWrapper.ge("createTime",a);
+            queryWrapper.le("createTime",b);
+        }
+        if(!Objects.equals(userQueryRequest.getUpdateTime(), "") && userQueryRequest.getUpdateTime() !=null){
+            String time= userQueryRequest.getUpdateTime();
+            Date a = transferString2Date(time.split("`")[0]);
+            Date b = transferString2Date(time.split("`")[1]);
+            queryWrapper.ge("updateTime",a);
+            queryWrapper.le("updateTime",b);
+        }
+
+        List<User> userList = userService.list(queryWrapper);
+
+
+
+        PageInfo<Object> pageResult = new PageInfo<>();
+
+        List<Object> voList = new ArrayList<>();
+        for (User item:userList){
+            UserRoleVO userRoleVO = getUserInfo(item,item.getId());
+            UserVO userVO =assembleUserListVo(userRoleVO);
+            voList.add(userVO);
+        }
+
+        pageResult.setList(voList);
+
+        PageInfo<Object> page = pageResult;
+
+        return page;
+    }
+
+
+    public UserRoleVO getUserInfo(User user,Long UserId) {
+
+
+        //根据用户id获取所有的角色信息
+        List<SysUserRole> roleList  = sysUserRoleMapper.selectList(new QueryWrapper<SysUserRole>().inSql("role_id","SELECT role_id FROM sys_user_role WHERE user_id="+UserId));
+        Set<Long> roleSet = new HashSet<>();
+
+        for(SysUserRole sysUserRole:roleList){
+            Long role_id = sysUserRole.getRole_id();
+            if(role_id > 0){
+                roleSet.add(role_id);
+            }
+        }
+
+
+        //遍历用户对应的岗位
+        List<SysUserPost> postList =  sysUserPostMapper.selectList(new QueryWrapper<SysUserPost>().inSql("post_id","SELECT post_id FROM sys_user_post WHERE user_id="+UserId));
+        Set<Long> postSet = new HashSet<>();
+        for(SysUserPost sysUserPost:postList){
+            Long post_id = sysUserPost.getPost_id();
+            if(post_id > 0){
+                postSet.add(post_id);
+            }
+        }
+        // 拼接到一个对象中
+            UserRoleVO userRoleVO = new UserRoleVO();
+            userRoleVO.setUser(user);
+            userRoleVO.setRoleIds(roleSet.toArray(new Long[roleSet.size()]));
+            userRoleVO.setPostIds(postSet.toArray(new Long[postSet.size()]));
+
+
+        return userRoleVO;
+    }
 }
 
 

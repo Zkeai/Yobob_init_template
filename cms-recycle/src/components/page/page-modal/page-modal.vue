@@ -46,15 +46,16 @@
                   <el-form-item :label="item.label" :prop="item.prop">
                     <el-radio-group v-model="formData[item.prop]">
                       <el-radio
-                        :model-value="item.radioList[0].value"
-                        :label="item.radioList[0].label"
+                        :label="item.radioList[0].value"
                         :size="item.size"
-                      />
+                      >
+                        {{ item.radioList[0].label }}</el-radio
+                      >
                       <el-radio
-                        :model-value="item.radioList[1].value"
-                        :label="item.radioList[1].label"
+                        :label="item.radioList[1].value"
                         :size="item.size"
-                      />
+                        >{{ item.radioList[1].label }}</el-radio
+                      >
                     </el-radio-group>
                   </el-form-item>
                 </template>
@@ -154,8 +155,16 @@ const systemStore = useSystemStore()
 function handelConFirm() {
   formData.createTime = ''
   formData.updateTime = ''
+  let newData: any = {}
+  if (props.modalConfig.pageName === 'user') {
+    newData['user'] = formData
+    newData['roleIds'] = formData.roleIds
+    newData['postIds'] = formData.postIds
+  } else {
+    newData = formData
+  }
   systemStore
-    .addOrSavePagelistAction(props.modalConfig.pageName, formData)
+    .addOrSavePagelistAction(props.modalConfig.pageName, newData)
     .then((res) => {
       if (res.code === 200) {
         ElMessage.success('提交成功')

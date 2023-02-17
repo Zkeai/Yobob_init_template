@@ -1,10 +1,9 @@
 package com.hupi.project.service;
 
+import com.github.pagehelper.PageInfo;
+import com.hupi.project.model.dto.department.DepartmentListRequest;
 import com.hupi.project.model.entity.Department;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.hupi.project.model.vo.DepartmentVO;
-
-import java.util.List;
 
 /**
 * @author saoren
@@ -20,5 +19,7 @@ public interface DepartmentService extends IService<Department> {
     Department getInfo(Long id);
 
 
-
+    PageInfo getList(DepartmentListRequest departmentListRequest);
 }
+
+

@@ -2,22 +2,22 @@ package com.hupi.project.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.hupi.project.common.ErrorCode;
 import com.hupi.project.exception.BusinessException;
+import com.hupi.project.model.dto.department.DepartmentListRequest;
 import com.hupi.project.model.entity.Department;
-import com.hupi.project.model.vo.DepartmentVO;
 import com.hupi.project.service.DepartmentService;
 import com.hupi.project.mapper.DepartmentMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
+
+import static com.hupi.project.util.StringUtils.transferString2Date;
 
 /**
 * @author saoren
@@ -29,7 +29,8 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
     implements DepartmentService{
     @Resource
     private DepartmentMapper departmentMapper;
-
+    @Resource
+    private DepartmentService departmentService;
     @Override
     public String saveOrUpdateDep(Department departments) {
         if(departments == null){
@@ -99,6 +100,67 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
         return department;
     }
 
+    @Override
+    public PageInfo getList(DepartmentListRequest departmentListRequest) {
+
+        PageHelper.startPage(departmentListRequest.getPageNum(),departmentListRequest.getPageSize());
+        String name = departmentListRequest.getName();
+        Integer status = departmentListRequest.getStatus();
+        String createTime =departmentListRequest.getCreateTime();
+        String updateTime =departmentListRequest.getUpdateTime();
+        Department DepartmentQuery = new Department();
+        if ( name!=null && !Objects.equals(name, "")) {
+            DepartmentQuery.setName(departmentListRequest.getName());
+        }
+        if( status !=null){
+            if(status != 1000){
+                DepartmentQuery.setStatus(status);
+            }
+        }
+
+        QueryWrapper<Department> queryWrapper = new QueryWrapper<>(DepartmentQuery);
+        if(!Objects.equals(createTime, "") && createTime != null){
+            Date a = transferString2Date(createTime.split("`")[0]);
+            Date b = transferString2Date(createTime.split("`")[1]);
+            queryWrapper.ge("createTime",a);
+            queryWrapper.le("createTime",b);
+        }
+        if(!Objects.equals(updateTime, "") && updateTime != null){
+            Date a = transferString2Date(updateTime.split("`")[0]);
+            Date b = transferString2Date(updateTime.split("`")[1]);
+            queryWrapper.ge("updateTime",a);
+            queryWrapper.le("updateTime",b);
+        }
+
+        List<Department> departmentsList = departmentService.list(queryWrapper);
+        List<Department> resultMenulist = new ArrayList<>();
+        if(name == null && status== null && createTime== null && updateTime==null){
+            for(Department department:departmentsList){
+                //寻找子节点
+                for(Department e:departmentsList){
+                    if(Objects.equals(e.getParentId(), department.getId())){
+                        department.getChildren().add(e);
+                    }
+                }
+                if(department.getParentId() ==0L){
+                    resultMenulist.add(department);
+                }
+            }
+            PageInfo<Department> page = new PageInfo<Department>(resultMenulist);
+
+            page.setList(resultMenulist);
+            return page;
+        }
+
+
+        PageInfo<Department> page = new PageInfo<Department>(departmentsList);
+
+        page.setList(departmentsList);
+        return page;
+
+
+
+    }
 
 
 }

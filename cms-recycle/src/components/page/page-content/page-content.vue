@@ -9,7 +9,15 @@
       }}</el-button>
     </div>
     <div class="table">
-      <el-table size="small" :data="pageList" border style="width: 100%">
+      <el-table
+        size="small"
+        :data="pageList"
+        border
+        style="width: 100%"
+        :row-key="contentConfig.childrenTree?.rowKey"
+        :tree-props="contentConfig.childrenTree?.treeProps"
+        :default-expand-all="contentConfig.childrenTree?.defaultExpandAll"
+      >
         <template v-for="item in contentConfig.propsList" :key="item.prop">
           <!-- 自定义需要插入table的数据 利用插槽(具名+作用域)实现 -->
           <template v-if="item.type === 'custom'">
@@ -66,6 +74,20 @@
                       : item.tagList[1].value
                   }}
                 </el-tag>
+              </template>
+            </el-table-column>
+          </template>
+          <!-- 时间 -->
+          <template v-else-if="item.type === 'time'">
+            <el-table-column
+              align="center"
+              :prop="item.prop"
+              :label="item.label"
+              :width="item.width"
+              v-if="item.vIf"
+            >
+              <template #default="scope">
+                {{ formatUTC(scope.row[item.prop]) }}
               </template>
             </el-table-column>
           </template>
@@ -135,6 +157,7 @@ import useSystemStore from '@/store/system/index'
 import { Delete, Edit } from '@element-plus/icons-vue'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
+import { formatUTC } from '@/utils/time-format'
 
 interface Iprops {
   contentConfig: {
@@ -144,6 +167,11 @@ interface Iprops {
       btnTitle?: string
     }
     propsList: any[]
+    childrenTree?: {
+      rowKey: string
+      treeProps: Object
+      defaultExpandAll: boolean
+    }
   }
 }
 const props = defineProps<Iprops>()
