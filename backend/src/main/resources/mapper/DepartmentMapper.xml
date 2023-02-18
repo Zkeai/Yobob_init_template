@@ -10,7 +10,7 @@
             <result property="sn" column="sn" jdbcType="VARCHAR"/>
             <result property="parentId" column="parentId" jdbcType="BIGINT"/>
             <result property="ancestors" column="ancestors" jdbcType="VARCHAR"/>
-            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="isBan" column="isBan" jdbcType="TINYINT"/>
             <result property="leader" column="leader" jdbcType="VARCHAR"/>
             <result property="phone" column="phone" jdbcType="VARCHAR"/>
             <result property="email" column="email" jdbcType="VARCHAR"/>
@@ -23,9 +23,12 @@
 
     <sql id="Base_Column_List">
         id,name,sn,
-        parentId,ancestors,status,
+        parentId,ancestors,isBan,
         leader,phone,email,
         create_by,createTime,updateBy,
         updateTime,isDelete
     </sql>
+    <update id="updateIsBanById">
+        update department set isBan = #{isBan} where id = #{id}
+    </update>
 </mapper>

@@ -48,7 +48,7 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
             String sn = departments.getSn();
             Long parentId =departments.getParentId();
             String ancestors =departments.getAncestors();
-            Integer status = departments.getStatus();
+            Integer isBan = departments.getIsBan();
             String leader = departments.getLeader();
             String phone =departments.getPhone();
             String email=departments.getEmail();
@@ -59,7 +59,7 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
             newDepartment.setId(departments.getId());
             newDepartment.setUpdateTime(time2);
             newDepartment.setAncestors(ancestors);
-            newDepartment.setStatus(status);
+            newDepartment.setIsBan(isBan);
             newDepartment.setEmail(email);
             newDepartment.setParentId(parentId);
             newDepartment.setName(name);
@@ -105,16 +105,16 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
 
         PageHelper.startPage(departmentListRequest.getPageNum(),departmentListRequest.getPageSize());
         String name = departmentListRequest.getName();
-        Integer status = departmentListRequest.getStatus();
+        Integer isBan = departmentListRequest.getIsBan();
         String createTime =departmentListRequest.getCreateTime();
         String updateTime =departmentListRequest.getUpdateTime();
         Department DepartmentQuery = new Department();
         if ( name!=null && !Objects.equals(name, "")) {
             DepartmentQuery.setName(departmentListRequest.getName());
         }
-        if( status !=null){
-            if(status != 1000){
-                DepartmentQuery.setStatus(status);
+        if( isBan !=null){
+            if(isBan != 1000){
+                DepartmentQuery.setIsBan(isBan);
             }
         }
 
@@ -134,7 +134,7 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
 
         List<Department> departmentsList = departmentService.list(queryWrapper);
         List<Department> resultMenulist = new ArrayList<>();
-        if(name == null && status== null && createTime== null && updateTime==null){
+        if(name == null && isBan== null && createTime== null && updateTime==null){
             for(Department department:departmentsList){
                 //寻找子节点
                 for(Department e:departmentsList){
@@ -160,6 +160,22 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
 
 
 
+    }
+
+    @Override
+    public Boolean updateIsBan(Long isBan, Long id) {
+        if(id == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"非法操作");
+        }
+        if(isBan !=0 && isBan !=1){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"非法操作");
+        }
+
+        int res = departmentMapper.updateIsBanById(isBan,id);
+        if(res>0){
+            return true;
+        }
+        return false;
     }
 
 

@@ -25,7 +25,7 @@ export interface ISystemState {
 
 export interface IAddOrUpdateInfo {
   user: {
-    id?: number | ''
+    readonly id?: number | ''
     userName?: string
     userAccount?: string
     userPassword?: string

@@ -22,7 +22,7 @@ public class DepartmentListRequest extends PageRequest implements Serializable {
 
     private String name;
 
-    private Integer status;
+    private Integer isBan;
 
     /**
      * 创建时间

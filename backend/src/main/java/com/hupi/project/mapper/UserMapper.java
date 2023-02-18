@@ -20,6 +20,8 @@ public interface UserMapper extends BaseMapper<User> {
     String getPwdById(@Param("id") Long id);
 
     List<Integer> getRoleIds(@Param("id") Long id);
+
+    int updateIsBanById(@Param("isBan") Long isBan,@Param("id") Long id);
 }
 
 

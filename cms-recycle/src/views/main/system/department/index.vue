@@ -11,18 +11,6 @@
       @new-click="handleNewClick"
       @edit-click="handleEditClick"
     >
-      <template #status="scope">
-        <el-switch
-          :model-value="scope.row.status"
-          active-color="#5352ed"
-          inactive-color="#2ed573"
-          inline-prompt
-          active-text="封禁"
-          inactive-text="正常"
-          :active-value="1"
-          :inactive-value="0"
-        />
-      </template>
     </pageContent>
     <pageModal
       ref="modalRef"

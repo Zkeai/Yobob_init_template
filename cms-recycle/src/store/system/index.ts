@@ -1,7 +1,8 @@
 import {
   postPageListRequest,
   deletePageRequest,
-  addOrSavePageRequest
+  addOrSavePageRequest,
+  updateIsBanPageRequest
 } from '@/service/main/system/system'
 import type { ISystemState } from '@/types/system'
 import { defineStore } from 'pinia'
@@ -32,6 +33,11 @@ const SystemStore = defineStore(Names.USER, {
     //通用新增或修改
     async addOrSavePagelistAction(pageName: string, userInfo: any) {
       const Result = await addOrSavePageRequest(pageName, userInfo)
+      return Result
+    },
+    //通用根据id修改IsBan状态
+    async updateIsBanAction(pageName: string, userInfo: any) {
+      const Result = await updateIsBanPageRequest(pageName, userInfo)
       return Result
     }
   }

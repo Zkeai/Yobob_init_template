@@ -312,6 +312,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return page;
     }
 
+    @Override
+    public Boolean updateIsBan(Long isBan,Long id) {
+        if(id == null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"非法操作");
+        }
+        if(isBan !=0 && isBan !=1){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"非法操作");
+        }
+
+        int res = userMapper.updateIsBanById(isBan,id);
+        if(res>0){
+            return true;
+        }
+        return false;
+    }
+
 
     public UserRoleVO getUserInfo(User user,Long UserId) {
 

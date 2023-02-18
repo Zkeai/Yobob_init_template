@@ -49,7 +49,7 @@ interface IuserInfo {
   deptId: number
   email: string
   gender: number
-  id: number
+  readonly id: number
   isBan: number
   phone: string
   status: number

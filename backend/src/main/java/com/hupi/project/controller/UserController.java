@@ -6,6 +6,7 @@ import com.hupi.project.common.ErrorCode;
 import com.hupi.project.common.ResultUtils;
 import com.hupi.project.exception.BusinessException;
 import com.hupi.project.mapper.SysUserRoleMapper;
+import com.hupi.project.model.dto.other.IsBanRequest;
 import com.hupi.project.model.dto.user.*;
 import com.hupi.project.model.entity.User;
 import com.hupi.project.model.vo.AdminVO;
@@ -127,6 +128,13 @@ public class UserController {
         return ResultUtils.success(result);
     }
 
+    @PostMapping("/updateIsBan")
+    public BaseResponse<Boolean> updateIsBan(@RequestBody IsBanRequest isBanRequest){
+        Long isBan = isBanRequest.getIsBan();
+        Long id = isBanRequest.getId();
+        Boolean res = userService.updateIsBan(isBan,id);
+        return ResultUtils.success(res);
+    }
     // endregion
 public static UserVO assembleUserListVo(UserRoleVO user){
 

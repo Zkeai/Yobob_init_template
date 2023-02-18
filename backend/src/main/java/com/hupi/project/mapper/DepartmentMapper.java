@@ -2,6 +2,7 @@ package com.hupi.project.mapper;
 
 import com.hupi.project.model.entity.Department;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
 * @author saoren
@@ -11,6 +12,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface DepartmentMapper extends BaseMapper<Department> {
 
+    int updateIsBanById(@Param("isBan") Long isBan, @Param("id") Long id);
 }
 
 

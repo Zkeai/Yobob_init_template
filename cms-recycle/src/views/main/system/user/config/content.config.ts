@@ -85,8 +85,8 @@ const contentConfig = {
       vIf: true
     },
     {
-      type: 'custom',
-      slotName: 'status',
+      type: 'isBan',
+      prop: 'isBan',
       label: '状态',
       width: '80px',
       vIf: true

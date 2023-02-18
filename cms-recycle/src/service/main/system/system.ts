@@ -32,3 +32,13 @@ export function addOrSavePageRequest(pageName: string, userInfo: any) {
     }
   })
 }
+//通用根据id修改状态
+export function updateIsBanPageRequest(pageName: string, userInfo: any) {
+  return hyRequest.post({
+    url: `/api/${pageName}/updateIsBan`,
+    data: userInfo,
+    headers: {
+      authorization: 'Bearer ' + localCache.getCache(CACHETOKEN)
+    }
+  })
+}

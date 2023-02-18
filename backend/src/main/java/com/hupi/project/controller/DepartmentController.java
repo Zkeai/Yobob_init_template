@@ -3,6 +3,7 @@ import com.github.pagehelper.PageInfo;
 import com.hupi.project.common.BaseResponse;
 import com.hupi.project.common.ResultUtils;
 import com.hupi.project.model.dto.department.DepartmentListRequest;
+import com.hupi.project.model.dto.other.IsBanRequest;
 import com.hupi.project.model.entity.Department;
 
 import com.hupi.project.service.DepartmentService;
@@ -88,5 +89,11 @@ public class DepartmentController {
         return ResultUtils.success(depts);
     }
 
-
+    @PostMapping("/updateIsBan")
+    public BaseResponse<Boolean> updateIsBan(@RequestBody IsBanRequest isBanRequest){
+        Long isBan = isBanRequest.getIsBan();
+        Long id = isBanRequest.getId();
+        Boolean res = departmentService.updateIsBan(isBan,id);
+        return ResultUtils.success(res);
+    }
 }

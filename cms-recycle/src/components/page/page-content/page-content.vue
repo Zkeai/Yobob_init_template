@@ -32,7 +32,7 @@
               </template>
             </el-table-column>
           </template>
-          <!-- 头像类型 -->
+          <!-- avatar -->
           <template v-else-if="item.type === 'avatar'">
             <el-table-column
               align="center"
@@ -44,9 +44,41 @@
                 <el-image
                   align="center"
                   style="width: 40px; height: 40px"
-                  :src="scope.row.userAvatar ?? 'http://dummyimage.com/100x100'"
+                  :src="scope.row[item.prop] ?? 'http://dummyimage.com/100x100'"
                   fit="cover"
                 />
+              </template>
+            </el-table-column>
+          </template>
+          <!-- isban -->
+          <template v-else-if="item.type === 'isBan'">
+            <el-table-column
+              align="center"
+              :prop="item.prop"
+              :label="item.label"
+              :width="item.width"
+            >
+              <template v-slot="scope">
+                <el-popconfirm
+                  confirm-button-text="确定"
+                  cancel-button-text="取消"
+                  icon-color="#626AEF"
+                  title="你确定要修改么?"
+                  @confirm="handleIsBanChange($event, scope.row)"
+                >
+                  <template #reference>
+                    <el-switch
+                      :model-value="scope.row[item.prop]"
+                      active-color="#5352ed"
+                      inactive-color="#2ed573"
+                      inline-prompt
+                      active-text="封禁"
+                      inactive-text="正常"
+                      :active-value="1"
+                      :inactive-value="0"
+                    />
+                  </template>
+                </el-popconfirm>
               </template>
             </el-table-column>
           </template>
@@ -77,7 +109,7 @@
               </template>
             </el-table-column>
           </template>
-          <!-- 时间 -->
+          <!-- time -->
           <template v-else-if="item.type === 'time'">
             <el-table-column
               align="center"
@@ -221,7 +253,22 @@ function handelAddClick() {
 function handleEditClick(itemData: any) {
   emit('editClick', itemData)
 }
-//暴露方法 属性
+//isBan切换
+function handleIsBanChange(_: any, row: any) {
+  systemStore
+    .updateIsBanAction(props.contentConfig.pageName, {
+      isBan: row.isBan === 0 ? 1 : 0,
+      id: row.id
+    })
+    .then((res) => {
+      if (res.code === 200) {
+        fetchPageListAction()
+        ElMessage.success('修改成功')
+      } else {
+        ElMessage.error('修改失败')
+      }
+    })
+}
 defineExpose({ fetchPageListAction })
 </script>
 <style scoped lang="less">

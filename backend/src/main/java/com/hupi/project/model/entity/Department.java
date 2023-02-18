@@ -45,7 +45,7 @@ public class Department implements Serializable {
     /**
      * 状态 0 正常 1 删除
      */
-    private Integer status;
+    private Integer isBan;
 
     /**
      * 负责人

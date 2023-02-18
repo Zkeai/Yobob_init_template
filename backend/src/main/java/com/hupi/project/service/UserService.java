@@ -40,4 +40,6 @@ public interface UserService extends IService<User> {
 
     PageInfo getList(UserQueryRequest userQueryRequest);
 
+    Boolean updateIsBan(Long isBan,Long id);
+
 }

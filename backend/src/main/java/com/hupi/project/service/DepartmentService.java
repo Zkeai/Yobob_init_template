@@ -20,6 +20,8 @@ public interface DepartmentService extends IService<Department> {
 
 
     PageInfo getList(DepartmentListRequest departmentListRequest);
+
+    Boolean updateIsBan(Long isBan, Long id);
 }
 
 
