@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 import static com.hupi.project.util.JsonPage.restPage;
@@ -85,8 +87,19 @@ public class DepartmentController {
     @GetMapping("/listAll")
     public BaseResponse<List<Department>> getListAll(){
         List<Department> depts = departmentService.list();
-
-        return ResultUtils.success(depts);
+        List<Department> resultMenulist = new ArrayList<>();
+        for(Department department:depts){
+            //寻找子节点
+            for(Department e:depts){
+                if(Objects.equals(e.getParentId(), department.getId())){
+                    department.getChildren().add(e);
+                }
+            }
+            if(department.getParentId() ==0L){
+                resultMenulist.add(department);
+            }
+        }
+        return ResultUtils.success(resultMenulist);
     }
 
     @PostMapping("/updateIsBan")

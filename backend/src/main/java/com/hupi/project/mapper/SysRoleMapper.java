@@ -14,13 +14,16 @@ import java.util.List;
 */
 public interface SysRoleMapper extends BaseMapper<SysRole> {
 
-    void deleteRelation(@Param("id") Long id);
+    void deleteRelationDept(@Param("id") Long id);
 
 
     List<SysRole> queryById(@Param("id") Long id);
 
-    void insertBatchRelation(@Param("roleId") Long roleId,@Param("permissionIds") Long[] permissionIds);
+    void insertBatchRelationDept(@Param("roleId") Long roleId,@Param("deptIds") Long[] deptIds);
+    void insertBatchRelationMenu(@Param("roleId") Long roleId,@Param("menuIds") Long[] menuIds);
+    void deleteRelationMenu(@Param("id") Long id);
 
+    int updateIsBanById(@Param("isBan") Long isBan, @Param("id") Long id);
 }
 
 

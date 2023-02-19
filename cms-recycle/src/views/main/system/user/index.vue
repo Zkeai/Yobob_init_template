@@ -28,6 +28,7 @@
     <UserModal
       :modal-config="modalConfig"
       ref="modalRef"
+      :other-info="otherInfo"
       @referMethod="referMethod"
     >
       <!-- 角色 -->
@@ -50,16 +51,19 @@
         </el-select>
       </template>
       <!-- 部门 -->
-      <template #dept="formData">
-        <el-select
-          v-model="formData.formData['deptId']"
-          placeholder="请选择部门"
-          style="width: 100%"
-        >
-          <template v-for="item in Departments" :key="item.id">
-            <el-option :label="item.name" :value="item.id" />
-          </template>
-        </el-select>
+      <template #dept>
+        <el-tree-select
+          :data="Departments"
+          v-model="DeptChecked"
+          check-strictly
+          check-on-click-node
+          multiple
+          node-key="id"
+          :render-after-expand="false"
+          show-checkbox
+          :props="{ children: 'children', label: 'name' }"
+          @check="handleElDeptTreeCheck"
+        />
       </template>
       <!-- 岗位 -->
       <template #post="formData">
@@ -95,7 +99,8 @@ import usePageModal from '@/hooks/usePageModal'
 import usePageContent from '@/hooks/usePageContent'
 import useOtherStore from '@/store/other'
 import { storeToRefs } from 'pinia'
-
+import { ref } from 'vue'
+const DeptChecked = ref()
 const otherStore = useOtherStore()
 const { Roles, Departments, Posts } = storeToRefs(otherStore)
 //点击 搜索 重置 hooks
@@ -106,6 +111,12 @@ const { modalRef, handleNewClick, handleEditClick } = usePageModal()
 //需要传给model的方法
 function referMethod() {
   return contentRef.value?.fetchPageListAction()
+}
+
+const otherInfo = ref({})
+function handleElDeptTreeCheck(_: any, data: any) {
+  const DeptList = [...data.checkedKeys, ...data.halfCheckedKeys]
+  otherInfo.value = DeptList
 }
 </script>
 <style scoped lang="less"></style>

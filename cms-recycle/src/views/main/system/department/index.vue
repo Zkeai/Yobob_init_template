@@ -34,10 +34,18 @@ import usePageModal from '@/hooks/usePageModal'
 //对modalConfig 进行操作
 const modalConfigRef = computed(() => {
   const otherStore = useOtherStore()
-  //添加上级部门
-  const departments = otherStore.Departments.map((item) => {
-    return { label: item.name, value: item.id }
+  //添加上级部门  todo一个更好的写法
+  const departments: any[] = []
+  otherStore.Departments.map((item) => {
+    if (item.children !== [])
+      departments.push({ label: item.name, value: item.id })
+
+    item.children.map((item: any) => {
+      if (item.children !== [])
+        departments.push({ label: item.name, value: item.id })
+    })
   })
+
   modalConfig.formItems.forEach((item) => {
     if (item.prop === 'parentId') {
       item.selectValue.push(...departments)

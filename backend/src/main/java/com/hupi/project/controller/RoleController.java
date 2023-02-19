@@ -4,7 +4,10 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hupi.project.common.BaseResponse;
 import com.hupi.project.common.ResultUtils;
+import com.hupi.project.model.dto.other.IsBanRequest;
+import com.hupi.project.model.dto.role.RoleListRequest;
 import com.hupi.project.model.entity.SysRole;
+import com.hupi.project.model.vo.RoleDeleteVO;
 import com.hupi.project.model.vo.RolePermissionVO;
 import com.hupi.project.service.SysRoleService;
 import org.springframework.web.bind.annotation.*;
@@ -27,21 +30,18 @@ public class RoleController {
 
     /**
      * 根据pageNum 和 pageSize 获取角色列表
-     * @param pageNum 页面
-     * @param pageSize 页面数量
+     * roleListRequest roleListRequest
      * @return pageInfo
      */
-    @GetMapping("/list")
-    public BaseResponse<Object> listRoleByPage(int pageNum, int pageSize) {
-        PageHelper.startPage(pageNum,pageSize);
-        List<SysRole> list = sysRoleService.list();
-        PageInfo<SysRole> page = new PageInfo<SysRole>(list);
+    @PostMapping("/list")
+    public BaseResponse<Object> listRoleByPage(@RequestBody RoleListRequest roleListRequest) {
+        PageInfo list = sysRoleService.getList(roleListRequest);
 
-        return ResultUtils.success(restPage(page));
+        return ResultUtils.success(restPage(list));
     }
 
     /**
-     * 删除角色 删除 角色-权限（已完成） 角色-menu（待添加）
+     * 删除角色 删除关系表 角色-部门（已完成） 角色-menu（已完成）
      * @param id 角色id
      * @return success/error
      */
@@ -54,13 +54,13 @@ public class RoleController {
     }
 
     /**
-     * 新增或更新角色 角色-权限（已完成） 角色-menu（待添加）
-     * @param rolePermissionVO rolePermissionVO
+     * 新增或更新角色 角色-部门（已完成） 角色-menu（待添加）
+     * @param roleDeleteVO rolePermissionVO
      * @return success/error
      */
     @PostMapping("/saveOrUpdate")
-    public BaseResponse<String> saveOrUpdate(@RequestBody RolePermissionVO rolePermissionVO){
-       String result = sysRoleService.saveOrUpdatePer(rolePermissionVO);
+    public BaseResponse<String> saveOrUpdate(@RequestBody RoleDeleteVO roleDeleteVO){
+       String result = sysRoleService.saveOrUpdate(roleDeleteVO);
         return ResultUtils.success(result);
     }
 
@@ -94,5 +94,14 @@ public class RoleController {
     public BaseResponse<List<SysRole>> query(@PathVariable Long id){
         List<SysRole> rs = sysRoleService.queryByUid(id);
         return ResultUtils.success(rs);
+    }
+
+
+    @PostMapping("/updateIsBan")
+    public BaseResponse<Boolean> updateIsBan(@RequestBody IsBanRequest isBanRequest){
+        Long isBan = isBanRequest.getIsBan();
+        Long id = isBanRequest.getId();
+        Boolean res = sysRoleService.updateIsBan(isBan,id);
+        return ResultUtils.success(res);
     }
 }

@@ -8,23 +8,37 @@
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="name" column="name" jdbcType="VARCHAR"/>
             <result property="code" column="code" jdbcType="VARCHAR"/>
+            <result property="isBan" column="isBan" jdbcType="INTEGER"/>
             <result property="create_time" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="update_time" column="update_time" jdbcType="TIMESTAMP"/>
             <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,name,code,
-        create_time,update_time,remark
+        id,name,code,isBan,
+        create_time,update_time,remark,isDelete
     </sql>
-    <insert id="insertBatchRelation">
-        insert into sys_role_permission (role_id,permission_id) values
-        <foreach collection="permissionIds" separator="," item="permissionId">
-            (#{roleId},#{permissionId})
+    <insert id="insertBatchRelationDept">
+        insert into sys_role_dept (role_id,dept_id) values
+        <foreach collection="deptIds" separator="," item="deptId">
+            (#{roleId},#{deptId})
         </foreach>
     </insert>
-    <delete id="deleteRelation">
-        delete from sys_role_permission where role_id =#{id}
+    <insert id="insertBatchRelationMenu">
+        insert into sys_role_menu (role_id,menu_id) values
+        <foreach collection="menuIds" separator="," item="menuId">
+            (#{roleId},#{menuId})
+        </foreach>
+    </insert>
+    <update id="updateIsBanById">
+        update sys_role set isBan = #{isBan} where id = #{id}
+    </update>
+    <delete id="deleteRelationDept">
+        delete from sys_role_dept where role_id =#{id}
+    </delete>
+    <delete id="deleteRelationMenu">
+        delete from sys_role_menu where role_id =#{id}
     </delete>
     <select id="queryById" resultType="com.hupi.project.model.entity.SysRole">
         select r.* from sys_role r left join sys_user_role er on (r.id = er.role_id) where er.user_id = #{id}

@@ -121,6 +121,7 @@ export interface IModalProps {
     }
     formItems: any[]
   }
+  otherInfo?: any
 }
 
 const props = defineProps<IModalProps>()
@@ -156,13 +157,19 @@ function handelConFirm() {
   formData.createTime = ''
   formData.updateTime = ''
   let newData: any = {}
+
   if (props.modalConfig.pageName === 'user') {
     newData['user'] = formData
     newData['roleIds'] = formData.roleIds
-    newData['postIds'] = formData.postIds
+    newData['postIds'] = props.otherInfo
+  } else if (props.modalConfig.pageName === 'role') {
+    newData['sysRole'] = formData
+    newData['menuIds'] = props.otherInfo.menuIds
+    newData['deptIds'] = props.otherInfo.deptIds
   } else {
     newData = formData
   }
+
   systemStore
     .addOrSavePagelistAction(props.modalConfig.pageName, newData)
     .then((res) => {

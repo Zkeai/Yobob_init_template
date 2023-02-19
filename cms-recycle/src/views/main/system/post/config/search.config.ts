@@ -3,20 +3,16 @@ const searchConfig = {
     {
       type: 'input',
       prop: 'name',
-      label: '部门名称',
-      placeholder: '请输入部门名称',
+      label: '岗位名称',
+      placeholder: '请输入岗位名称',
       initalValue: ''
     },
     {
-      type: 'select',
-      prop: 'status',
-      label: '状态',
-      placeholder: '请选择状态',
-      selectValue: [
-        { label: '全部', value: 1000 },
-        { label: '正常', value: 0 },
-        { label: '封禁', value: 1 }
-      ]
+      type: 'input',
+      prop: 'code',
+      label: '岗位标识',
+      placeholder: '请输入岗位标识',
+      initalValue: ''
     },
     {
       type: 'date-picker',

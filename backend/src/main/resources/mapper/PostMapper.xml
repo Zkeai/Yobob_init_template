@@ -7,10 +7,18 @@
     <resultMap id="BaseResultMap" type="com.hupi.project.model.entity.Post">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="name" column="name" jdbcType="VARCHAR"/>
-            <result property="expression" column="expression" jdbcType="VARCHAR"/>
+            <result property="code" column="code" jdbcType="VARCHAR"/>
+            <result property="isBan" column="isBan" jdbcType="INTEGER"/>
+            <result property="create_time" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="update_time" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,name,expression
+        id,name,code,isBan,create_time,update_time,isDelete
+
     </sql>
+    <update id="updateIsBanById">
+        update post set isBan = #{isBan} where id = #{id}
+    </update>
 </mapper>

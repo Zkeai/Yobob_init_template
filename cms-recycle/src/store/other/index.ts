@@ -1,5 +1,6 @@
 import {
   getDeparmentsRequest,
+  getMenuRequest,
   getPostsRequest,
   getRolesRequest
 } from '@/service/other'
@@ -10,12 +11,14 @@ interface IOtherState {
   Roles: any[]
   Departments: any[]
   Posts: any[]
+  Menus: any[]
 }
 const useOtherStore = defineStore(Names.OTHER, {
   state: (): IOtherState => ({
     Roles: [],
     Departments: [],
-    Posts: []
+    Posts: [],
+    Menus: []
   }),
   getters: {},
   actions: {
@@ -23,10 +26,12 @@ const useOtherStore = defineStore(Names.OTHER, {
       const rolesResult = await getRolesRequest()
       const departmentsResult = await getDeparmentsRequest()
       const postsResult = await getPostsRequest()
+      const menuResult = await getMenuRequest()
       //保存数据
       this.Roles = rolesResult.data
       this.Departments = departmentsResult.data
       this.Posts = postsResult.data
+      this.Menus = menuResult.data
     }
   }
 })

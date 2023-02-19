@@ -3,8 +3,8 @@ const searchConfig = {
     {
       type: 'input',
       prop: 'name',
-      label: '部门名称',
-      placeholder: '请输入部门名称',
+      label: '菜单名称',
+      placeholder: '请输入菜单名称',
       initalValue: ''
     },
     {

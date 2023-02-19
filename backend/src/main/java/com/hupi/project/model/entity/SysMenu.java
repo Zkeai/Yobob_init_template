@@ -62,8 +62,12 @@ public class SysMenu implements Serializable {
     /**
      * 权限标识
      */
-    private String perms;
+    private String code;
 
+    /**
+     * 权限标识
+     */
+    private Integer isBan;
     /**
      * 创建时间
      */

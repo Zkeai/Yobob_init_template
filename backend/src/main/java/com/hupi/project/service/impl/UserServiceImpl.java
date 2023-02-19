@@ -213,7 +213,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         for(SysRole sysRole:roleList){
             List<SysMenu> sysMenuList =  sysMenuMapper.selectList(new QueryWrapper<SysMenu>().inSql("id","SELECT menu_id FROM sys_role_menu WHERE role_id="+sysRole.getId()));
             for(SysMenu sysMenu:sysMenuList){
-               String perms = sysMenu.getPerms();
+               String perms = sysMenu.getCode();
                if(StringUtils.isNotBlank(perms)){
                    menuCodeSet.add(perms);
                }

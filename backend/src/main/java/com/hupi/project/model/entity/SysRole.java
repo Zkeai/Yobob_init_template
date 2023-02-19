@@ -1,9 +1,7 @@
 package com.hupi.project.model.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
@@ -32,6 +30,10 @@ public class SysRole implements Serializable {
     private String code;
 
     /**
+     * 状态
+     */
+    private Integer isBan;
+    /**
      * 创建时间
      */
     private Date create_time;
@@ -46,6 +48,11 @@ public class SysRole implements Serializable {
      */
     private String remark;
 
+    /**
+     * 是否删除
+     */
+    @TableLogic
+    private Integer isDelete;
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

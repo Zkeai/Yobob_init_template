@@ -37,3 +37,12 @@ export function getPostsRequest() {
     }
   })
 }
+
+export function getMenuRequest() {
+  return hyRequest.get({
+    url: '/api/menu/listAll',
+    headers: {
+      authorization: 'Bearer ' + localCache.getCache(CACHETOKEN)
+    }
+  })
+}
