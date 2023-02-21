@@ -9,6 +9,13 @@ const modalConfig: IModalConfig = {
   formItems: [
     {
       type: 'input',
+      prop: 'id',
+      label: 'id',
+      placeholder: '请输入id',
+      vIf: false
+    },
+    {
+      type: 'input',
       prop: 'name',
       label: '角色名称',
       initialVal: '',
@@ -22,16 +29,19 @@ const modalConfig: IModalConfig = {
       placeholder: '请输入权限标识',
       vIf: true
     },
+
     {
-      type: 'custom',
-      slotName: 'menuList',
-      label: '菜单权限',
+      type: 'input',
+      prop: 'remark',
+      label: '备注',
+      initialVal: '',
+      placeholder: '请输入备注',
       vIf: true
     },
     {
       type: 'custom',
-      slotName: 'deptList',
-      label: '部门数据',
+      slotName: 'menuList',
+      label: '菜单权限',
       vIf: true
     },
     {
@@ -45,15 +55,6 @@ const modalConfig: IModalConfig = {
         { label: '封禁', value: 1 }
       ],
       size: 'large',
-      vIf: true
-    },
-
-    {
-      type: 'input',
-      prop: 'remark',
-      label: '备注',
-      initialVal: '',
-      placeholder: '请输入备注',
       vIf: true
     }
   ]

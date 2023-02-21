@@ -136,9 +136,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
         if(userRoleVO.getUser().getId() == null){
             user.setUserPassword(bCryptPasswordEncoder.encode(user.getUserPassword()));
+            if(userRoleVO.getDeptIds().length > 1){
+                throw new BusinessException(ErrorCode.PARAMS_ERROR,"非法操作");
+            } else if (userRoleVO.getDeptIds().length == 1) {
+                user.setDeptId(userRoleVO.getDeptIds()[0]);
+            }
+
             //新增用户
             userMapper.insert(user);
         }else{
+
+            //判断是否
+            if(userRoleVO.getDeptIds().length > 1){
+                throw new BusinessException(ErrorCode.PARAMS_ERROR,"非法操作");
+            } else if (userRoleVO.getDeptIds().length == 1) {
+                user.setDeptId(userRoleVO.getDeptIds()[0]);
+            }
+
+
             //判断密码是否为空
             if(Objects.equals(user.getUserPassword(), "") || user.getUserPassword()== null){
                String pwd = userMapper.getPwdById(user.getId());
@@ -146,7 +161,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             }
             //更新用户
             userMapper.updateById(user);
-
 
             Map<String,Object> map=new HashMap<>();
             map.put("user_id",user.getId());
@@ -295,19 +309,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         List<User> userList = userService.list(queryWrapper);
 
 
-
-        PageInfo<Object> pageResult = new PageInfo<>();
-
         List<Object> voList = new ArrayList<>();
         for (User item:userList){
             UserRoleVO userRoleVO = getUserInfo(item,item.getId());
             UserVO userVO =assembleUserListVo(userRoleVO);
             voList.add(userVO);
         }
+        PageInfo<Object> page = new PageInfo<Object>(userList);
+        page.setList(voList);
 
-        pageResult.setList(voList);
-
-        PageInfo<Object> page = pageResult;
 
         return page;
     }

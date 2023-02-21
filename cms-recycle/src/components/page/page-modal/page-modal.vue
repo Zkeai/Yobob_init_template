@@ -108,7 +108,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { nextTick, reactive, ref } from 'vue'
 import useSystemStore from '@/store/system/index'
 
 import { ElMessage } from 'element-plus'
@@ -128,6 +128,7 @@ const props = defineProps<IModalProps>()
 
 const dialogVisible = ref(false)
 const initialData: any = {}
+//初始值赋值
 for (const item of props.modalConfig.formItems) {
   initialData[item.prop] = item.initialVal ?? ''
 }
@@ -139,14 +140,20 @@ const referEmit = defineEmits(['referMethod'])
 function setModalVisibel(isNew: boolean = true, itemData?: any) {
   isNew_.value = isNew
   if (!isNew && itemData) {
-    for (const key in formData) {
-      formData[key] = itemData[key]
-    }
+    nextTick(() => {
+      for (const key in formData) {
+        formData[key] = itemData[key]
+      }
+    })
   } else {
-    for (const key in formData) {
-      const item = props.modalConfig.formItems.find((item) => item.prop === key)
-      formData[key] = item ? item.initialVal : ''
-    }
+    nextTick(() => {
+      for (const key in formData) {
+        const item = props.modalConfig.formItems.find(
+          (item) => item.prop === key
+        )
+        formData[key] = item ? item.initialVal : ''
+      }
+    })
   }
   dialogVisible.value = true
 }
@@ -158,10 +165,12 @@ function handelConFirm() {
   formData.updateTime = ''
   let newData: any = {}
 
+  //区分一下请求的页面 构造请求
   if (props.modalConfig.pageName === 'user') {
     newData['user'] = formData
     newData['roleIds'] = formData.roleIds
-    newData['postIds'] = props.otherInfo
+    newData['postIds'] = formData.postIds
+    newData['deptIds'] = props.otherInfo.deptIds
   } else if (props.modalConfig.pageName === 'role') {
     newData['sysRole'] = formData
     newData['menuIds'] = props.otherInfo.menuIds
@@ -170,6 +179,7 @@ function handelConFirm() {
     newData = formData
   }
 
+  //发送请求
   systemStore
     .addOrSavePagelistAction(props.modalConfig.pageName, newData)
     .then((res) => {

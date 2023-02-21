@@ -94,3 +94,43 @@ export function mapPathToBreadcrumbs(path: string, menuList: any[]) {
   }
   return breadCrums
 }
+/**
+ * 菜单映射到id列表 递归
+ * @param menuList
+ */
+export function mapMenuListToIds(menuList: any[]) {
+  const ids: number[] = []
+  function recurseGetId(menus: any[]) {
+    for (const item of menus) {
+      if (item.children.length > 0) {
+        recurseGetId(item.children)
+      } else {
+        ids.push(item.id)
+      }
+    }
+  }
+  recurseGetId(menuList)
+  return ids
+}
+
+/**
+ * 从菜单列表映射权限数组
+ * @param menuList 菜单列表
+ * @returns 权限字符串数组
+ */
+export function mapMenuListToPermissions(menuList: any[]) {
+  const permissions: string[] = []
+
+  function recurseGetPermission(menus: any[]) {
+    for (const item of menus) {
+      if (item.menu_type === 'F') {
+        permissions.push(item.code)
+      } else {
+        recurseGetPermission(item.children)
+      }
+    }
+  }
+
+  recurseGetPermission(menuList)
+  return permissions
+}

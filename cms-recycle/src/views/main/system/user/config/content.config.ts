@@ -1,5 +1,6 @@
 const contentConfig = {
   pageName: 'user',
+  hasPagination: true,
   header: {
     title: '用户列表',
     btnTitle: '新建用户'

@@ -2,8 +2,11 @@ package com.hupi.project.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 
+import java.awt.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -53,6 +56,9 @@ public class SysRole implements Serializable {
      */
     @TableLogic
     private Integer isDelete;
+
+    @TableField(exist = false)
+    private List<SysMenu> menuList;
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

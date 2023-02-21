@@ -3,7 +3,7 @@ import router from '@/router'
 import { loginRequest, registerRequest } from '@/service/login/login'
 import type { IAccount, IRegAccount } from '@/types'
 import { localCache } from '@/utils/localCache'
-import { mapMenuToRoutes } from '@/utils/map-menus'
+import { mapMenuListToPermissions, mapMenuToRoutes } from '@/utils/map-menus'
 import { defineStore } from 'pinia'
 import useOtherStore from '../other'
 import { Names } from '../store-name'
@@ -11,7 +11,8 @@ const useLoginStore = defineStore(Names.LOGIN, {
   state: () => ({
     token: '',
     userInfo: '',
-    menuList: <any>[]
+    menuList: <any>[],
+    permissions: <any>[]
   }),
   getters: {},
   actions: {
@@ -22,14 +23,19 @@ const useLoginStore = defineStore(Names.LOGIN, {
       const menuList = loginResult.data?.menuList
       const userInfo = loginResult.data?.currentUser
       if (loginResult.code === 200) {
-        //存储jwtToken menuList userInfo
-
+        //本地缓存jwtToken menuList userInfo
         localCache.setCache(CACHETOKEN, token)
         localCache.setCache(MENULIST, JSON.stringify(menuList))
         localCache.setCache(USERINFO, JSON.stringify(userInfo))
+
         //获取所有departments/roles数据
         const otherStore = useOtherStore()
         otherStore.fetchDataAction()
+
+        //获取登录用户按钮权限
+        const permissions = mapMenuListToPermissions(menuList)
+        this.permissions = permissions
+
         //动态理由
         const routes = mapMenuToRoutes(menuList)
         routes.forEach((route) => router.addRoute('main', route))
@@ -71,6 +77,10 @@ const useLoginStore = defineStore(Names.LOGIN, {
         //动态添加路由
         const routes = mapMenuToRoutes(menuList as any)
         routes.forEach((route) => router.addRoute('main', route))
+
+        //获取登录用户按钮权限
+        const permissions = mapMenuListToPermissions(menuList as any)
+        this.permissions = permissions
       }
     }
   }

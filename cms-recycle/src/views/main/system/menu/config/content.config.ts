@@ -1,5 +1,6 @@
 const contentConfig = {
   pageName: 'menu',
+  hasPagination: false,
   header: {
     title: '菜单列表',
     btnTitle: '新建菜单'

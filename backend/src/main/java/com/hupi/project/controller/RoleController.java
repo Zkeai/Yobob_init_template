@@ -1,6 +1,5 @@
 package com.hupi.project.controller;
 
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hupi.project.common.BaseResponse;
 import com.hupi.project.common.ResultUtils;
@@ -8,7 +7,6 @@ import com.hupi.project.model.dto.other.IsBanRequest;
 import com.hupi.project.model.dto.role.RoleListRequest;
 import com.hupi.project.model.entity.SysRole;
 import com.hupi.project.model.vo.RoleDeleteVO;
-import com.hupi.project.model.vo.RolePermissionVO;
 import com.hupi.project.service.SysRoleService;
 import org.springframework.web.bind.annotation.*;
 

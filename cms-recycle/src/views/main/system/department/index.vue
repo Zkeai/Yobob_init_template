@@ -34,23 +34,32 @@ import usePageModal from '@/hooks/usePageModal'
 //对modalConfig 进行操作
 const modalConfigRef = computed(() => {
   const otherStore = useOtherStore()
-  //添加上级部门  todo一个更好的写法
-  const departments: any[] = []
-  otherStore.Departments.map((item) => {
-    if (item.children !== [])
-      departments.push({ label: item.name, value: item.id })
+  type idsType = {
+    label: string
+    value: number
+  }
 
-    item.children.map((item: any) => {
-      if (item.children !== [])
-        departments.push({ label: item.name, value: item.id })
-    })
-  })
-
+  //添加上级部门  递归
+  const departments = mapMenuListToIds(otherStore.Departments)
+  function mapMenuListToIds(deptList: any[]) {
+    const ids: idsType[] = []
+    function recurseGetId(depts: any[]) {
+      for (const item of depts) {
+        if (item.children.length > 0) {
+          ids.push({ label: item.name, value: item.id })
+          recurseGetId(item.children)
+        }
+      }
+    }
+    recurseGetId(deptList)
+    return ids
+  }
   modalConfig.formItems.forEach((item) => {
     if (item.prop === 'parentId') {
       item.selectValue.push(...departments)
     }
   })
+
   return modalConfig
 })
 //点击 搜索 重置 hooks

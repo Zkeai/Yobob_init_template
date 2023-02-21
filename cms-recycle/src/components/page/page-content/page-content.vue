@@ -4,7 +4,7 @@
       <h3 class="title">
         {{ contentConfig.header?.title ?? '数据列表' }}
       </h3>
-      <el-button type="primary" @click="handelAddClick">{{
+      <el-button v-if="isAdd" type="primary" @click="handelAddClick">{{
         contentConfig.header?.btnTitle ?? '新建数据'
       }}</el-button>
     </div>
@@ -126,12 +126,14 @@
           <!-- 操作 -->
           <template v-else-if="item.type === 'handle'">
             <el-table-column
+              v-if="isEdit || isDelete"
               align="center"
               :label="item.label"
               :width="item.width"
             >
               <template #default="scope">
                 <el-button
+                  v-if="isEdit"
                   size="small"
                   :icon="Edit"
                   type="primary"
@@ -147,7 +149,12 @@
                   @confirm="handelDeleteClick(scope.row.id)"
                 >
                   <template #reference>
-                    <el-button size="small" :icon="Delete" type="danger" text
+                    <el-button
+                      v-if="isDelete"
+                      size="small"
+                      :icon="Delete"
+                      type="danger"
+                      text
                       >删除</el-button
                     >
                   </template>
@@ -168,7 +175,7 @@
         </template>
       </el-table>
     </div>
-    <div class="pagination">
+    <div class="pagination" v-if="contentConfig.hasPagination && isQuery">
       <el-pagination
         v-model:current-page="currentPage"
         v-model:page-size="currentPageSize"
@@ -190,10 +197,12 @@ import { Delete, Edit } from '@element-plus/icons-vue'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 import { formatUTC } from '@/utils/time-format'
+import usePermission from '@/hooks/usePermission'
 
 interface Iprops {
   contentConfig: {
     pageName: string
+    hasPagination: boolean
     header?: {
       title?: string
       btnTitle?: string
@@ -210,12 +219,28 @@ const props = defineProps<Iprops>()
 //自定事件
 const emit = defineEmits(['newClick', 'editClick'])
 
+//获取登录用户的权限 usePermission hooks
+const isAdd = usePermission(`system:${props.contentConfig.pageName}:add`)
+const isDelete = usePermission(`system:${props.contentConfig.pageName}:delete`)
+const isEdit = usePermission(`system:${props.contentConfig.pageName}:edit`)
+const isQuery = usePermission(`system:${props.contentConfig.pageName}:query`)
+
+//页码相关
+const systemStore = useSystemStore()
+const { pageList, pageTotalCount } = storeToRefs(systemStore)
+if (!isQuery) {
+  pageList.value = []
+}
 const currentPage = ref(1)
 const currentPageSize = ref(10)
 
-const systemStore = useSystemStore()
-const { pageList, pageTotalCount } = storeToRefs(systemStore)
-//页码相关
+if (
+  props.contentConfig.pageName === 'department' ||
+  props.contentConfig.pageName === 'menu'
+) {
+  currentPageSize.value = 1000
+}
+
 fetchPageListAction()
 const handleSizeChange = () => {
   fetchPageListAction()
@@ -225,14 +250,16 @@ const handleCurrentChange = () => {
 }
 //发动网络请求函数
 function fetchPageListAction(formData: any = {}) {
+  if (!isQuery) return
   const pageSize = currentPageSize.value
   const pageNum = currentPage.value
+
   const info = { pageNum, pageSize }
 
   const pageInfo = { ...info, ...formData }
   systemStore.postPageListAction(props.contentConfig.pageName, pageInfo)
 }
-//删除 增加 编辑
+//删除 增加 编辑 isBan切换
 function handelDeleteClick(id: number) {
   systemStore
     .deletePageAction(props.contentConfig.pageName, id)
@@ -245,15 +272,12 @@ function handelDeleteClick(id: number) {
       }
     })
 }
-
 function handelAddClick() {
   emit('newClick')
 }
-
 function handleEditClick(itemData: any) {
   emit('editClick', itemData)
 }
-//isBan切换
 function handleIsBanChange(_: any, row: any) {
   systemStore
     .updateIsBanAction(props.contentConfig.pageName, {
@@ -269,6 +293,18 @@ function handleIsBanChange(_: any, row: any) {
       }
     })
 }
+//监听增删改action被执行
+systemStore.$onAction(({ name, after }) => {
+  after(() => {
+    if (
+      name === 'deletePageAction' ||
+      name === 'addOrSavePagelistAction' ||
+      name === 'updateIsBanAction'
+    ) {
+      currentPage.value = 1
+    }
+  })
+})
 defineExpose({ fetchPageListAction })
 </script>
 <style scoped lang="less">

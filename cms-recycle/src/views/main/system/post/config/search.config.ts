@@ -1,4 +1,5 @@
 const searchConfig = {
+  pageName: 'post',
   formItems: [
     {
       type: 'input',

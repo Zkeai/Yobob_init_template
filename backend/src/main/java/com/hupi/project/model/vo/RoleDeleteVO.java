@@ -7,6 +7,5 @@ import lombok.Setter;
 @Setter
 public class RoleDeleteVO {
     private SysRole sysRole;
-    private Long[] deptIds;
     private Long[] menuIds;
 }

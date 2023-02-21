@@ -94,12 +94,12 @@ const modalConfig: IModalConfig = {
       type: 'custom',
       slotName: 'post',
       label: '岗位',
+      prop: 'post',
       vIf: true
     },
     {
       type: 'custom',
       slotName: 'role',
-      prop: 'roleIds',
       label: '角色',
       vIf: true
     }

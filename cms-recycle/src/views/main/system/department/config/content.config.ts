@@ -1,5 +1,6 @@
 const contentConfig = {
   pageName: 'department',
+  hasPagination: false,
   header: {
     title: '部门列表',
     btnTitle: '新建部门 '

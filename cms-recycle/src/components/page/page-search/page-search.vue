@@ -1,5 +1,5 @@
 <template>
-  <div class="search">
+  <div class="search" v-if="isRuery">
     <el-form label-width="80px" :model="searchForm" ref="formRef">
       <el-row :gutter="20">
         <template v-for="item in searchConfig.formItems" :key="item.prop">
@@ -52,16 +52,23 @@
 </template>
 
 <script setup lang="ts">
+import usePermission from '@/hooks/usePermission'
 import { getTime } from '@/utils/time-format'
 import type ElForm from 'element-plus/es/components/form'
 
 import { reactive, ref } from 'vue'
+
 interface Iprops {
   searchConfig: {
+    pageName: string
     formItems: any[]
   }
 }
 const props = defineProps<Iprops>()
+
+//获取权限
+const isRuery = usePermission(`system:${props.searchConfig.pageName}:query`)
+
 const initialForm: any = {}
 for (const item of props.searchConfig.formItems) {
   initialForm[item.prop] = item.initialValue ?? ''

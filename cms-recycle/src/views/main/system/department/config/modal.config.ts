@@ -42,7 +42,7 @@ const modalConfig: IModalConfig = {
     {
       type: 'radio',
       label: '状态',
-      prop: 'status',
+      prop: 'isBan',
       initialVal: '',
       width: '80px',
       radioList: [

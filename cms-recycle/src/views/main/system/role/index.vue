@@ -20,54 +20,51 @@
     >
       <template #menuList>
         <el-tree-select
-          :data="Menus"
           v-model="MenuChecked"
-          check-strictly
-          check-on-click-node
-          multiple
-          :render-after-expand="false"
-          show-checkbox
-          node-key="id"
+          ref="treeRef"
+          :data="Menus"
           :props="{ children: 'children', label: 'name' }"
+          node-key="id"
+          highlight-current
+          multiple
+          show-checkbox
+          check-on-click-node
+          render-after-expand="false"
           @check="handleElMenuTreeCheck"
-        />
-      </template>
-      <template #deptList>
-        <el-tree-select
-          :data="Departments"
-          v-model="DeptChecked"
-          check-strictly
-          check-on-click-node
-          multiple
-          :render-after-expand="false"
-          show-checkbox
-          node-key="id"
-          :props="{ children: 'children', label: 'name' }"
-          @check="handleElDeptTreeCheck"
-        />
+        >
+        </el-tree-select>
       </template>
     </PageModal>
   </div>
 </template>
 
 <script setup lang="ts">
+import { reactive, ref, nextTick } from 'vue'
+import type { ElTree } from 'element-plus'
+import { storeToRefs } from 'pinia'
+
 import pageSearch from '@/components/page/page-search/page-search.vue'
 import pageContent from '@/components/page/page-content/page-content.vue'
 import PageModal from '@/components/page/page-modal/page-modal.vue'
+
 import searchConfig from './config/search.config'
 import contentConfig from './config/content.config'
 import modalConfig from './config/modal.config'
+
 import usePageContent from '@/hooks/usePageContent'
 import usePageModal from '@/hooks/usePageModal'
-import { storeToRefs } from 'pinia'
+
 import useOtherStore from '@/store/other/index'
-import { reactive, ref } from 'vue'
-const DeptChecked = ref()
+import { mapMenuListToIds } from '@/utils/map-menus'
+
 const MenuChecked = ref()
 //点击 搜索 重置 hooks
 const { contentRef, handleQueryClick, handleResetClick } = usePageContent()
 //modal组件的操作 新增 修改
-const { modalRef, handleNewClick, handleEditClick } = usePageModal()
+const { modalRef, handleNewClick, handleEditClick } = usePageModal(
+  newCallback,
+  editCallback
+)
 
 //需要传给model的方法
 function referMethod() {
@@ -78,8 +75,9 @@ interface IotherInfo {
   menuIds: number[]
   deptIds: number[]
 }
+
 const otherStore = useOtherStore()
-const { Menus, Departments } = storeToRefs(otherStore)
+const { Menus } = storeToRefs(otherStore)
 let otherInfo: IotherInfo = reactive({
   menuIds: [],
   deptIds: []
@@ -88,9 +86,22 @@ function handleElMenuTreeCheck(_: any, data: any) {
   const MenuList = [...data.checkedKeys, ...data.halfCheckedKeys]
   otherInfo.menuIds = MenuList
 }
-function handleElDeptTreeCheck(_: any, data: any) {
-  const DeptList = [...data.checkedKeys, ...data.halfCheckedKeys]
-  otherInfo.deptIds = DeptList
+
+const treeRef = ref<InstanceType<typeof ElTree>>()
+
+function editCallback(itemData: any) {
+  nextTick(() => {
+    const menuIds = mapMenuListToIds(itemData.menuList)
+    MenuChecked.value = menuIds
+    treeRef.value?.setCheckedKeys(menuIds)
+  })
+}
+
+function newCallback() {
+  nextTick(() => {
+    MenuChecked.value = []
+    treeRef.value?.setCheckedKeys([])
+  })
 }
 </script>
 <style scoped lang="less"></style>

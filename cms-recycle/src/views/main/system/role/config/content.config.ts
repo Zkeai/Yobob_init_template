@@ -1,5 +1,6 @@
 const contentConfig = {
   pageName: 'role',
+  hasPagination: true,
   header: {
     title: '角色列表',
     btnTitle: '新建角色 '
@@ -10,7 +11,7 @@ const contentConfig = {
       label: '序号',
       prop: 'id',
       width: '80px',
-      vIf: false
+      vIf: true
     },
 
     {

@@ -1,5 +1,6 @@
 const contentConfig = {
   pageName: 'post',
+  hasPagination: true,
   header: {
     title: '岗位列表',
     btnTitle: '新建岗位 '

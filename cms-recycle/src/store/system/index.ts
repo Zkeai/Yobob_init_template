@@ -6,6 +6,7 @@ import {
 } from '@/service/main/system/system'
 import type { ISystemState } from '@/types/system'
 import { defineStore } from 'pinia'
+import useOtherStore from '../other'
 import { Names } from '../store-name'
 
 const SystemStore = defineStore(Names.USER, {
@@ -28,16 +29,27 @@ const SystemStore = defineStore(Names.USER, {
     //通用删除
     async deletePageAction(pageName: string, id: number) {
       const Result = await deletePageRequest(pageName, id)
+
+      //重新获取数据
+      const otherStore = useOtherStore()
+      otherStore.fetchDataAction()
+
       return Result
     },
     //通用新增或修改
     async addOrSavePagelistAction(pageName: string, userInfo: any) {
       const Result = await addOrSavePageRequest(pageName, userInfo)
+      //重新获取数据
+      const otherStore = useOtherStore()
+      otherStore.fetchDataAction()
       return Result
     },
     //通用根据id修改IsBan状态
     async updateIsBanAction(pageName: string, userInfo: any) {
       const Result = await updateIsBanPageRequest(pageName, userInfo)
+      //重新获取数据
+      const otherStore = useOtherStore()
+      otherStore.fetchDataAction()
       return Result
     }
   }

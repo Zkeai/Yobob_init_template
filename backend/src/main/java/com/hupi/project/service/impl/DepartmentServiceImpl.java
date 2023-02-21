@@ -10,7 +10,6 @@ import com.hupi.project.model.dto.department.DepartmentListRequest;
 import com.hupi.project.model.entity.Department;
 import com.hupi.project.service.DepartmentService;
 import com.hupi.project.mapper.DepartmentMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -177,7 +176,6 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
         }
         return false;
     }
-
 
 }
 

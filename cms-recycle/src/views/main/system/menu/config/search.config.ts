@@ -1,4 +1,5 @@
 const searchConfig = {
+  pageName: 'menu',
   formItems: [
     {
       type: 'input',
