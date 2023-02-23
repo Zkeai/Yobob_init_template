@@ -76,7 +76,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
         if(menuIds !=null && menuIds.length > 0){
             sysRoleMapper.insertBatchRelationMenu(role.getId(),menuIds);
         }
-        return null;
+        return "success";
     }
 
     @Override

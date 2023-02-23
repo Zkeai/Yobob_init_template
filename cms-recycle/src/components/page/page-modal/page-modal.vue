@@ -7,7 +7,7 @@
           ? modalConfig.header?.newTitle ?? '新建数据'
           : modalConfig.header?.editTitle ?? '编辑数据'
       "
-      width="35%"
+      width="42%"
       center
     >
       <div class="form">
@@ -44,17 +44,18 @@
                 </template>
                 <template v-else-if="item.type === 'radio'">
                   <el-form-item :label="item.label" :prop="item.prop">
-                    <el-radio-group v-model="formData[item.prop]">
+                    <el-radio-group
+                      @change="radioChange(item, formData[item.prop])"
+                      v-model="formData[item.prop]"
+                      v-for="(item1, index) in item.radioList"
+                      :key="item1.value"
+                    >
                       <el-radio
-                        :label="item.radioList[0].value"
+                        :label="item.radioList[index].value"
                         :size="item.size"
+                        style="margin-right: 10px"
                       >
-                        {{ item.radioList[0].label }}</el-radio
-                      >
-                      <el-radio
-                        :label="item.radioList[1].value"
-                        :size="item.size"
-                        >{{ item.radioList[1].label }}</el-radio
+                        {{ item.radioList[index].label }}</el-radio
                       >
                     </el-radio-group>
                   </el-form-item>
@@ -83,8 +84,21 @@
                     </template>
                   </el-form-item>
                 </template>
-                <template v-else>
+                <template v-else-if="item.type === 'input-num'">
                   <el-form-item :label="item.label" :prop="item.prop">
+                    <el-input-number
+                      initialVal="item.initialVal"
+                      v-model="formData[item.prop]"
+                      :min="0"
+                    />
+                  </el-form-item>
+                </template>
+                <template v-else>
+                  <el-form-item
+                    v-show="item.prop === 'code' ? true : FShow"
+                    :label="item.label"
+                    :prop="item.prop"
+                  >
                     <el-input
                       v-model="formData[item.prop]"
                       :placeholder="item.placeholder"
@@ -125,21 +139,21 @@ export interface IModalProps {
 }
 
 const props = defineProps<IModalProps>()
-
+const FShow = ref(true)
 const dialogVisible = ref(false)
 const initialData: any = {}
 //初始值赋值
 for (const item of props.modalConfig.formItems) {
   initialData[item.prop] = item.initialVal ?? ''
 }
-const isNew_ = ref(true)
+const isNew_ = ref(false)
 const formData = reactive<any>(initialData)
 const referEmit = defineEmits(['referMethod'])
 
-//获取roles/departments
+//获取roles/departments 判断新建/编辑
 function setModalVisibel(isNew: boolean = true, itemData?: any) {
   isNew_.value = isNew
-  if (!isNew && itemData) {
+  if (!isNew_.value && itemData) {
     nextTick(() => {
       for (const key in formData) {
         formData[key] = itemData[key]
@@ -175,6 +189,8 @@ function handelConFirm() {
     newData['sysRole'] = formData
     newData['menuIds'] = props.otherInfo.menuIds
     newData['deptIds'] = props.otherInfo.deptIds
+  } else if (props.modalConfig.pageName === 'menu') {
+    newData = { ...formData, parent_id: props.otherInfo.menuIds[0] }
   } else {
     newData = formData
   }
@@ -193,6 +209,17 @@ function handelConFirm() {
   dialogVisible.value = false
 }
 
+function radioChange(item: any, value: any) {
+  if (item.prop === 'menu_type') {
+    switch (value) {
+      case 'F':
+        FShow.value = false
+        break
+      default:
+        FShow.value = true
+    }
+  }
+}
 //暴露的属性和方法
 defineExpose({ setModalVisibel })
 </script>

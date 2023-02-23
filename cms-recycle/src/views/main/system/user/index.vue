@@ -104,7 +104,6 @@ import useOtherStore from '@/store/other'
 import type { ElSelect, ElTree } from 'element-plus'
 
 const DeptChecked = ref()
-
 const otherStore = useOtherStore()
 const { Roles, Departments, Posts } = storeToRefs(otherStore)
 //点击 搜索 重置 hooks
@@ -112,11 +111,12 @@ const { contentRef, handleQueryClick, handleResetClick } = usePageContent()
 
 //modal组件的操作 新增 修改
 const { modalRef, handleNewClick, handleEditClick } = usePageModal(editCallback)
-//需要传给model的方法
+//需要传给modal的方法
 function referMethod() {
   return contentRef.value?.fetchPageListAction()
 }
 
+//callback
 interface IotherInfo {
   deptIds: number[]
 }
@@ -132,8 +132,8 @@ const treeRef = ref<InstanceType<typeof ElTree>>()
 
 function editCallback(itemData: any) {
   nextTick(() => {
-    DeptChecked.value = itemData.deptId
-    treeRef.value?.setCheckedKeys([itemData.deptId])
+    DeptChecked.value = itemData?.deptId
+    treeRef.value?.setCheckedKeys([itemData?.deptId])
   })
 }
 </script>

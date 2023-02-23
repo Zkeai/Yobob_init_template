@@ -23,6 +23,13 @@ const contentConfig = {
     },
     {
       type: 'normal',
+      label: '上级菜单',
+      prop: 'parent_id',
+      width: '80px',
+      vIf: false
+    },
+    {
+      type: 'normal',
       label: '菜单图标',
       prop: 'icon',
       width: '120px',
@@ -64,13 +71,13 @@ const contentConfig = {
     {
       type: 'time',
       label: '创建时间',
-      prop: 'createTime',
+      prop: 'create_time',
       vIf: true
     },
     {
       type: 'time',
       label: '更新时间',
-      prop: 'updateTime',
+      prop: 'update_time',
       vIf: true
     },
     {

@@ -86,7 +86,7 @@ const modalConfig: IModalConfig = {
       childrenTree: {
         rowKey: 'id',
         treeProps: { children: 'children', hasChildren: 'hasChildren' },
-        defaultExpandAll: true
+        defaultExpandAll: false
       },
       vIf: true
     },

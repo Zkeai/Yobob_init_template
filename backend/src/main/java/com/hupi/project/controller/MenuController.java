@@ -7,6 +7,7 @@ import com.hupi.project.model.dto.menu.MenuListRequest;
 import com.hupi.project.model.dto.post.PostListRequest;
 import com.hupi.project.model.entity.Post;
 import com.hupi.project.model.entity.SysMenu;
+import com.hupi.project.model.vo.UserRoleVO;
 import com.hupi.project.service.PostService;
 import com.hupi.project.service.SysMenuService;
 import org.springframework.web.bind.annotation.*;
@@ -51,4 +52,9 @@ public class MenuController {
         return ResultUtils.success(resultMenulist);
     }
 
+    @PostMapping("/saveOrUpdate")
+    public BaseResponse<String> saveOrUpdate(@RequestBody SysMenu sysMenu){
+        String result = sysMenuService.saveOrUpdater(sysMenu);
+        return ResultUtils.success(result);
+    }
 }

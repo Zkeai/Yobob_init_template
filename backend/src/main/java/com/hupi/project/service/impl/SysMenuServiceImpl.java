@@ -4,9 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hupi.project.common.ErrorCode;
+import com.hupi.project.exception.BusinessException;
 import com.hupi.project.mapper.SysMenuMapper;
 import com.hupi.project.model.dto.menu.MenuListRequest;
 import com.hupi.project.model.entity.Department;
+import com.hupi.project.model.entity.SysRole;
 import com.hupi.project.service.SysMenuService;
 import com.hupi.project.model.entity.SysMenu;
 import org.springframework.stereotype.Service;
@@ -29,6 +32,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
     implements SysMenuService {
     @Resource
     private SysMenuService sysMenuService;
+    @Resource
+    private SysMenuMapper sysMenuMapper;
     @Override
     public List<SysMenu> buildTreeMenu(List<SysMenu> sysMenuList) {
         List<SysMenu> resultMenulist = new ArrayList<>();
@@ -105,6 +110,24 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
         return page;
 
     }
+
+    @Override
+    public String saveOrUpdater(SysMenu sysMenu) {
+        if(sysMenu ==null){
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"非法操作");
+        }
+
+        if(sysMenu.getId() == null || sysMenu.getId() == 0){
+            //调用新增方法 把下级信息保存到role数据库
+            sysMenuMapper.insert(sysMenu);
+        }else{
+            //编辑方法
+            sysMenuMapper.updateById(sysMenu);
+        }
+
+        return "success";
+    }
+
 }
 
 
