@@ -15,6 +15,7 @@ import com.hupi.project.model.vo.UserVO;
 import com.hupi.project.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -85,6 +86,8 @@ public class UserController {
      * @return List<UserVO>
      */
     @PostMapping("/list")
+
+    @PreAuthorize("hasAnyAuthority('system:user:query')")
     public BaseResponse<Object> listUser(@RequestBody UserQueryRequest userQueryRequest) {
 
         PageInfo list= userService.getList( userQueryRequest);
@@ -99,6 +102,7 @@ public class UserController {
      * @return BaseResponse<String>
      */
     @PostMapping("/saveOrUpdate")
+    @PreAuthorize("hasAnyAuthority('system:user:add','system:user:edit')")
     public BaseResponse<String> saveOrUpdate(@RequestBody UserRoleVO userRoleVO){
         String result = userService.saveOrUpdate(userRoleVO);
         return ResultUtils.success(result);
@@ -110,6 +114,7 @@ public class UserController {
      * @return BaseResponse<String>
      */
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyAuthority('system:user:delete')")
     public BaseResponse<String> delete(@PathVariable Long id) {
 
         String result = userService.deleteEmp(id);
@@ -123,12 +128,14 @@ public class UserController {
      * @return String
      */
     @PostMapping("/updateState")
+    @PreAuthorize("hasRole('ROLE_admin')")
     public BaseResponse<String> updateState(@RequestBody AdminVO adminVO){
         String result = userService.updateState(adminVO);
         return ResultUtils.success(result);
     }
 
     @PostMapping("/updateIsBan")
+    @PreAuthorize("hasRole('ROLE_admin')")
     public BaseResponse<Boolean> updateIsBan(@RequestBody IsBanRequest isBanRequest){
         Long isBan = isBanRequest.getIsBan();
         Long id = isBanRequest.getId();

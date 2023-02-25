@@ -7,6 +7,7 @@ import com.hupi.project.model.dto.other.IsBanRequest;
 import com.hupi.project.model.entity.Department;
 
 import com.hupi.project.service.DepartmentService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
@@ -35,8 +36,7 @@ public class DepartmentController {
      * @return pageInfo
      */
     @PostMapping("/list")
-    //@PreAuthorize("hasRole('ROLE_admin')")
-    //@PreAuthorize("hasAnyAuthority('system:menu:add1')")
+    @PreAuthorize("hasRole('ROLE_admin')")
     public BaseResponse<Object> listUserByPage(@RequestBody DepartmentListRequest departmentListRequest) {
 
         PageInfo list = departmentService.getList( departmentListRequest);
@@ -51,6 +51,7 @@ public class DepartmentController {
      * @return success/error
      */
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyAuthority('system:department:delete')")
     public BaseResponse<String> delete(@PathVariable Long id) {
 
         String result = departmentService.deleteDep(id);
@@ -64,6 +65,7 @@ public class DepartmentController {
      * @return success/error
      */
     @PostMapping("/saveOrUpdate")
+    @PreAuthorize("hasAnyAuthority('system:department:edit','system:department:add')")
     public BaseResponse<String> saveOrUpdate(@RequestBody Department department){
        String result = departmentService.saveOrUpdateDep(department);
         return ResultUtils.success(result);
@@ -103,6 +105,7 @@ public class DepartmentController {
     }
 
     @PostMapping("/updateIsBan")
+//    @PreAuthorize("hasRole('ROLE_admin')")
     public BaseResponse<Boolean> updateIsBan(@RequestBody IsBanRequest isBanRequest){
         Long isBan = isBanRequest.getIsBan();
         Long id = isBanRequest.getId();

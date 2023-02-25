@@ -10,6 +10,7 @@ import com.hupi.project.model.dto.post.PostListRequest;
 import com.hupi.project.model.entity.Post;
 
 import com.hupi.project.service.PostService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
@@ -25,6 +26,7 @@ public class PostController{
 
 
     @PostMapping("/list")
+    @PreAuthorize("hasAnyAuthority('system:post:query')")
     public BaseResponse<Object> listRoleByPage(@RequestBody PostListRequest postListRequest) {
         PageInfo list = postService.getList(postListRequest);
 
@@ -39,12 +41,14 @@ public class PostController{
     }
 
     @PostMapping("/saveOrUpdate")
+    @PreAuthorize("hasAnyAuthority('system:post:edit','system:post:add')")
     public BaseResponse<String> saveOrUpdate(@RequestBody Post post){
         String result = postService.saveOrUpdateIs(post);
         return ResultUtils.success(result);
     }
 
     @PostMapping("/updateIsBan")
+    @PreAuthorize("hasRole('ROLE_admin')")
     public BaseResponse<Boolean> updateIsBan(@RequestBody IsBanRequest isBanRequest){
         Long isBan = isBanRequest.getIsBan();
         Long id = isBanRequest.getId();
@@ -58,6 +62,7 @@ public class PostController{
      * @return success/error
      */
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyAuthority('system:post:delete')")
     public BaseResponse<String> delete(@PathVariable Long id) {
 
         String result = postService.deleteDep(id);

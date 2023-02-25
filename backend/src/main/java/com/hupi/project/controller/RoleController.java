@@ -8,6 +8,7 @@ import com.hupi.project.model.dto.role.RoleListRequest;
 import com.hupi.project.model.entity.SysRole;
 import com.hupi.project.model.vo.RoleDeleteVO;
 import com.hupi.project.service.SysRoleService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -32,6 +33,7 @@ public class RoleController {
      * @return pageInfo
      */
     @PostMapping("/list")
+    @PreAuthorize("hasAnyAuthority('system:role:list')")
     public BaseResponse<Object> listRoleByPage(@RequestBody RoleListRequest roleListRequest) {
         PageInfo list = sysRoleService.getList(roleListRequest);
 
@@ -44,6 +46,7 @@ public class RoleController {
      * @return success/error
      */
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyAuthority('system:role:delete')")
     public BaseResponse<String> delete(@PathVariable Long id) {
 
         String result = sysRoleService.deleteDep(id);
@@ -57,6 +60,7 @@ public class RoleController {
      * @return success/error
      */
     @PostMapping("/saveOrUpdate")
+    @PreAuthorize("hasAnyAuthority('system:role:add','system:role:edit')")
     public BaseResponse<String> saveOrUpdate(@RequestBody RoleDeleteVO roleDeleteVO){
        String result = sysRoleService.saveOrUpdate(roleDeleteVO);
         return ResultUtils.success(result);
@@ -96,6 +100,7 @@ public class RoleController {
 
 
     @PostMapping("/updateIsBan")
+    @PreAuthorize("hasRole('ROLE_admin')")
     public BaseResponse<Boolean> updateIsBan(@RequestBody IsBanRequest isBanRequest){
         Long isBan = isBanRequest.getIsBan();
         Long id = isBanRequest.getId();

@@ -2,6 +2,7 @@ package com.hupi.project.common.security;
 
 import com.hupi.project.common.ErrorCode;
 import com.hupi.project.exception.BusinessException;
+import com.hupi.project.model.entity.SysMenu;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import com.hupi.project.service.UserService;

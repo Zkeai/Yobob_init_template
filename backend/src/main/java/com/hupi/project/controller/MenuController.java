@@ -10,6 +10,7 @@ import com.hupi.project.model.entity.SysMenu;
 import com.hupi.project.model.vo.UserRoleVO;
 import com.hupi.project.service.PostService;
 import com.hupi.project.service.SysMenuService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -27,6 +28,7 @@ public class MenuController {
     private SysMenuService sysMenuService;
 
     @PostMapping("/list")
+    @PreAuthorize("hasAnyAuthority('system:menu:list')")
     public BaseResponse<Object> listMenuByPage(@RequestBody MenuListRequest menuListRequest) {
         PageInfo list = sysMenuService.getList(menuListRequest);
 
@@ -53,6 +55,7 @@ public class MenuController {
     }
 
     @PostMapping("/saveOrUpdate")
+    @PreAuthorize("hasAnyAuthority('system:menu:edit','system:menu:add')")
     public BaseResponse<String> saveOrUpdate(@RequestBody SysMenu sysMenu){
         String result = sysMenuService.saveOrUpdater(sysMenu);
         return ResultUtils.success(result);
