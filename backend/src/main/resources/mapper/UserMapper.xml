@@ -58,4 +58,5 @@
             #{id}
         </foreach>
     </select>
+    <select id="selectByPageNumSize" resultType="com.hupi.project.model.entity.User"></select>
 </mapper>

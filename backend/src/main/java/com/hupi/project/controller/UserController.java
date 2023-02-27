@@ -35,10 +35,7 @@ public class UserController {
 
     @Resource
     private UserService userService;
-    @Resource
-    private SysUserRoleMapper sysUserRoleMapper;
     private static final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-
 
     /**
      * 用户注册
@@ -60,7 +57,6 @@ public class UserController {
         long result = userService.userRegister(userAccount, userPassword, checkPassword);
         return ResultUtils.success(result);
     }
-
 
     /**
      * 根据 id 获取用户
@@ -86,15 +82,11 @@ public class UserController {
      * @return List<UserVO>
      */
     @PostMapping("/list")
-
     @PreAuthorize("hasAnyAuthority('system:user:query')")
     public BaseResponse<Object> listUser(@RequestBody UserQueryRequest userQueryRequest) {
-
         PageInfo list= userService.getList( userQueryRequest);
-
         return ResultUtils.success(restPage(list));
     }
-
 
     /**
      * 新增或更新下级用户 以及对应关系表
@@ -144,7 +136,6 @@ public class UserController {
     }
     // endregion
 public static UserVO assembleUserListVo(UserRoleVO user){
-
     UserVO userVO = new UserVO();
     userVO.setId(user.getUser().getId());
     userVO.setUserName(user.getUser().getUserName());

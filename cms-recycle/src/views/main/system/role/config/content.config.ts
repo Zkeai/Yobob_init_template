@@ -1,6 +1,7 @@
 const contentConfig = {
   pageName: 'role',
   hasPagination: true,
+  treeVisible: false,
   header: {
     title: '角色列表',
     btnTitle: '新建角色 '

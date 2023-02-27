@@ -22,7 +22,7 @@ public class UserVO implements Serializable {
     /**
      * 部门id
      */
-    private Integer deptId;
+    private Long deptId;
     /**
      * 邮箱
      */

@@ -1,12 +1,15 @@
 <template>
   <div class="user">
     <pageSearch
+      ref="searchRef"
       :search-config="searchConfig"
+      @search-val="searchVal"
       @query-click="handleQueryClick"
       @reset-click="handleResetClick"
     />
     <pageContent
       ref="contentRef"
+      :msg="formVal"
       :content-config="contentConfig"
       @new-click="handleNewClick"
       @edit-click="handleEditClick"
@@ -102,13 +105,20 @@ import usePageContent from '@/hooks/usePageContent'
 
 import useOtherStore from '@/store/other'
 import type { ElSelect, ElTree } from 'element-plus'
+import usePageSearch from '@/hooks/usePageSearch'
 
 const DeptChecked = ref()
 const otherStore = useOtherStore()
 const { Roles, Departments, Posts } = storeToRefs(otherStore)
+
+const { searchRef } = usePageSearch()
+
+let formVal = ref()
+const searchVal = (val: any) => {
+  formVal.value = val
+}
 //点击 搜索 重置 hooks
 const { contentRef, handleQueryClick, handleResetClick } = usePageContent()
-
 //modal组件的操作 新增 修改
 const { modalRef, handleNewClick, handleEditClick } = usePageModal(editCallback)
 //需要传给modal的方法

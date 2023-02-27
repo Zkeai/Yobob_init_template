@@ -55,8 +55,7 @@
 import usePermission from '@/hooks/usePermission'
 import { getTime } from '@/utils/time-format'
 import type ElForm from 'element-plus/es/components/form'
-
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
 
 interface Iprops {
   searchConfig: {
@@ -68,21 +67,22 @@ const props = defineProps<Iprops>()
 
 //获取权限
 const isRuery = usePermission(`system:${props.searchConfig.pageName}:query`)
-
 const initialForm: any = {}
+
 for (const item of props.searchConfig.formItems) {
   initialForm[item.prop] = item.initialValue ?? ''
 }
 const searchForm = reactive(initialForm)
 //自定义事件/接收的属性
-
-const emit = defineEmits(['queryClick', 'resetClick'])
+watch(searchForm, (newVal) => {
+  emit('searchVal', newVal)
+})
+const emit = defineEmits(['queryClick', 'resetClick', 'searchVal'])
 
 //重置表单 通过ref
 const formRef = ref<InstanceType<typeof ElForm>>()
 function handleResetClick() {
   formRef.value?.resetFields()
-
   //重新发送网络请求
   emit('resetClick')
 }
@@ -93,6 +93,7 @@ function searchHandelClick() {
     let createTime = getTime(searchForm.createTime)
     searchForm.createTime = createTime
   }
+
   if (searchForm.updateTime !== null && searchForm.updateTime !== '') {
     let updateTime = getTime(searchForm.updateTime)
     searchForm.updateTime = updateTime

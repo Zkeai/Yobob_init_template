@@ -12,6 +12,7 @@ import com.hupi.project.model.entity.*;
 import com.hupi.project.model.vo.AdminVO;
 import com.hupi.project.model.vo.UserRoleVO;
 import com.hupi.project.model.vo.UserVO;
+import com.hupi.project.service.DepartmentService;
 import com.hupi.project.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -20,17 +21,13 @@ import org.springframework.stereotype.Service;
 
 
 import javax.annotation.Resource;
-
 import java.util.*;
 import java.util.stream.Collectors;
-
 import static com.hupi.project.controller.UserController.assembleUserListVo;
 import static com.hupi.project.util.StringUtils.transferString2Date;
 
-
 /**
  * 用户服务实现类
- *
  * @author zkeai
  */
 @Service
@@ -42,6 +39,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     private UserMapper userMapper;
     @Resource
     private UserService userService;
+    @Resource
+    private DepartmentService departmentService;
     @Resource
     private SysRoleMapper sysRoleMapper;
 
@@ -262,8 +261,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Override
     public PageInfo getList(UserQueryRequest userQueryRequest) {
-        PageHelper.startPage(userQueryRequest.getPageNum(),userQueryRequest.getPageSize());
-
+        //根据前端上传的条件筛选
         User userQuery = new User();
         if (userQueryRequest.getUserName() !=null && !Objects.equals(userQueryRequest.getUserName(), "")) {
             userQuery.setUserName(userQueryRequest.getUserName());
@@ -274,23 +272,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if(!Objects.equals(userQueryRequest.getEmail(), "") && userQueryRequest.getEmail() !=null) {
             userQuery.setEmail(userQueryRequest.getEmail());
         }
-
         if(userQueryRequest.getIsBan() !=null){
             if(userQueryRequest.getIsBan() != 1000){
                 userQuery.setIsBan(userQueryRequest.getIsBan());
             }
 
         }
-
         if( userQueryRequest.getGender() !=null){
             if(userQueryRequest.getGender() != 1000){
                 userQuery.setGender(userQueryRequest.getGender());
             }
 
         }
-
         QueryWrapper<User> queryWrapper = new QueryWrapper<>(userQuery);
-
         if(!Objects.equals(userQueryRequest.getCreateTime(), "") && userQueryRequest.getCreateTime() !=null){
             String time= userQueryRequest.getCreateTime();
             Date a = transferString2Date(time.split("`")[0]);
@@ -305,17 +299,54 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             queryWrapper.ge("updateTime",a);
             queryWrapper.le("updateTime",b);
         }
+        List<User> userList1 = userService.list(queryWrapper);
 
-        List<User> userList = userService.list(queryWrapper);
+        //根据deptId获取所有下面的部门
+        Long deptId = userQueryRequest.getDeptId();
+        QueryWrapper<Department> deptQueryWrapper = new QueryWrapper<>();
+        deptQueryWrapper.like("ancestors",deptId);
+        List<Department> deptList = departmentService.list(deptQueryWrapper);
+        List<Long> deptArray = deptList.stream().map(Department::getId).collect(Collectors.toList());
+        //第一步筛选出的数据再次筛选符合部门条件的 得到符合所有要求的数据 给pageInfo配置size
+        List<User> userV0List = new ArrayList<>();
+        for (User item:userList1){
+            if(deptArray.size()>0){
+                for (Long item1:deptArray){
+                    if(Objects.equals(item.getDeptId(), item1)){
+                        userV0List.add(item);
+                    }
+                }
+            }else{
+                userV0List.add(item);
+            }
 
+        }
+        PageInfo<Object> page = new PageInfo<Object>(userV0List);
 
+        //下面采用分页
+        List<User> userV1List = new ArrayList<>();
         List<Object> voList = new ArrayList<>();
+        PageHelper.startPage(userQueryRequest.getPageNum(),userQueryRequest.getPageSize());
+        List<User> userList = userService.list(queryWrapper);
         for (User item:userList){
+            if(deptArray.size()>0){
+                for (Long item1:deptArray){
+                    if(Objects.equals(item.getDeptId(), item1)){
+                        userV1List.add(item);
+                    }
+                }
+            }else{
+                userV1List.add(item);
+            }
+
+        }
+
+        for(User item:userV1List){
             UserRoleVO userRoleVO = getUserInfo(item,item.getId());
             UserVO userVO =assembleUserListVo(userRoleVO);
             voList.add(userVO);
         }
-        PageInfo<Object> page = new PageInfo<Object>(userList);
+
         page.setList(voList);
 
 
@@ -324,9 +355,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Override
     public Boolean updateIsBan(Long isBan,Long id) {
+
         if(id == null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR,"非法操作");
         }
+
         if(isBan !=0 && isBan !=1){
             throw new BusinessException(ErrorCode.PARAMS_ERROR,"非法操作");
         }
@@ -353,7 +386,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             }
         }
 
-
         //遍历用户对应的岗位
         List<SysUserPost> postList =  sysUserPostMapper.selectList(new QueryWrapper<SysUserPost>().inSql("post_id","SELECT post_id FROM sys_user_post WHERE user_id="+UserId));
         Set<Long> postSet = new HashSet<>();
@@ -363,12 +395,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                 postSet.add(post_id);
             }
         }
+
         // 拼接到一个对象中
             UserRoleVO userRoleVO = new UserRoleVO();
             userRoleVO.setUser(user);
             userRoleVO.setRoleIds(roleSet.toArray(new Long[roleSet.size()]));
             userRoleVO.setPostIds(postSet.toArray(new Long[postSet.size()]));
-
 
         return userRoleVO;
     }

@@ -9,6 +9,13 @@ const searchConfig = {
       initalValue: ''
     },
     {
+      type: 'input',
+      prop: 'deptId',
+      label: '部门Id',
+      placeholder: '请输入部门Id',
+      initialValue: '1'
+    },
+    {
       type: 'select',
       prop: 'gender',
       label: '性别',

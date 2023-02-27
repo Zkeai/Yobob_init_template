@@ -1,6 +1,7 @@
 package com.hupi.project.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.hupi.project.model.dto.user.UserQueryRequest;
 import com.hupi.project.model.entity.User;
 import org.apache.ibatis.annotations.Param;
 
@@ -22,6 +23,7 @@ public interface UserMapper extends BaseMapper<User> {
     List<Integer> getRoleIds(@Param("id") Long id);
 
     int updateIsBanById(@Param("isBan") Long isBan,@Param("id") Long id);
+    List<User> selectByPageNumSize(UserQueryRequest userQueryRequest);
 }
 
 

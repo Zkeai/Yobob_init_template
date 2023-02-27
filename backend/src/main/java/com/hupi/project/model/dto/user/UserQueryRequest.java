@@ -35,6 +35,12 @@ public class UserQueryRequest implements Serializable {
      * 每一页数量
      */
     private int pageSize;
+
+    /**
+     * 部门Id
+     */
+    private Long deptId;
+
     /**
      * 封禁
      */

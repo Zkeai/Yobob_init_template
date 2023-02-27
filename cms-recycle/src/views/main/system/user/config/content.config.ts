@@ -1,6 +1,7 @@
 const contentConfig = {
   pageName: 'user',
   hasPagination: true,
+  treeVisible: true,
   header: {
     title: '用户列表',
     btnTitle: '新建用户'
@@ -43,14 +44,6 @@ const contentConfig = {
       type: 'avatar',
       label: '头像',
       width: '80px',
-      vIf: true
-    },
-
-    {
-      type: 'normal',
-      label: '部门',
-      prop: 'deptId',
-      width: '100px',
       vIf: true
     },
     {

@@ -10,7 +10,7 @@ public class UserRoleVO {
 
     private User user;
     private Long[] roleIds;
-    private Integer[] deptIds;
+    private Long[] deptIds;
     private Long[] postIds;
 
 }
