@@ -55,16 +55,16 @@
 import usePermission from '@/hooks/usePermission'
 import { getTime } from '@/utils/time-format'
 import type ElForm from 'element-plus/es/components/form'
-import { reactive, ref, watch } from 'vue'
+import { nextTick, reactive, ref, watch } from 'vue'
 
 interface Iprops {
   searchConfig: {
     pageName: string
     formItems: any[]
   }
+  dept?: any
 }
 const props = defineProps<Iprops>()
-
 //获取权限
 const isRuery = usePermission(`system:${props.searchConfig.pageName}:query`)
 const initialForm: any = {}
@@ -73,9 +73,16 @@ for (const item of props.searchConfig.formItems) {
   initialForm[item.prop] = item.initialValue ?? ''
 }
 const searchForm = reactive(initialForm)
-//自定义事件/接收的属性
+//监听搜索表单的值,有变化向父传新值
 watch(searchForm, (newVal) => {
-  emit('searchVal', newVal)
+  nextTick(() => {
+    emit('searchVal', newVal)
+  })
+})
+//监听父传来的值,有变化改变表单的值
+watch(props, (val) => {
+  const dept_ = val.dept.value
+  searchForm.deptId = dept_
 })
 const emit = defineEmits(['queryClick', 'resetClick', 'searchVal'])
 

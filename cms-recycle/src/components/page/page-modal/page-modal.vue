@@ -154,20 +154,14 @@ const referEmit = defineEmits(['referMethod'])
 function setModalVisibel(isNew: boolean = true, itemData?: any) {
   isNew_.value = isNew
   if (!isNew_.value && itemData) {
-    nextTick(() => {
-      for (const key in formData) {
-        formData[key] = itemData[key]
-      }
-    })
+    for (const key in formData) {
+      formData[key] = itemData[key]
+    }
   } else {
-    nextTick(() => {
-      for (const key in formData) {
-        const item = props.modalConfig.formItems.find(
-          (item) => item.prop === key
-        )
-        formData[key] = item ? item.initialVal : ''
-      }
-    })
+    for (const key in formData) {
+      const item = props.modalConfig.formItems.find((item) => item.prop === key)
+      formData[key] = item ? item.initialVal : ''
+    }
   }
   dialogVisible.value = true
 }

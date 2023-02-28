@@ -2,6 +2,7 @@
   <div class="user">
     <pageSearch
       ref="searchRef"
+      :dept="treeDeptId"
       :search-config="searchConfig"
       @search-val="searchVal"
       @query-click="handleQueryClick"
@@ -11,6 +12,7 @@
       ref="contentRef"
       :msg="formVal"
       :content-config="contentConfig"
+      @tree-dept-id="getTreeDeptId"
       @new-click="handleNewClick"
       @edit-click="handleEditClick"
     >
@@ -117,6 +119,11 @@ let formVal = ref()
 const searchVal = (val: any) => {
   formVal.value = val
 }
+let treeDeptId = ref()
+
+const getTreeDeptId = (val: any) => {
+  treeDeptId.value = val
+}
 //点击 搜索 重置 hooks
 const { contentRef, handleQueryClick, handleResetClick } = usePageContent()
 //modal组件的操作 新增 修改
@@ -125,14 +132,15 @@ const { modalRef, handleNewClick, handleEditClick } = usePageModal(editCallback)
 function referMethod() {
   return contentRef.value?.fetchPageListAction()
 }
-
 //callback
 interface IotherInfo {
   deptIds: number[]
 }
+
 let otherInfo: IotherInfo = reactive({
   deptIds: []
 })
+
 function handleElDeptTreeCheck(_: any) {
   let deptId = _.id
   otherInfo.deptIds = [deptId]

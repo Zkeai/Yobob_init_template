@@ -61,10 +61,7 @@ const MenuChecked = ref()
 //点击 搜索 重置 hooks
 const { contentRef, handleQueryClick, handleResetClick } = usePageContent()
 //modal组件的操作 新增 修改
-const { modalRef, handleNewClick, handleEditClick } = usePageModal(
-  newCallback,
-  editCallback
-)
+const { modalRef, handleNewClick, handleEditClick } = usePageModal(editCallback)
 
 //需要传给model的方法
 function referMethod() {

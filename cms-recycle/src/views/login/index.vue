@@ -5,7 +5,6 @@
         <div class="content" ref="contentRef">
           <Panel>
             <template #img> </template>
-
             <template #login> </template>
           </Panel>
         </div>

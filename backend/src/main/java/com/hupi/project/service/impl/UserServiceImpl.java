@@ -43,18 +43,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     private DepartmentService departmentService;
     @Resource
     private SysRoleMapper sysRoleMapper;
-
     @Resource
     private SysMenuMapper sysMenuMapper;
-
     @Resource
     private SysUserRoleMapper sysUserRoleMapper;
-
     @Resource
     private SysUserPostMapper sysUserPostMapper;
     private static final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
+
         // 1. 校验
         if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
@@ -263,10 +261,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     public PageInfo getList(UserQueryRequest userQueryRequest) {
         //根据前端上传的条件筛选
         User userQuery = new User();
-        if (userQueryRequest.getUserName() !=null && !Objects.equals(userQueryRequest.getUserName(), "")) {
+        if (StringUtils.isNotBlank(userQueryRequest.getUserName())) {
             userQuery.setUserName(userQueryRequest.getUserName());
         }
-        if(!Objects.equals(userQueryRequest.getPhone(), "") && userQueryRequest.getPhone() !=null) {
+        if(StringUtils.isNotBlank(userQueryRequest.getPhone())) {
             userQuery.setPhone(userQueryRequest.getPhone());
         }
         if(!Objects.equals(userQueryRequest.getEmail(), "") && userQueryRequest.getEmail() !=null) {
@@ -299,7 +297,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             queryWrapper.ge("updateTime",a);
             queryWrapper.le("updateTime",b);
         }
-        List<User> userList1 = userService.list(queryWrapper);
 
         //根据deptId获取所有下面的部门
         Long deptId = userQueryRequest.getDeptId();
@@ -307,48 +304,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         deptQueryWrapper.like("ancestors",deptId);
         List<Department> deptList = departmentService.list(deptQueryWrapper);
         List<Long> deptArray = deptList.stream().map(Department::getId).collect(Collectors.toList());
-        //第一步筛选出的数据再次筛选符合部门条件的 得到符合所有要求的数据 给pageInfo配置size
-        List<User> userV0List = new ArrayList<>();
-        for (User item:userList1){
-            if(deptArray.size()>0){
-                for (Long item1:deptArray){
-                    if(Objects.equals(item.getDeptId(), item1)){
-                        userV0List.add(item);
-                    }
-                }
-            }else{
-                userV0List.add(item);
-            }
-
+        if (deptArray.size() > 0) {
+            List<String> stringList = new ArrayList<>();
+            deptArray.stream().forEach(o -> {
+                stringList.add(String.valueOf(o));
+            });
+            queryWrapper.in("deptId",stringList);
+        } else if (deptId != null)
+        {
+            queryWrapper.eq("deptId",deptId);
         }
-        PageInfo<Object> page = new PageInfo<Object>(userV0List);
-
-        //下面采用分页
-        List<User> userV1List = new ArrayList<>();
-        List<Object> voList = new ArrayList<>();
         PageHelper.startPage(userQueryRequest.getPageNum(),userQueryRequest.getPageSize());
         List<User> userList = userService.list(queryWrapper);
-        for (User item:userList){
-            if(deptArray.size()>0){
-                for (Long item1:deptArray){
-                    if(Objects.equals(item.getDeptId(), item1)){
-                        userV1List.add(item);
-                    }
-                }
-            }else{
-                userV1List.add(item);
-            }
+        PageInfo<Object> page = new PageInfo<>(userList);
+        List<Object> voList = new ArrayList<>();
 
-        }
-
-        for(User item:userV1List){
+        for(User item:userList){
             UserRoleVO userRoleVO = getUserInfo(item,item.getId());
             UserVO userVO =assembleUserListVo(userRoleVO);
             voList.add(userVO);
         }
-
         page.setList(voList);
-
 
         return page;
     }
@@ -370,7 +346,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
         return false;
     }
-
 
     public UserRoleVO getUserInfo(User user,Long UserId) {
 

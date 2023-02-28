@@ -212,7 +212,7 @@ import { ElMessage } from 'element-plus'
 import useSystemStore from '@/store/system/index'
 import { Delete, Edit } from '@element-plus/icons-vue'
 import { storeToRefs } from 'pinia'
-import { ref } from 'vue'
+import { nextTick, reactive, ref } from 'vue'
 import { formatUTC } from '@/utils/time-format'
 import usePermission from '@/hooks/usePermission'
 import useOtherStore from '@/store/other'
@@ -242,9 +242,8 @@ interface Iprops {
   msg?: any
 }
 const props = defineProps<Iprops>()
-console.log(props)
 //自定事件
-const emit = defineEmits(['newClick', 'editClick'])
+const emit = defineEmits(['newClick', 'editClick', 'treeDeptId'])
 //获取登录用户的权限 usePermission hooks
 const isAdd = usePermission(`system:${props.contentConfig.pageName}:add`)
 const isDelete = usePermission(`system:${props.contentConfig.pageName}:delete`)
@@ -269,11 +268,9 @@ if (
 
 fetchPageListAction()
 const handleSizeChange = () => {
-  console.log(props)
   fetchPageListAction(props.msg)
 }
 const handleCurrentChange = () => {
-  console.log(props.msg)
   fetchPageListAction(props.msg)
 }
 //发动网络请求函数
@@ -281,9 +278,7 @@ function fetchPageListAction(formData: any = {}) {
   if (!isQuery) return
   const pageSize = currentPageSize.value
   const pageNum = currentPage.value
-
   const info = { pageNum, pageSize }
-
   const pageInfo = { ...info, ...formData }
   systemStore.postPageListAction(props.contentConfig.pageName, pageInfo)
 }
@@ -335,8 +330,14 @@ systemStore.$onAction(({ name, after }) => {
 })
 
 //复选框节点被点击
+let deptId = ref()
 function handleNodeClick(target: any) {
-  console.log(target)
+  deptId.value = target.id
+  emit('treeDeptId', deptId)
+
+  nextTick(() => {
+    fetchPageListAction(props.msg)
+  })
 }
 defineExpose({ fetchPageListAction })
 </script>
