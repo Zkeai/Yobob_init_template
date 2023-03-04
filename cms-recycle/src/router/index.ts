@@ -39,6 +39,7 @@ router.beforeEach(async (to) => {
     return res.success
   })
   if (to.path.startsWith('/main') && (!token || res !== true)) {
+    localCache.removeCache(CACHETOKEN)
     return '/login'
   }
 

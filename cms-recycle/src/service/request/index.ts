@@ -1,7 +1,10 @@
 import axios from 'axios'
 import type { AxiosInstance } from 'axios'
 import type { HYRequestConfig } from './type'
-
+import { authenticationRequest } from '@/service/other'
+import { localCache } from '@/utils/localCache'
+import { CACHETOKEN } from '@/global/cache-constants'
+import router from '@/router'
 // 拦截器: 蒙版Loading/token/修改配置
 
 /**
@@ -24,7 +27,6 @@ class HYRequest {
     // 每个instance实例都添加拦截器
     this.instance.interceptors.request.use(
       (config) => {
-        // loading/token
         return config
       },
       (err) => {
@@ -35,8 +37,17 @@ class HYRequest {
       (res) => {
         return res.data
       },
-      (err) => {
-        return err
+      async (err) => {
+        const token = localCache.getCache(CACHETOKEN)
+        const res = await authenticationRequest().then((res) => {
+          return res.success
+        })
+        if (token && res === true) {
+          return err
+        } else {
+          localCache.removeCache(CACHETOKEN)
+          router.push('/login')
+        }
       }
     )
 
