@@ -2,7 +2,7 @@
   <div class="menu">
     <div class="aside-logo">
       <img class="aside-image" src="@/assets/img/logo.svg" alt="" />
-      <h2 class="aside-title">hupi管理系统</h2>
+      <h2 class="aside-title">硕天管理系统</h2>
     </div>
     <div class="aside-menu">
       <el-menu :collapse="isFold" :default-active="defaultActive">

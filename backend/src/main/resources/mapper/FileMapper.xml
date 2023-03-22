@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hupi.project.mapper.FileMapper">
+
+    <resultMap id="BaseResultMap" type="com.hupi.project.model.entity.File">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="md5" column="md5" jdbcType="VARCHAR"/>
+            <result property="path" column="path" jdbcType="VARCHAR"/>
+            <result property="upload_time" column="upload_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,md5,
+        path,upload_time
+    </sql>
+
+    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from file
+        where id = #{id}
+    </select>
+
+    <insert id="save" parameterType="com.hupi.project.model.entity.File" keyProperty="id" useGeneratedKeys="true">
+        insert into file(name,md5,path,upload_time) values(#{name},#{md5},#{path},#{uploadTime})
+    </insert>
+
+    <update id="update" parameterType="com.hupi.project.model.entity.File" >
+        <if test="id != null">
+            update file
+            <set>
+                <if test="name != null">
+                    name = #{name},
+                </if>
+                <if test="md5 != null">
+                    md5 = #{md5},
+                </if>
+                <if test="path != null">
+                    path = #{path},
+                </if>
+                <if test="uploadTime != null">
+                    upload_time = #{uploadTime},
+                </if>
+            </set>
+            where id = #{id}
+        </if>
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete from file where id = #{id}
+    </delete>
+
+    <select id="getByFile" parameterType="com.hupi.project.model.entity.File" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from file
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+            <if test="name != null">
+                and name = #{name}
+            </if>
+            <if test="md5 != null">
+                and md5 = #{md5}
+            </if>
+            <if test="path != null">
+                and path = #{path}
+            </if>
+            <if test="uploadTime != null">
+                and upload_time = #{uploadTime}
+            </if>
+        </where>
+    </select>
+</mapper>
