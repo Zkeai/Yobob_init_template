@@ -1,2 +1,2 @@
 export * from './login'
-export * from './department'
+export * from './departMent'
