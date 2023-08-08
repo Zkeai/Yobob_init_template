@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : localhost_3306
-Source Server Version : 50738
+Source Server         : 本地数据库
+Source Server Version : 80100
 Source Host           : localhost:3306
 Source Database       : hupi_db
 
 Target Server Type    : MYSQL
-Target Server Version : 50738
+Target Server Version : 80100
 File Encoding         : 65001
 
-Date: 2023-03-22 11:09:09
+Date: 2023-08-08 17:18:40
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -20,28 +20,28 @@ SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 DROP TABLE IF EXISTS `department`;
 CREATE TABLE `department` (
-  `id` bigint(200) NOT NULL AUTO_INCREMENT,
-  `name` varchar(256) CHARACTER SET utf8 NOT NULL,
-  `sn` varchar(256) CHARACTER SET utf8 DEFAULT NULL,
-  `parentId` bigint(20) DEFAULT NULL COMMENT '父级id',
-  `ancestors` varchar(256) CHARACTER SET utf8 DEFAULT NULL COMMENT '祖级列表',
-  `isBan` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态 0 正常 1 删除',
-  `leader` varchar(256) CHARACTER SET utf8 DEFAULT NULL COMMENT '负责人',
-  `phone` varchar(256) CHARACTER SET utf8 DEFAULT NULL COMMENT '手机号',
-  `email` varchar(256) CHARACTER SET utf8 DEFAULT NULL COMMENT '邮箱',
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `name` varchar(256) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `sn` varchar(256) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `parentId` bigint DEFAULT NULL COMMENT '父级id',
+  `ancestors` varchar(256) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '祖级列表',
+  `isBan` tinyint NOT NULL DEFAULT '0' COMMENT '状态 0 正常 1 删除',
+  `leader` varchar(256) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '负责人',
+  `phone` varchar(256) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '手机号',
+  `email` varchar(256) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '邮箱',
   `create_by` varchar(256) DEFAULT NULL COMMENT '创建人',
   `createTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updateBy` varchar(256) DEFAULT NULL COMMENT '更新人',
   `updateTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-  `isDelete` tinyint(4) NOT NULL DEFAULT '0' COMMENT '0 正常 1 删除',
+  `isDelete` tinyint NOT NULL DEFAULT '0' COMMENT '0 正常 1 删除',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1 COMMENT='部门表';
 
 -- ----------------------------
 -- Records of department
 -- ----------------------------
-INSERT INTO `department` VALUES ('1', '硕天科技', 'hupi', '0', '0', '0', 'admin', '15257222873', '95736614@qq.com', null, '2023-02-13 22:00:06', null, '2023-02-15 00:36:44', '0');
-INSERT INTO `department` VALUES ('2', '浙江总公司', null, '1', '0,1', '0', null, null, null, null, '2023-02-13 22:01:32', null, '2023-02-21 11:14:02', '0');
+INSERT INTO `department` VALUES ('1', 'Yobob科技', 'hupi', '0', '0', '0', 'admin', '15257222873', '95736614@qq.com', null, '2023-02-13 22:00:06', null, '2023-02-15 00:36:44', '0');
+INSERT INTO `department` VALUES ('2', '浙江总公司', null, '1', '0,1', '0', null, null, null, null, '2023-02-13 22:01:32', null, '2023-02-21 11:14:02', '1');
 INSERT INTO `department` VALUES ('3', '上海分公司', null, '1', '0,1', '0', null, null, null, null, '2023-02-13 22:01:59', null, '2023-02-15 00:44:42', '0');
 INSERT INTO `department` VALUES ('4', '研发部门', null, '2', '0,1,2', '0', null, null, null, null, '2023-02-13 22:03:35', null, '2023-02-13 22:03:35', '0');
 INSERT INTO `department` VALUES ('5', '市场部门', null, '2', '0,1,2', '0', null, null, null, null, '2023-02-13 22:03:50', null, '2023-02-17 14:06:23', '0');
@@ -55,10 +55,10 @@ INSERT INTO `department` VALUES ('9', '财务部门', null, '3', '0,1,3', '0', n
 -- ----------------------------
 DROP TABLE IF EXISTS `file`;
 CREATE TABLE `file` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) CHARACTER SET utf8 NOT NULL,
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `md5` varchar(32) DEFAULT NULL,
-  `path` varchar(100) CHARACTER SET utf8 NOT NULL,
+  `path` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `upload_time` datetime(3) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -72,7 +72,7 @@ CREATE TABLE `file` (
 -- ----------------------------
 DROP TABLE IF EXISTS `post`;
 CREATE TABLE `post` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(50) DEFAULT NULL,
   `isBan` tinyint(1) DEFAULT '0',
   `code` varchar(50) DEFAULT NULL,
@@ -80,15 +80,15 @@ CREATE TABLE `post` (
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP,
   `isDelete` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3;
 
 -- ----------------------------
 -- Records of post
 -- ----------------------------
 INSERT INTO `post` VALUES ('1', '董事长', '0', 'ceo', null, null, '0');
-INSERT INTO `post` VALUES ('2', '项目经理', '0', 'se', null, null, '0');
-INSERT INTO `post` VALUES ('3', '人力资源', '0', 'hr', null, null, '0');
-INSERT INTO `post` VALUES ('4', '首席技术官', '0', 'cto', null, null, '0');
+INSERT INTO `post` VALUES ('2', '项目经理', '0', 'se', null, null, '1');
+INSERT INTO `post` VALUES ('3', '人力资源', '0', 'hr', null, null, '1');
+INSERT INTO `post` VALUES ('4', '首席技术官', '0', 'cto', null, null, '1');
 INSERT INTO `post` VALUES ('5', '普通员工', '0', 'user', null, null, '0');
 
 -- ----------------------------
@@ -96,11 +96,11 @@ INSERT INTO `post` VALUES ('5', '普通员工', '0', 'user', null, null, '0');
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_menu`;
 CREATE TABLE `sys_menu` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '菜单主键ID',
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '菜单主键ID',
   `name` varchar(50) DEFAULT NULL COMMENT '菜单名称',
   `icon` varchar(100) DEFAULT '#' COMMENT '菜单图标',
-  `parent_id` bigint(20) DEFAULT NULL COMMENT '父菜单ID',
-  `order_num` int(11) DEFAULT '0' COMMENT '显示顺序',
+  `parent_id` bigint DEFAULT NULL COMMENT '父菜单ID',
+  `order_num` int DEFAULT '0' COMMENT '显示顺序',
   `path` varchar(200) DEFAULT '' COMMENT '路由地址',
   `component` varchar(255) DEFAULT NULL COMMENT '组件路径',
   `menu_type` char(1) DEFAULT '' COMMENT '菜单类型（M目录 C菜单 F按钮）',
@@ -110,13 +110,13 @@ CREATE TABLE `sys_menu` (
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb3;
 
 -- ----------------------------
 -- Records of sys_menu
 -- ----------------------------
 INSERT INTO `sys_menu` VALUES ('1', '系统管理', 'Setting', '0', '1', '/main/sys', '', 'M', '', '0', '2022-07-04 14:56:29', '2022-07-04 14:56:31', '系统管理目录');
-INSERT INTO `sys_menu` VALUES ('2', '业务管理', 'monitor', '0', '2', '/main/bsns', '', 'M', '', '0', '2022-07-04 14:59:43', '2022-07-04 14:59:45', '业务管理目录');
+INSERT INTO `sys_menu` VALUES ('2', '集成工具', 'Briefcase', '0', '2', '/main/utils', '', 'M', '', '0', '2022-07-04 14:59:43', '2022-07-04 14:59:45', '业务管理目录');
 INSERT INTO `sys_menu` VALUES ('3', '用户管理', 'user', '1', '1', '/main/sys/user', 'sys/user/index', 'C', 'system:user:list', '0', '2022-07-04 15:20:51', '2022-07-04 15:20:53', '用户管理菜单');
 INSERT INTO `sys_menu` VALUES ('4', '角色管理', 'peoples', '1', '2', '/main/sys/role', 'sys/role/index', 'C', 'system:role:list', '0', '2022-07-04 15:23:35', '2022-07-04 15:23:39', '角色管理菜单');
 INSERT INTO `sys_menu` VALUES ('5', '菜单管理', 'tree-\r\n        table', '1', '3', '/main/sys/menu', 'sys/menu/index', 'C', 'system:menu:list', '0', '2022-07-04 15:23:41', '2022-07-04 15:23:43', '菜单管理菜单');
@@ -145,16 +145,14 @@ INSERT INTO `sys_menu` VALUES ('27', '岗位查询', '#', '7', '1', '', null, 'F
 INSERT INTO `sys_menu` VALUES ('28', '岗位增加', '#', '7', '2', '', null, 'F', 'system:post:add', '0', null, null, '岗位新增按钮');
 INSERT INTO `sys_menu` VALUES ('29', '岗位修改', '#', '7', '3', '', null, 'F', 'system:post:edit', '0', null, null, '岗位修改按钮');
 INSERT INTO `sys_menu` VALUES ('30', '岗位删除', '#', '7', '4', '', null, 'F', 'system:post:delete', '0', null, null, '岗位删除按钮');
-INSERT INTO `sys_menu` VALUES ('36', '配置管理', '#', '2', '0', '/main/bsns/config', 'bsns/config', 'C', 'bsns:config:list', '0', null, null, null);
-INSERT INTO `sys_menu` VALUES ('37', '集成工具', 'Briefcase', '0', '3', '/main/utils', null, 'M', '', '0', '2023-03-06 14:06:45', '2023-03-06 14:06:48', '工具管理目录');
-INSERT INTO `sys_menu` VALUES ('38', '文件上传', '#', '37', '0', '/main/utils/upload', 'utils/cos', 'C', 'other:utils:upload', '0', '2023-03-06 14:15:17', '2023-03-06 14:15:18', '文件上传菜单');
+INSERT INTO `sys_menu` VALUES ('38', '文件上传', '#', '2', '0', '/main/utils/upload', 'utils/cos', 'C', 'other:utils:upload', '0', '2023-03-06 14:15:17', '2023-03-06 14:15:18', '文件上传菜单');
 
 -- ----------------------------
 -- Table structure for sys_role
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_role`;
 CREATE TABLE `sys_role` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '角色主键ID',
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '角色主键ID',
   `name` varchar(30) DEFAULT NULL COMMENT '角色名称',
   `code` varchar(100) DEFAULT NULL COMMENT '角色权限字符串',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -163,7 +161,7 @@ CREATE TABLE `sys_role` (
   `isBan` tinyint(1) DEFAULT '0',
   `isDelete` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
 
 -- ----------------------------
 -- Records of sys_role
@@ -176,9 +174,9 @@ INSERT INTO `sys_role` VALUES ('2', '普通角色', 'common', '2022-07-04 14:41:
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_role_dept`;
 CREATE TABLE `sys_role_dept` (
-  `role_id` bigint(20) NOT NULL COMMENT '角色ID',
-  `dept_id` bigint(20) NOT NULL COMMENT '部门ID'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色和部门关联表';
+  `role_id` bigint NOT NULL COMMENT '角色ID',
+  `dept_id` bigint NOT NULL COMMENT '部门ID'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='角色和部门关联表';
 
 -- ----------------------------
 -- Records of sys_role_dept
@@ -189,9 +187,9 @@ CREATE TABLE `sys_role_dept` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_role_menu`;
 CREATE TABLE `sys_role_menu` (
-  `role_id` bigint(20) DEFAULT NULL COMMENT '角色ID',
-  `menu_id` bigint(20) DEFAULT NULL COMMENT '菜单ID'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `role_id` bigint DEFAULT NULL COMMENT '角色ID',
+  `menu_id` bigint DEFAULT NULL COMMENT '菜单ID'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 -- ----------------------------
 -- Records of sys_role_menu
@@ -243,8 +241,8 @@ INSERT INTO `sys_role_menu` VALUES ('2', '3');
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_user_post`;
 CREATE TABLE `sys_user_post` (
-  `user_id` bigint(20) DEFAULT NULL,
-  `post_id` bigint(20) DEFAULT NULL
+  `user_id` bigint DEFAULT NULL,
+  `post_id` bigint DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -257,9 +255,9 @@ INSERT INTO `sys_user_post` VALUES ('1', '1');
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_user_role`;
 CREATE TABLE `sys_user_role` (
-  `user_id` bigint(20) DEFAULT NULL COMMENT '用户ID',
-  `role_id` bigint(20) DEFAULT NULL COMMENT '角色ID'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `user_id` bigint DEFAULT NULL COMMENT '用户ID',
+  `role_id` bigint DEFAULT NULL COMMENT '角色ID'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 -- ----------------------------
 -- Records of sys_user_role
@@ -271,21 +269,21 @@ INSERT INTO `sys_user_role` VALUES ('1', '1');
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
-  `userName` varchar(256) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '用户昵称',
-  `deptId` int(11) DEFAULT NULL COMMENT '部门id',
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `userName` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '用户昵称',
+  `deptId` int DEFAULT NULL COMMENT '部门id',
   `userAccount` varchar(256) NOT NULL COMMENT '账号',
   `userPassword` varchar(512) NOT NULL COMMENT '密码',
-  `userAvatar` varchar(1024) CHARACTER SET utf8 DEFAULT NULL COMMENT '用户头像',
-  `email` varchar(255) CHARACTER SET utf8 DEFAULT NULL COMMENT '邮箱',
+  `userAvatar` varchar(1024) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '用户头像',
+  `email` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '邮箱',
   `phone` varchar(255) DEFAULT NULL COMMENT '手机号',
-  `age` int(11) DEFAULT NULL COMMENT '年龄',
-  `gender` tinyint(4) DEFAULT NULL COMMENT '性别',
+  `age` int DEFAULT NULL COMMENT '年龄',
+  `gender` tinyint DEFAULT NULL COMMENT '性别',
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0 普通 1超级管理员',
-  `isBan` int(4) DEFAULT '0' COMMENT '0 正常 1封禁',
+  `isBan` int DEFAULT '0' COMMENT '0 正常 1封禁',
   `createTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `isDelete` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否删除',
+  `isDelete` tinyint NOT NULL DEFAULT '0' COMMENT '是否删除',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uni_userAccount` (`userAccount`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COMMENT='用户';
