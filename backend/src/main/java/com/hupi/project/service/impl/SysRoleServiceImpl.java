@@ -154,15 +154,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
         List<SysRole> list = sysRoleService.list();
 
 
-        List<Object> voList = new ArrayList<>();
-        for (SysRole item:list){
-            RoleVO roleVO = getRoleInfo(item,item.getId());
-            SysRole sysRole =assembleRoleListVo(roleVO);
-            voList.add(sysRole);
-        }
-
-        PageInfo<Object> page = new PageInfo<Object>(list);
-        page.setList(voList);
+        PageInfo<SysRole> page = new PageInfo<>(list);
+        page.setList(list);
         return page;
     }
 
