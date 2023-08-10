@@ -4,8 +4,8 @@ const searchConfig = {
     {
       type: 'input',
       prop: 'name',
-      label: '部门名称',
-      placeholder: '请输入部门名称',
+      label: '网站名称',
+      placeholder: '请输入网站名称',
       initalValue: ''
     },
     {

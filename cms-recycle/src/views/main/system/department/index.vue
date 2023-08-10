@@ -39,7 +39,7 @@ const modalConfigRef = computed(() => {
     value: number
   }
 
-  //添加上级部门  递归
+  //添加上级网站  递归
   const departments = mapMenuListToIds(otherStore.Departments)
   function mapMenuListToIds(deptList: any[]) {
     const ids: idsType[] = []

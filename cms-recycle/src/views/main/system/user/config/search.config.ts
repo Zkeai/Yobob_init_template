@@ -11,8 +11,8 @@ const searchConfig = {
     {
       type: 'input',
       prop: 'deptId',
-      label: '部门Id',
-      placeholder: '请输入部门Id',
+      label: '网站Id',
+      placeholder: '请输入网站Id',
       initialValue: '1'
     },
     {

@@ -3,16 +3,16 @@ import type { IModalConfig } from '@/types/system'
 const modalConfig: IModalConfig = {
   pageName: 'department',
   header: {
-    newTitle: '新建部门',
-    editTitle: '编辑部门'
+    newTitle: '新建网站',
+    editTitle: '编辑网站'
   },
   formItems: [
     {
       type: 'input',
       prop: 'name',
-      label: '部门名称',
+      label: '网站名称',
       initialVal: '',
-      placeholder: '请输入部门名称',
+      placeholder: '请输入网站名称',
       vIf: true
     },
     {
@@ -25,17 +25,17 @@ const modalConfig: IModalConfig = {
     {
       type: 'input',
       prop: 'leader',
-      label: '部门领导',
+      label: '网站领导',
       initialVal: '',
-      placeholder: '请输入部门领导',
+      placeholder: '请输入网站领导',
       vIf: true
     },
     {
       type: 'select',
       prop: 'parentId',
-      label: '上级部门',
+      label: '上级网站',
       initialVal: '',
-      placeholder: '请选择上级部门',
+      placeholder: '请选择上级网站',
       selectValue: [],
       vIf: true
     },
@@ -73,7 +73,7 @@ const modalConfig: IModalConfig = {
       prop: 'sn',
       label: '简称',
       initialVal: '',
-      placeholder: '请输入部门简称',
+      placeholder: '请输入网站简称',
       vIf: true
     },
     {

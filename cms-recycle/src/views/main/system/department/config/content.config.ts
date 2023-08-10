@@ -3,8 +3,8 @@ const contentConfig = {
   hasPagination: false,
   treeVisible: false,
   header: {
-    title: '部门列表',
-    btnTitle: '新建部门 '
+    title: '网站列表',
+    btnTitle: '新建网站 '
   },
   propsList: [
     {
@@ -17,21 +17,21 @@ const contentConfig = {
 
     {
       type: 'normal',
-      label: '部门名称',
+      label: '网站名称',
       prop: 'name',
       width: '120px',
       vIf: true
     },
     {
       type: 'normal',
-      label: '上级部门',
+      label: '上级网站',
       prop: 'parentId',
       width: '120px',
       vIf: false
     },
     {
       type: 'normal',
-      label: '部门领导',
+      label: '网站站主',
       prop: 'leader',
       width: '100px',
       vIf: true

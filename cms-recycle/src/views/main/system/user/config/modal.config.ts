@@ -82,7 +82,7 @@ const modalConfig: IModalConfig = {
     {
       type: 'custom',
       slotName: 'dept',
-      label: '部门',
+      label: '网站',
       childrenTree: {
         rowKey: 'id',
         treeProps: { children: 'children', hasChildren: 'hasChildren' },
