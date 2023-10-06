@@ -152,8 +152,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
             queryWrapper.le("updateTime",b);
         }
         List<SysRole> list = sysRoleService.list();
-
-
+        
         PageInfo<SysRole> page = new PageInfo<>(list);
         page.setList(list);
         return page;
